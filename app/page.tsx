@@ -1,65 +1,1076 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import EmotionReport from "../components/EmotionReport";
+import UserFlow from "../components/UserFlow";
+import CounselorPortal from "../components/CounselorPortal";
+import CounselorDashboard from "../components/CounselorDashboard";
 
 export default function Home() {
+  const router = useRouter();
+  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings">("onboarding");
+  const [role, setRole] = useState<"user" | "counselor" | null>(null);
+  const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
+
+  // Consent states
+  const [agreements, setAgreements] = useState({
+    privacy: false,
+    terms: false,
+    safety: false,
+  });
+  const [showPrivacyDetail, setShowPrivacyDetail] = useState(false);
+  const [showSafetyDetail, setShowSafetyDetail] = useState(false);
+
+  const allAgreed = agreements.privacy && agreements.terms && agreements.safety;
+
+  const handleAllAgree = (checked: boolean) => {
+    setAgreements({
+      privacy: checked,
+      terms: checked,
+      safety: checked,
+    });
+  };
+
+  const handleCheck = (key: keyof typeof agreements, checked: boolean) => {
+    setAgreements((prev) => ({ ...prev, [key]: checked }));
+  };
+
+  // PHQ-9 states
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [phq9Answers, setPhq9Answers] = useState<(number | null)[]>(Array(9).fill(null));
+
+  const phq9Questions = [
+    "기분이 가라앉거나 우울하거나 희망이 없다고 느꼈다",
+    "평소 하던 일에 대한 흥미가 없어지거나 즐거움을 느끼지 못했다",
+    "잠들기가 어렵거나 자주 깼다 (혹은 너무 많이 잤다)",
+    "평소보다 식욕이 줄었다 (혹은 평소보다 많이 먹었다)",
+    "다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느려졌다 (혹은 너무 안절부절 못해서 가만히 앉아있을 수 없다)",
+    "피곤하고 기운이 없었다",
+    "내가 잘못했거나, 실패했다는 생각이 들었다 (혹은 자신과 가족을 실망시켰다고 생각했다)",
+    "신문을 읽거나 TV를 보는 것과 같은 일상적인 일에도 집중할 수가 없었다",
+    "차라리 죽는 것이 더 낫겠다고 생각했다 (혹은 자해할 생각을 했다)",
+  ];
+
+  const phq9Options = [
+    { label: "없음", score: 0 },
+    { label: "2-6일", score: 1 },
+    { label: "7-12일", score: 2 },
+    { label: "거의 매일", score: 3 },
+  ];
+
+  // P4 states
+  const [p4Answers, setP4Answers] = useState({
+    q1: "",
+    q2: "",
+    q2_text: "",
+    q3: "",
+    q4: "",
+    q4_text: "",
+  });
+
+  const isP4Valid = 
+    p4Answers.q1 !== "" &&
+    p4Answers.q2 !== "" &&
+    (p4Answers.q2 === "없음" || (p4Answers.q2 === "있음" && p4Answers.q2_text.trim() !== "")) &&
+    p4Answers.q3 !== "" &&
+    p4Answers.q4 !== "" &&
+    (p4Answers.q4 === "없음" || (p4Answers.q4 === "있음" && p4Answers.q4_text.trim() !== ""));
+
+  // Pledge states
+  const [signature, setSignature] = useState("");
+
+  // Profile states
+  const [profile, setProfile] = useState({
+    nickname: "",
+    ageGroup: "",
+    gender: "",
+    occupation: "",
+    region: "",
+    contact: "",
+  });
+
+  const isProfileValid = 
+    profile.nickname.trim() !== "" && 
+    profile.ageGroup !== "" && 
+    profile.gender !== "" && 
+    profile.occupation !== "" && 
+    profile.region !== "";
+
+  const handleProfileChange = (key: keyof typeof profile, value: string) => {
+    setProfile((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const ageGroups = ["10대", "20대", "30대", "40대", "50대", "60대 이상"];
+  const genders = ["남성", "여성", "선택 안함"];
+  const occupations = ["학생", "직장인", "자영업자", "주부", "무직/구직중", "기타"];
+  const regions = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "세종"];
+
+  const today = new Date();
+  const formattedDate = `${today.getFullYear()}년 ${String(today.getMonth() + 1).padStart(2, "0")}월 ${String(today.getDate()).padStart(2, "0")}일`;
+
+  const totalScore = phq9Answers.reduce((acc, curr) => acc + (curr || 0), 0);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen bg-[#F7F9FC] flex flex-col items-center justify-center p-4 font-sans text-gray-800">
+      {/* Onboarding */}
+      {step === "onboarding" && (
+        <div className="max-w-4xl w-full flex flex-col items-center gap-8 animate-fade-in">
+          {/* Central Main Card */}
+          <div className="bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center max-w-lg w-full transform hover:scale-[1.02] transition-transform duration-300">
+            <span className="text-7xl mb-4 animate-bounce-slow">🫧</span>
+            <h1 className="text-4xl font-bold text-gray-900 mb-1">말랑해도 돼</h1>
+            <p className="text-[#6096C8] font-bold text-sm tracking-widest mb-6">MIND-SAFE</p>
+            <p className="text-gray-600 whitespace-pre-line leading-relaxed">
+              {"임상 지식 기반 AI 정신건강 솔루션\n당신의 마음 곁에 항상 함께할게요 💙"}
+            </p>
+          </div>
+
+          {/* Bottom Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl">
+            <div className="bg-white rounded-2xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow flex flex-col items-center text-center border border-gray-50">
+              <span className="text-3xl mb-3">🔍</span>
+              <h3 className="font-bold text-gray-900 mb-1">과학적 진단</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">PHQ-9 기반 정확한 우울 위험도 측정</p>
+            </div>
+            <div className="bg-white rounded-2xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow flex flex-col items-center text-center border border-gray-50">
+              <span className="text-3xl mb-3">🤖</span>
+              <h3 className="font-bold text-gray-900 mb-1">맞춤 페르소나</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">위험도에 따라 AI 상담사가 자동 연결</p>
+            </div>
+            <div className="bg-white rounded-2xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow flex flex-col items-center text-center border border-gray-50">
+              <span className="text-3xl mb-3">🛡️</span>
+              <h3 className="font-bold text-gray-900 mb-1">안전 보장</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">고위험 감지 시 즉시 전문가 연결</p>
+            </div>
+          </div>
+
+          {/* Bottom Buttons */}
+          <div className="flex flex-col items-center gap-4 mt-2">
+            <button
+              onClick={() => setStep("select")}
+              className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white font-bold py-3.5 px-12 rounded-full shadow-[0_10px_20px_-5px_rgba(139,123,173,0.3)] hover:shadow-[0_12px_25px_-5px_rgba(139,123,173,0.4)] transform hover:translate-y-[-1px] transition-all duration-200 flex items-center gap-2 text-lg"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              시작하기 →
+            </button>
+            <button className="text-sm text-gray-500 hover:text-gray-700 underline-offset-4 hover:underline transition-colors">
+              이미 계정이 있으신가요? 로그인
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Select Role */}
+      {step === "select" && (
+        <div className="max-w-md w-full bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center animate-fade-in">
+          <span className="text-5xl mb-4">🚪</span>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">로그인 유형을 선택해주세요</h2>
+          <p className="text-sm text-gray-500 mb-8">당신에게 맞는 포털로 안내해 드릴게요</p>
+          
+          <div className="flex flex-col gap-4 w-full">
+            <button
+              onClick={() => {
+                setRole("user");
+                setStep("login");
+              }}
+              className="bg-[#F7F9FC] hover:bg-[#EBF1F9] text-gray-800 font-bold py-4 px-6 rounded-2xl border border-gray-100 transition-colors flex items-center justify-between group"
             >
-              Learning
-            </a>{" "}
-            center.
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">👤</span>
+                <span>개인 사용자</span>
+              </div>
+              <span className="text-xl text-gray-400 group-hover:text-[#6096C8] transition-colors">→</span>
+            </button>
+            <button
+              onClick={() => {
+                setRole("counselor");
+                setStep("login");
+              }}
+              className="bg-[#F7F9FC] hover:bg-[#EBF1F9] text-gray-800 font-bold py-4 px-6 rounded-2xl border border-gray-100 transition-colors flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🩺</span>
+                <span>상담사 포털</span>
+              </div>
+              <span className="text-xl text-gray-400 group-hover:text-[#8B7BAD] transition-colors">→</span>
+            </button>
+          </div>
+          
+          <button
+            onClick={() => setStep("onboarding")}
+            className="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            ← 이전으로 돌아가기
+          </button>
+        </div>
+      )}
+
+      {/* Login */}
+      {step === "login" && (
+        <div className="max-w-md w-full bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center animate-fade-in">
+          <span className="text-5xl mb-4">{role === "user" ? "💙" : "💜"}</span>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {role === "user" ? "사용자 로그인" : "상담사 로그인"}
+          </h2>
+          <p className="text-sm text-gray-500 mb-8">
+            {role === "user" ? "마음의 이야기를 들려주세요" : "전문가용 관리 화면입니다"}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          
+          <div className="flex flex-col gap-4 w-full">
+            <div className="text-left w-full">
+              <label className="text-xs font-bold text-gray-500 ml-1">이메일</label>
+              <input
+                type="text"
+                placeholder="example@mallang.com"
+                className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
+              />
+            </div>
+            <div className="text-left w-full">
+              <label className="text-xs font-bold text-gray-500 ml-1">비밀번호</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (role === "user") {
+                  setStep("consent");
+                } else {
+                  setStep("counselor_dashboard");
+                }
+              }}
+              className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white font-bold py-3.5 rounded-xl mt-4 shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all duration-200"
+            >
+              로그인
+            </button>
+          </div>
+          
+          <button
+            onClick={() => setStep("select")}
+            className="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            ← 이전으로 돌아가기
+          </button>
         </div>
-      </main>
+      )}
+
+      {/* Consent */}
+      {step === "consent" && (
+        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
+            <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+              📋 서비스 이용 안내
+            </h2>
+            <p className="text-sm opacity-90 mt-1">안전한 서비스 이용을 위해 아래 내용을 확인해 주세요</p>
+          </div>
+
+          <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
+            <div className="bg-[#FFFBF0] border-l-4 border-orange-400 p-4 rounded-r-xl">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-orange-500 font-bold">⚠️</span>
+                <h3 className="font-bold text-gray-900 text-sm">본 서비스는 의료 진단을 대체하지 않습니다</h3>
+              </div>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                AI 상담은 정서적 지원을 목적으로 하며, 전문 의료인의 진단 및 치료를 대신할 수 없습니다. 위기 상황 시에는 반드시 전문 기관의 도움을 받으세요.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={agreements.privacy}
+                      onChange={(e) => handleCheck("privacy", e.target.checked)}
+                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                    />
+                    <div>
+                      <p className="font-bold text-sm text-gray-900">개인정보 수집 및 이용 동의 (필수)</p>
+                      <p className="text-xs text-gray-500">대화 내용은 암호화되어 안전하게 보관됩니다</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowPrivacyDetail(!showPrivacyDetail)}
+                    className="text-xs text-[#6096C8] hover:underline"
+                  >
+                    {showPrivacyDetail ? "닫기 ∧" : "내용 보기 >"}
+                  </button>
+                </div>
+                {showPrivacyDetail && (
+                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg animate-fade-in">
+                    <table className="w-full border-collapse">
+                      <tbody>
+                        <tr className="border-b border-gray-200">
+                          <td className="font-bold p-2 w-24 align-top">일반 정보</td>
+                          <td className="p-2">닉네임, 이메일, 생년월일 (목적: 서비스 이용 및 맞춤화)</td>
+                        </tr>
+                        <tr className="border-b border-gray-200">
+                          <td className="font-bold p-2 text-orange-600 align-top">민감 정보 (중요)</td>
+                          <td className="p-2">PHQ-9/P4 결과, 자살방지 서약서, 챗봇 대화 내용, 감정 리포트 (목적: 우울 위험도 측정 및 고위험군 선별, AI 상담 제공)</td>
+                        </tr>
+                        <tr>
+                          <td className="font-bold p-2 align-top">보유 기간</td>
+                          <td className="p-2">서비스 탈퇴 시 즉시 파기</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={agreements.terms}
+                      onChange={(e) => handleCheck("terms", e.target.checked)}
+                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                    />
+                    <div>
+                      <p className="font-bold text-sm text-gray-900">서비스 이용약관 동의 (필수)</p>
+                      <p className="text-xs text-gray-500">AI 상담 서비스 이용 규칙 및 이용자 권리 안내</p>
+                    </div>
+                  </div>
+                  <button className="text-xs text-[#6096C8] hover:underline">내용 보기 &gt;</button>
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={agreements.safety}
+                      onChange={(e) => handleCheck("safety", e.target.checked)}
+                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                    />
+                    <div>
+                      <p className="font-bold text-sm text-gray-900">안전 안내 확인 (필수)</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowSafetyDetail(!showSafetyDetail)}
+                    className="text-xs text-[#6096C8] hover:underline"
+                  >
+                    {showSafetyDetail ? "닫기 ∧" : "내용 보기 >"}
+                  </button>
+                </div>
+                {showSafetyDetail && (
+                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg leading-relaxed animate-fade-in">
+                    사용자의 답변에서 자해 및 타해 위험이 감지될 경우, 사용자의 안전을 위해 등록된 비상 연락처 또는 유관 기관(1393 등)에 정보가 제공될 수 있음에 동의합니다.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 mt-2 border-t border-gray-100 pt-4">
+              <input
+                type="checkbox"
+                checked={allAgreed}
+                onChange={(e) => handleAllAgree(e.target.checked)}
+                className="w-6 h-6 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+              />
+              <label className="font-bold text-sm text-gray-900">
+                위 항목에 모두 동의하며 서비스를 시작합니다
+              </label>
+            </div>
+
+            <button
+              onClick={() => {
+                if (allAgreed) {
+                  setStep("profile");
+                }
+              }}
+              disabled={!allAgreed}
+              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${allAgreed
+                ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
+                : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                }`}
+            >
+              다음 단계로 →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Input */}
+      {step === "profile" && (
+        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+            <div className="text-center">
+              <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+                👤 기본 정보 입력
+              </h2>
+              <p className="text-sm opacity-90 mt-1">맞춤 케어를 위해 간단한 정보를 알려주세요</p>
+            </div>
+            <span className="absolute top-6 right-6 text-sm font-bold opacity-80">1/4단계</span>
+          </div>
+
+          <div className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[70vh]">
+            {/* Card 1: Nickname */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <label className="text-sm font-bold text-gray-700 block mb-2">닉네임 (앱에서 불릴 이름)</label>
+              <input
+                type="text"
+                placeholder="예: 말랑이"
+                value={profile.nickname}
+                onChange={(e) => handleProfileChange("nickname", e.target.value)}
+                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full"
+              />
+            </div>
+
+            {/* Card 2: Age Group */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <label className="text-sm font-bold text-gray-700 block mb-2">연령대</label>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {ageGroups.map((age) => (
+                  <button
+                    key={age}
+                    onClick={() => handleProfileChange("ageGroup", age)}
+                    className={`py-2 text-xs font-medium rounded-lg transition-colors ${profile.ageGroup === age
+                      ? "bg-[#6096C8] text-white"
+                      : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                      }`}
+                  >
+                    {age}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 3: Gender */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <label className="text-sm font-bold text-gray-700 block mb-2">성별</label>
+              <div className="grid grid-cols-3 gap-2">
+                {genders.map((gender) => (
+                  <button
+                    key={gender}
+                    onClick={() => handleProfileChange("gender", gender)}
+                    className={`py-2 text-xs font-medium rounded-lg transition-colors ${profile.gender === gender
+                      ? "bg-[#6096C8] text-white"
+                      : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                      }`}
+                  >
+                    {gender}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 4: Occupation */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <label className="text-sm font-bold text-gray-700 block mb-2">직업</label>
+              <select
+                value={profile.occupation}
+                onChange={(e) => handleProfileChange("occupation", e.target.value)}
+                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm text-gray-600"
+              >
+                <option value="" disabled>선택해주세요</option>
+                {occupations.map((occ) => (
+                  <option key={occ} value={occ}>{occ}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Card 5: Region */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <label className="text-sm font-bold text-gray-700 block mb-2">거주 지역 (공공서비스 연계용)</label>
+              <select
+                value={profile.region}
+                onChange={(e) => handleProfileChange("region", e.target.value)}
+                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm text-gray-600"
+              >
+                <option value="" disabled>선택해주세요</option>
+                {regions.map((reg) => (
+                  <option key={reg} value={reg}>{reg}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Card 6: Contact */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <label className="text-sm font-bold text-gray-700 block mb-1">비상연락처 (선택)</label>
+              <p className="text-xs text-gray-500 mb-2">위기 상황 시 알림을 보낼 연락처예요</p>
+              <input
+                type="text"
+                placeholder="예: 010-1234-5678"
+                value={profile.contact}
+                onChange={(e) => handleProfileChange("contact", e.target.value)}
+                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full"
+              />
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => {
+                if (isProfileValid) {
+                  setStep("phq9");
+                }
+              }}
+              disabled={!isProfileValid}
+              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${isProfileValid
+                ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
+                : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                }`}
+            >
+              다음: PHQ-9 자가진단 →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* PHQ-9 Survey */}
+      {step === "phq9" && (
+        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+            <div className="text-center">
+              <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+                📋 PHQ-9 우울 자가진단
+              </h2>
+              <p className="text-sm opacity-90 mt-1">지난 2주 동안 아래 문제들로 얼마나 불편했나요?</p>
+            </div>
+            <span className="absolute top-6 right-6 text-sm font-bold opacity-80">2/4단계</span>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-100 h-2">
+            <div 
+              className="bg-[#6096C8] h-full transition-all duration-300" 
+              style={{ width: `${((currentQuestionIndex + 1) / 9) * 100}%` }}
+            ></div>
+          </div>
+          <div className="text-right text-xs text-gray-500 px-6 mt-2">
+            {currentQuestionIndex + 1} / 9 완료
+          </div>
+
+          <div className="p-6 flex flex-col gap-6">
+            {/* Question Card */}
+            <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm flex flex-col items-center text-center gap-4">
+              <div className="w-10 h-10 bg-[#6096C8] text-white rounded-full flex items-center justify-center font-bold">
+                Q{currentQuestionIndex + 1}
+              </div>
+              <p className="text-lg font-bold text-gray-900 leading-relaxed">
+                {phq9Questions[currentQuestionIndex]}
+              </p>
+            </div>
+
+            {/* Answer Buttons */}
+            <div className="flex flex-col gap-3">
+              {phq9Options.map((option) => {
+                const isSelected = phq9Answers[currentQuestionIndex] === option.score;
+                return (
+                  <button
+                    key={option.score}
+                    onClick={() => {
+                      const newAnswers = [...phq9Answers];
+                      newAnswers[currentQuestionIndex] = option.score;
+                      setPhq9Answers(newAnswers);
+                    }}
+                    className={`p-4 rounded-xl text-left font-bold text-sm transition-all flex items-center justify-between ${
+                      isSelected
+                        ? "bg-[#6096C8] text-white shadow-md"
+                        : "bg-white border border-[#E5EEF7] text-gray-600 hover:bg-[#F7F9FC]"
+                    }`}
+                  >
+                    <span>{option.label} · {option.score}점</span>
+                    {isSelected && <span>✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex gap-4 mt-2">
+              {currentQuestionIndex > 0 && (
+                <button
+                  onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
+                  className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors"
+                >
+                  ← 이전
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  if (currentQuestionIndex < 8) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                  } else {
+                    setStep("p4");
+                  }
+                }}
+                disabled={phq9Answers[currentQuestionIndex] === null}
+                className={`flex-1 font-bold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 ${
+                  phq9Answers[currentQuestionIndex] !== null
+                    ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
+                    : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                }`}
+              >
+                {currentQuestionIndex === 8 ? "다음: P4 Screener →" : "다음 →"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* P4 Screener */}
+      {step === "p4" && (
+        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+            <div className="text-center">
+              <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+                🔍 P4 심층 스크리닝
+              </h2>
+              <p className="text-sm opacity-90 mt-1">조금 더 구체적인 상태를 확인할게요</p>
+            </div>
+            <span className="absolute top-6 right-6 text-sm font-bold opacity-80">3/4단계</span>
+          </div>
+
+          <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
+            {/* Notice Box */}
+            <div className="bg-[#EEF4FF] border-l-4 border-[#6096C8] p-4 rounded-r-xl">
+              <p className="text-sm text-gray-700 leading-relaxed">
+                아래 질문들은 더 정확한 맞춤 케어를 위한 질문이에요.<br />
+                솔직하게 답해주실수록 더 잘 도와드릴 수 있어요 💙
+              </p>
+            </div>
+
+            {/* Card 1 */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <p className="text-sm font-bold text-gray-900 mb-3">1. 이전에 당신을 위험에 빠뜨리는 행동을 한 적이 있습니까?</p>
+              <div className="grid grid-cols-2 gap-3">
+                {["없음", "있음"].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setP4Answers({ ...p4Answers, q1: opt })}
+                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
+                      p4Answers.q1 === opt
+                        ? "bg-[#6096C8] text-white"
+                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <p className="text-sm font-bold text-gray-900 mb-3">2. 당신 자신을 정말 해칠 방법에 대해 지금도 생각을 하고 있습니까?</p>
+              <div className="grid grid-cols-2 gap-3">
+                {["없음", "있음"].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setP4Answers({ ...p4Answers, q2: opt })}
+                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
+                      p4Answers.q2 === opt
+                        ? "bg-[#6096C8] text-white"
+                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+              {p4Answers.q2 === "있음" && (
+                <div className="mt-3 animate-fade-in">
+                  <label className="text-xs font-bold text-gray-500 block mb-1">2-1. 있다면, 어떤 식으로 생각하셨나요? (자유롭게 적어주세요)</label>
+                  <textarea
+                    placeholder="여기에 적어주세요"
+                    value={p4Answers.q2_text}
+                    onChange={(e) => setP4Answers({ ...p4Answers, q2_text: e.target.value })}
+                    className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm h-20"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <p className="text-sm font-bold text-gray-900 mb-3">3. 생각하는 것과 생각을 행동에 옮기는 것은 큰 차이가 있습니다. 앞으로 한 달 내에는 어느 때라도 당신 자신을 해치거나 당신의 삶을 끝내겠다는 그 생각을 행동으로 옮길 것 같습니까?</p>
+              <div className="grid grid-cols-3 gap-2">
+                {["전혀 아니다", "약간 그렇다", "매우 그렇다"].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setP4Answers({ ...p4Answers, q3: opt })}
+                    className={`py-2.5 text-xs font-bold rounded-lg transition-colors ${
+                      p4Answers.q3 === opt
+                        ? "bg-[#6096C8] text-white"
+                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 4 */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <p className="text-sm font-bold text-gray-900 mb-3">4. 당신 자신을 해치려는 당신의 행동을 멈추게 하거나 하지 못하게 막는 것이 있습니까?</p>
+              <div className="grid grid-cols-2 gap-3">
+                {["없음", "있음"].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setP4Answers({ ...p4Answers, q4: opt })}
+                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
+                      p4Answers.q4 === opt
+                        ? "bg-[#6096C8] text-white"
+                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+              {p4Answers.q4 === "있음" && (
+                <div className="mt-3 animate-fade-in">
+                  <label className="text-xs font-bold text-gray-500 block mb-1">4-1. 있다면, 무엇입니까? (예: 가족, 신앙, 반려동물 등 자유롭게 적어주세요)</label>
+                  <textarea
+                    placeholder="여기에 적어주세요"
+                    value={p4Answers.q4_text}
+                    onChange={(e) => setP4Answers({ ...p4Answers, q4_text: e.target.value })}
+                    className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm h-20"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => {
+                if (isP4Valid) {
+                  setStep("pledge");
+                }
+              }}
+              disabled={!isP4Valid}
+              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${
+                isP4Valid
+                  ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
+                  : "bg-[#D1D5DB] text-white cursor-not-allowed"
+              }`}
+            >
+              다음: 서약서 작성 →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Pledge Screen */}
+      {step === "pledge" && (
+        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+            <div className="text-center">
+              <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+                생명존중(자살방지) 안전 서약서
+              </h2>
+              <p className="text-sm opacity-90 mt-1">당신의 안전을 위한 약속을 함께 해요</p>
+            </div>
+            <span className="absolute top-6 right-6 text-sm font-bold opacity-80">4/4단계</span>
+          </div>
+
+          <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
+            {/* Main Pledge Card */}
+            <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm flex flex-col items-center gap-4">
+              <span className="text-5xl">💙</span>
+              <h3 className="text-lg font-bold text-gray-900">나는 나 자신과 약속합니다</h3>
+              
+              <div className="flex flex-col gap-3 text-sm text-gray-700 w-full">
+                <div className="flex gap-2">
+                  <span className="text-[#6096C8]">✓</span>
+                  <p>나는 절대로 자살하지 않을 것이며, 자해나 자살을 시도하지도 않을 것을 서약합니다. 나는 자살하고 싶은 생각이 들면 반드시 (가족, 친구, 상담자, 성직자)에게 먼저 말할 것입니다. 만일 이 사람들을 만날 수 없으면 전화를 하거나 주위 사람에게 도움을 청하겠습니다.</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-[#6096C8]">✓</span>
+                  <p>나는 충분한 휴식과 수면을 취하고 잘 먹을 것을 서약합니다.</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-[#6096C8]">✓</span>
+                  <p>나는 자살 할 수 있는 모든 도구를 없앨 것을 서약합니다.</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-[#6096C8]">✓</span>
+                  <p className="whitespace-pre-line">{"나는 조금이라도 기분이 이상하면 반드시\n자살예방상담전화 109\n한국생명의전화 1588-9191\n로 전화를 걸거나 어떠한 수단을 써서라도 알리겠습니다. 이 사실을 알리기 전에는 절대로 아무런 행동을 하지 않을 것을 서약합니다."}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Signature Area */}
+            <div className="flex flex-col gap-4">
+              <div className="text-center text-sm font-bold text-gray-600">
+                {formattedDate}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                {/* Client Signature */}
+                <div className="bg-[#F7F9FC] border border-dashed border-gray-300 rounded-xl p-4 flex flex-col gap-2">
+                  <label className="text-xs font-bold text-gray-500">내담자 서명</label>
+                  <input
+                    type="text"
+                    placeholder="닉네임 또는 성명"
+                    value={signature}
+                    onChange={(e) => setSignature(e.target.value)}
+                    className="bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8B7BAD] transition-all py-1 text-center font-serif italic text-lg text-gray-800"
+                  />
+                </div>
+                
+                {/* Counselor Signature */}
+                <div className="bg-[#F7F9FC] border border-dashed border-gray-300 rounded-xl p-4 flex flex-col gap-2 items-center justify-center relative overflow-hidden">
+                  <label className="text-xs font-bold text-gray-500 absolute top-4 left-4">상담자 서명</label>
+                  <div className="text-sm font-bold text-gray-400 mt-4">
+                    말랑해도 돼 서비스 운영팀
+                  </div>
+                  {/* Mock Seal */}
+                  <div className="absolute right-4 bottom-4 w-10 h-10 border-2 border-red-400 rounded-full flex items-center justify-center text-red-400 font-bold text-xs transform rotate-12 opacity-80">
+                    인
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={() => {
+                if (signature.trim() !== "") {
+                  setStep("result");
+                }
+              }}
+              disabled={signature.trim() === ""}
+              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${
+                signature.trim() !== ""
+                  ? "bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
+                  : "bg-[#D1D5DB] text-white cursor-not-allowed"
+              }`}
+            >
+              서약하고 시작하기 💙
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Result Screen */}
+      {step === "result" && (
+        <div className={`max-w-2xl w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in ${
+          totalScore >= 20 ? "bg-[#1A2744] text-white" : "bg-white"
+        }`}>
+          {/* Header */}
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
+            <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+              당신의 마음 검사 결과입니다
+            </h2>
+          </div>
+
+          <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
+            {/* Score Selector for Testing */}
+            <div className={`p-2 rounded-lg flex gap-2 text-xs justify-center items-center ${totalScore >= 20 ? "bg-[#2A3B5C]" : "bg-gray-100"}`}>
+              <span className="font-bold">테스트용 점수 선택:</span>
+              <button onClick={() => setPhq9Answers(Array(9).fill(0))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">0점 (저위험)</button>
+              <button onClick={() => setPhq9Answers([1,2,1,2,1,2,1,2,2])} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">14점 (중등도)</button>
+              <button onClick={() => setPhq9Answers(Array(9).fill(3))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">27점 (고위험)</button>
+            </div>
+
+            {/* Version 1: 0-9 */}
+            {totalScore <= 9 && (
+              <div className="bg-[#FFFBF0] rounded-2xl p-6 flex flex-col items-center text-center gap-4 text-gray-800">
+                <span className="bg-[#FFF3C4] text-[#D97706] px-3 py-1 rounded-full text-xs font-bold">🟡 낮음 · 경도 위험</span>
+                <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
+                <img src="/고슴도치 또치.png" alt="고슴도치 또치" className="w-32 h-32 object-contain my-2" />
+                <h4 className="text-lg font-bold">고슴도치 또치가 함께할게요!</h4>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  지금은 일상적인 돌봄이 필요한 상태예요.<br />
+                  또치와 편하게 이야기 나눠봐요 🌿
+                </p>
+                <button
+                  onClick={() => { setInitialPersona(1); setStep("chat"); }}
+                  className="bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706] font-bold py-3 px-8 rounded-xl transition-colors w-full mt-2"
+                >
+                  또치와 대화 시작 →
+                </button>
+              </div>
+            )}
+
+            {/* Version 2: 10-19 */}
+            {totalScore >= 10 && totalScore <= 19 && (
+              <div className="bg-[#EEF4FF] rounded-2xl p-6 flex flex-col items-center text-center gap-4 text-gray-800">
+                <span className="bg-[#DBEAFE] text-[#1D4ED8] px-3 py-1 rounded-full text-xs font-bold">🟠 중등도 위험</span>
+                <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
+                <img src="/상담사 지우.png" alt="상담사 지우" className="w-32 h-32 object-contain my-2" />
+                <h4 className="text-lg font-bold">상담사 지우가 함께할게요</h4>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  전문적인 심리 상담이 필요한 상태예요.<br />
+                  지우와 함께 마음을 깊이 살펴볼게요.
+                </p>
+                <div className="bg-white p-3 rounded-lg text-xs text-gray-500 w-full text-left flex gap-2">
+                  <span>💡</span>
+                  <p>대화 중 상태에 따라 멘토 선생님 또는 개그맨 철수가 추가로 함께할 수 있어요</p>
+                </div>
+                <button
+                  onClick={() => { setInitialPersona(2); setStep("chat"); }}
+                  className="bg-[#6096C8] hover:bg-[#5085B7] text-white font-bold py-3 px-8 rounded-xl transition-colors w-full mt-2 shadow-md"
+                >
+                  지우와 대화 시작 →
+                </button>
+              </div>
+            )}
+
+            {/* Version 3: 20-27 */}
+            {totalScore >= 20 && (
+              <div className="flex flex-col items-center text-center gap-6">
+                <span className="bg-[#EF4444] text-white px-3 py-1 rounded-full text-xs font-bold">🔴 고위험 · 즉각 도움 필요</span>
+                <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
+                <img src="/어시스턴트 클로.png" alt="어시스턴트 클로" className="w-32 h-32 object-contain my-2" />
+                <p className="text-lg font-bold text-white">지금은 AI보다 사람의 직접적인 도움이 필요해요</p>
+                
+                {/* Crisis Buttons */}
+                <div className="flex flex-col gap-3 w-full">
+                  <a href="tel:1393" className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
+                    <span>📞 1393 자살예방상담전화</span>
+                    <span>→</span>
+                  </a>
+                  <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
+                    <span>📞 1577-0199 정신건강위기상담</span>
+                    <span>→</span>
+                  </a>
+                  <a href="tel:119" className="bg-[#4B5563] hover:bg-[#374151] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
+                    <span>📞 119 응급</span>
+                    <span>→</span>
+                  </a>
+                </div>
+
+                {/* Bottom Card */}
+                <div className="bg-[#2A3B5C] border border-gray-700 rounded-xl p-4 w-full text-left">
+                  <div className="flex gap-2">
+                    <span className="text-2xl">🤍</span>
+                    <p className="text-sm text-gray-200 leading-relaxed">
+                      당신의 안전을 위해 위기 대응 모드로 전환합니다. 어시스턴트 클로가 긴급 지원 절차를 안내하고 곁을 지켜드릴게요.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Navigation Button */}
+                <button
+                  onClick={() => { setInitialPersona(5); setStep("chat"); }}
+                  className="bg-transparent border-2 border-white hover:bg-white hover:text-[#1A2744] text-white font-bold py-3.5 px-8 rounded-xl transition-all duration-200 w-full mt-2"
+                >
+                  클로와 안전 가이드 시작하기 →
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Chat Screen */}
+      {step === "chat" && (
+        <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
+          <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("report")} />
+        </div>
+      )}
+
+      {/* Emotion Report Screen */}
+      {step === "report" && (
+        <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
+          <EmotionReport onContinueChat={() => setStep("chat")} />
+        </div>
+      )}
+
+      {/* Counselor Portal */}
+      {(step === "counselor_dashboard" || step === "counselor_clients" || step === "counselor_report" || step === "counselor_guide" || step === "counselor_settings") && (
+        <div className="flex min-h-screen w-full bg-[#F7F9FC]">
+          {/* Sidebar */}
+          <div className="w-[240px] bg-[#1E2D4E] text-white flex flex-col justify-between p-4 fixed h-screen top-0 left-0">
+            {/* Top: Logo & Menu */}
+            <div>
+              <div className="flex items-center gap-2 mb-8 p-2">
+                <span className="text-2xl">🫧</span>
+                <div>
+                  <h1 className="font-bold text-lg">말랑해도 돼</h1>
+                  <p className="text-xs text-gray-400">상담사 포털</p>
+                </div>
+              </div>
+
+              {/* Menu */}
+              <nav className="flex flex-col gap-1">
+                <button 
+                  onClick={() => setStep("counselor_dashboard")} 
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
+                    step === "counselor_dashboard" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                  }`}
+                >
+                  <span className="text-base">📊</span> 대시보드
+                </button>
+                <button 
+                  onClick={() => setStep("counselor_clients")} 
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
+                    step === "counselor_clients" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                  }`}
+                >
+                  <span className="text-base">👥</span> 내담자 목록
+                </button>
+                <button 
+                  onClick={() => setStep("counselor_report")} 
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
+                    step === "counselor_report" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                  }`}
+                >
+                  <span className="text-base">📋</span> 리포트
+                </button>
+                <button 
+                  onClick={() => setStep("counselor_guide")} 
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
+                    step === "counselor_guide" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                  }`}
+                >
+                  <span className="text-base">🧭</span> 개입 가이드
+                </button>
+                <button 
+                  onClick={() => setStep("counselor_settings")} 
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
+                    step === "counselor_settings" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                  }`}
+                >
+                  <span className="text-base">⚙️</span> 설정
+                </button>
+              </nav>
+            </div>
+
+            {/* Bottom: Hotline & Logout */}
+            <div className="flex flex-col gap-3">
+              <a 
+                href="tel:1393" 
+                className="bg-[#EF4444] hover:bg-[#DC2626] text-white p-3 rounded-xl flex flex-col items-center text-center transition-colors shadow-lg shadow-red-900/20"
+              >
+                <span className="font-bold flex items-center gap-1 text-sm">🚨 긴급 핫라인</span>
+                <span className="text-[10px] opacity-90 mt-0.5">1393 · 1577-0199 · 119</span>
+              </a>
+              <button 
+                onClick={() => setStep("onboarding")}
+                className="text-xs text-gray-400 hover:text-white mt-1 p-2 text-center transition-colors hover:underline"
+              >
+                로그아웃
+              </button>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 ml-[240px] p-8">
+            <div className="max-w-6xl mx-auto">
+              {step === "counselor_dashboard" && <CounselorDashboard />}
+              {step === "counselor_clients" && <CounselorPortal />}
+              {step === "counselor_report" && <div className="p-10 text-center text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">리포트 화면 (준비 중)</div>}
+              {step === "counselor_guide" && <div className="p-10 text-center text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">개입 가이드 화면 (준비 중)</div>}
+              {step === "counselor_settings" && <div className="p-10 text-center text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">설정 화면 (준비 중)</div>}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
