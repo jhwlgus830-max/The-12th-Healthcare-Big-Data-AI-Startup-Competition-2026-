@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
+import { userPersonaMessages } from "@/lib/mockData";
 
 export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: () => void }) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
@@ -16,38 +17,11 @@ export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPer
     { turn: 3, score: 45 }
   ];
 
-  const personaMessages = {
-    1: [
-      { role: "bot", content: "안녕! 나 또치야 🦔 오늘 어떤 하루였어? 편하게 말해줘!", icon: "🦔" },
-      { role: "user", content: "그냥 뭔가 의욕이 없어서..." },
-      { role: "bot", content: "의욕이 없을 땐 정말 모든 게 귀찮아지지 😢 밥은 잘 먹고 있어?", icon: "🦔" }
-    ],
-    2: [
-      { role: "bot", content: "안녕하세요, 저는 상담사 지우예요. 요즘 많이 힘드셨을 것 같아요. 어떤 부분이 가장 어려우셨나요?", icon: "👩" },
-      { role: "user", content: "잠도 못 자고 아무것도 하기 싫어요" },
-      { role: "bot", content: "수면과 의욕 저하가 함께 나타나고 있군요. 언제부터 이런 상태가 시작됐나요?", icon: "👩" }
-    ],
-    3: [
-      { role: "bot", content: "방금 '난 항상 실패해'라고 하셨는데, 그렇게 생각하게 된 구체적인 근거가 있나요? 정말 단 한 번도 잘 된 적이 없었을까요? 한번 같이 생각해봐요.", icon: "🎓" },
-      { role: "user", content: "음... 그렇진 않은 것 같기도 하고요" },
-      { role: "bot", content: "그렇죠. 그 기억을 좀 더 이야기해줄 수 있어요?", icon: "🎓" }
-    ],
-    4: [
-      { role: "bot", content: "오늘 하루 종일 누워만 있었다고?! 그럼 지금 당장 일어나서 창문 열고 숨 한 번만 크게 쉬어봐! 딱 3초만!", icon: "😄" },
-      { role: "user", content: "ㅋㅋ 뭐예요 갑자기" },
-      { role: "bot", content: "어? 웃었잖아! 됐어, 성공! 😄 이제 신발만 신어봐, 나머지는 내가 책임질게", icon: "😄" }
-    ],
-    5: [
-      { role: "bot", content: "안녕하세요, 어시스턴트 클로입니다. 당신의 마음이 얼마나 무거운지 제가 다 알 수는 없지만, 지금은 당신의 안전이 가장 중요해요. 🤍", icon: "🤍" },
-      { role: "bot", content: "혹시 위 버튼을 눌러 상담전화를 해보셨나요? 전화가 어렵다면 가족이나 친구에게 '나 요즘 많이 힘들어'라고 말해보세요. 가까운 정신건강복지센터 링크를 확인해 드릴 수도 있어요.", icon: "🤍" }
-    ]
-  };
-
-  const [messages, setMessages] = useState(personaMessages[initialPersona]);
+  const [messages, setMessages] = useState(userPersonaMessages[initialPersona]);
 
   const handlePersonaChange = (p: 1 | 2 | 3 | 4 | 5) => {
     setCurrentPersona(p);
-    setMessages(personaMessages[p]);
+    setMessages(userPersonaMessages[p]);
   };
 
   const handleSend = (e: React.FormEvent) => {
@@ -195,7 +169,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPer
           currentPersona === 5 ? "bg-[#1A2744] border-gray-700" : "bg-white"
         }`}>
           <form onSubmit={handleSend} className="flex gap-2">
-            <button type="button" onClick={() => setMessages([personaMessages[currentPersona][0]])} className={`p-3 rounded-xl transition-colors ${
+            <button type="button" onClick={() => setMessages([userPersonaMessages[currentPersona][0]])} className={`p-3 rounded-xl transition-colors ${
               currentPersona === 5 ? "text-gray-400 hover:text-gray-200 bg-[#2A3B5C]" : "text-gray-400 hover:text-gray-600 bg-gray-100"
             }`}>
               <RotateCcw size={20} />
@@ -225,3 +199,4 @@ export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPer
     </div>
   );
 }
+

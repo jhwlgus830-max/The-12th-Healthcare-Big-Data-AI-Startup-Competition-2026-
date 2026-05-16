@@ -6,6 +6,11 @@ import EmotionReport from "../components/EmotionReport";
 import UserFlow from "../components/UserFlow";
 import CounselorPortal from "../components/CounselorPortal";
 import CounselorDashboard from "../components/CounselorDashboard";
+import CounselorReport from "../components/CounselorReport";
+import CounselorGuide from "../components/CounselorGuide";
+import CounselorSettings from "../components/CounselorSettings";
+import { phq9ResultConfig } from "@/lib/mockData";
+
 
 export default function Home() {
   const router = useRouter();
@@ -18,17 +23,24 @@ export default function Home() {
     privacy: false,
     terms: false,
     safety: false,
+    counselorShare: false,
+    ageVerify: false,
   });
   const [showPrivacyDetail, setShowPrivacyDetail] = useState(false);
+  const [showTermsDetail, setShowTermsDetail] = useState(false);
   const [showSafetyDetail, setShowSafetyDetail] = useState(false);
+  const [showCounselorDetail, setShowCounselorDetail] = useState(false);
+  const [showAgeDetail, setShowAgeDetail] = useState(false);
 
-  const allAgreed = agreements.privacy && agreements.terms && agreements.safety;
+  const allAgreed = agreements.privacy && agreements.terms && agreements.safety && agreements.counselorShare && agreements.ageVerify;
 
   const handleAllAgree = (checked: boolean) => {
     setAgreements({
       privacy: checked,
       terms: checked,
       safety: checked,
+      counselorShare: checked,
+      ageVerify: checked,
     });
   };
 
@@ -296,7 +308,7 @@ export default function Home() {
                     onClick={() => setShowPrivacyDetail(!showPrivacyDetail)}
                     className="text-xs text-[#6096C8] hover:underline"
                   >
-                    {showPrivacyDetail ? "닫기 ∧" : "내용 보기 >"}
+                    {showPrivacyDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showPrivacyDetail && (
@@ -335,8 +347,33 @@ export default function Home() {
                       <p className="text-xs text-gray-500">AI 상담 서비스 이용 규칙 및 이용자 권리 안내</p>
                     </div>
                   </div>
-                  <button className="text-xs text-[#6096C8] hover:underline">내용 보기 &gt;</button>
+                  <button
+                    onClick={() => setShowTermsDetail(!showTermsDetail)}
+                    className="text-xs text-[#6096C8] hover:underline"
+                  >
+                                        {showTermsDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                  </button>
                 </div>
+                {showTermsDetail && (
+                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg leading-relaxed animate-fade-in">
+                    <table className="w-full border-collapse">
+                      <tbody>
+                        <tr className="border-b border-gray-200">
+                          <td className="font-bold p-2 w-24 align-top text-gray-800">제1조 (목적)</td>
+                          <td className="p-2 text-gray-700">본 약관은 '말랑해도 돼'가 제공하는 AI 기반 정서적 지원 및 예방형 심리케어 서비스의 이용 조건을 규정합니다.</td>
+                        </tr>
+                        <tr className="border-b border-gray-200">
+                          <td className="font-bold p-2 w-24 align-top text-gray-800">제2조 (한계)</td>
+                          <td className="p-2 text-gray-700">본 서비스의 AI 챗봇 대화 및 분석 결과는 의학적 진단이나 전문 치료를 대체할 수 없으며, 예방 및 보조 도구로만 활용됩니다.</td>
+                        </tr>
+                        <tr>
+                          <td className="font-bold p-2 w-24 align-top text-gray-800">제3조 (의무)</td>
+                          <td className="p-2 text-gray-700">상담사나 AI 시스템에 대한 자해 방법 질문, 언어폭력, 악의적 시스템 마비 시도 시 이용이 제한될 수 있습니다.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
 
               <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
@@ -350,18 +387,99 @@ export default function Home() {
                     />
                     <div>
                       <p className="font-bold text-sm text-gray-900">안전 안내 확인 (필수)</p>
+                      <p className="text-xs text-gray-500">위기 상황 발생 시 신속한 구호를 위한 긴급 연락망 및 기관 연계 안내입니다.</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setShowSafetyDetail(!showSafetyDetail)}
                     className="text-xs text-[#6096C8] hover:underline"
                   >
-                    {showSafetyDetail ? "닫기 ∧" : "내용 보기 >"}
+                                        {showSafetyDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showSafetyDetail && (
                   <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg leading-relaxed animate-fade-in">
                     사용자의 답변에서 자해 및 타해 위험이 감지될 경우, 사용자의 안전을 위해 등록된 비상 연락처 또는 유관 기관(1393 등)에 정보가 제공될 수 있음에 동의합니다.
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={agreements.counselorShare}
+                      onChange={(e) => handleCheck("counselorShare", e.target.checked)}
+                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                    />
+                    <div>
+                      <p className="font-bold text-sm text-gray-900">상담사 공유 동의 (필수)</p>
+                      <p className="text-xs text-gray-500">안전한 심리 케어와 연계 상담을 위해 담당 상담사 포털에 내담자 데이터가 공유됩니다.</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowCounselorDetail(!showCounselorDetail)}
+                    className="text-xs text-[#6096C8] hover:underline"
+                  >
+                                        {showCounselorDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                  </button>
+                </div>
+                {showCounselorDetail && (
+                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg animate-fade-in">
+                    <table className="w-full border-collapse">
+                      <tbody>
+                        <tr className="border-b border-gray-200">
+                          <td className="font-bold p-2 w-24 align-top">공유 목적</td>
+                          <td className="p-2">내담자 위험도 실시간 모니터링, 상담 전 리포트 생성, 맞춤형 개입 가이드 적용</td>
+                        </tr>
+                        <tr className="border-b border-gray-200">
+                          <td className="font-bold p-2 align-top">공유 항목</td>
+                          <td className="p-2">PHQ-9점수, P4 결과, 자살방지 서약서 서명 및 내용, 챗봇 대화 로그 내 위험표현 및 인지 왜곡 빈도</td>
+                        </tr>
+                        <tr>
+                          <td className="font-bold p-2 align-top">보유 기간</td>
+                          <td className="p-2">서비스 탈퇴 시 또는 담당 상담사 배정 종료 시 즉시 파기</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={agreements.ageVerify}
+                      onChange={(e) => handleCheck("ageVerify", e.target.checked)}
+                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                    />
+                    <div>
+                      <p className="font-bold text-sm text-gray-900">만 14세 이상 이용가 및 청소년 정책 확인 (필수)</p>
+                      <p className="text-xs text-gray-500">만 14세 이상 이용 가능자임을 확인하며, 청소년 고위험군 예방 방침에 동의합니다.</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowAgeDetail(!showAgeDetail)}
+                    className="text-xs text-[#6096C8] hover:underline"
+                  >
+                                        {showAgeDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                  </button>
+                </div>
+                {showAgeDetail && (
+                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg leading-relaxed animate-fade-in">
+                    <table className="w-full border-collapse">
+                      <tbody>
+                        <tr className="border-b border-gray-200">
+                          <td className="p-2 text-gray-700">만 14세 미만의 아동은 본 서비스를 이용할 수 없습니다.</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 text-gray-700">만 19세 미만 청소년 사용자의 경우, 자해 및 자살 고위험군 플래그가 연속 감지되거나 극심한 위기 상황 판단 시 청소년상담복지센터 및 보호자(법정대리인) 측으로 긴급 연계 정책이 우선 적용될 수 있습니다.</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </div>
@@ -392,6 +510,13 @@ export default function Home() {
                 }`}
             >
               다음 단계로 →
+            </button>
+
+            <button
+              onClick={() => setStep("login")}
+              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+            >
+              ← 이전으로 돌아가기
             </button>
           </div>
         </div>
@@ -520,6 +645,13 @@ export default function Home() {
             >
               다음: PHQ-9 자가진단 →
             </button>
+
+            <button
+              onClick={() => setStep("consent")}
+              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+            >
+              ← 이전으로 돌아가기
+            </button>
           </div>
         </div>
       )}
@@ -587,14 +719,18 @@ export default function Home() {
 
             {/* Navigation Buttons */}
             <div className="flex gap-4 mt-2">
-              {currentQuestionIndex > 0 && (
-                <button
-                  onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
-                  className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors"
-                >
-                  ← 이전
-                </button>
-              )}
+              <button
+                onClick={() => {
+                  if (currentQuestionIndex > 0) {
+                    setCurrentQuestionIndex(currentQuestionIndex - 1);
+                  } else {
+                    setStep("profile");
+                  }
+                }}
+                className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                ← 이전
+              </button>
               <button
                 onClick={() => {
                   if (currentQuestionIndex < 8) {
@@ -758,6 +894,13 @@ export default function Home() {
             >
               다음: 서약서 작성 →
             </button>
+
+            <button
+              onClick={() => setStep("phq9")}
+              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+            >
+              ← 이전으로 돌아가기
+            </button>
           </div>
         </div>
       )}
@@ -797,7 +940,7 @@ export default function Home() {
                 </div>
                 <div className="flex gap-2">
                   <span className="text-[#6096C8]">✓</span>
-                  <p className="whitespace-pre-line">{"나는 조금이라도 기분이 이상하면 반드시\n자살예방상담전화 109\n한국생명의전화 1588-9191\n로 전화를 걸거나 어떠한 수단을 써서라도 알리겠습니다. 이 사실을 알리기 전에는 절대로 아무런 행동을 하지 않을 것을 서약합니다."}</p>
+                  <p className="whitespace-pre-line">{"나는 조금이라도 기분이 이상하면 반드시\n\n📞자살예방상담전화 109\n📞한국생명의전화 1588-9191\n\n로 전화를 걸거나 어떠한 수단을 써서라도 알리겠습니다. 이 사실을 알리기 전에는 절대로 아무런 행동을 하지 않을 것을 서약합니다."}</p>
                 </div>
               </div>
             </div>
@@ -851,6 +994,13 @@ export default function Home() {
             >
               서약하고 시작하기 💙
             </button>
+
+            <button
+              onClick={() => setStep("p4")}
+              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+            >
+              ← 이전으로 돌아가기
+            </button>
           </div>
         </div>
       )}
@@ -876,93 +1026,79 @@ export default function Home() {
               <button onClick={() => setPhq9Answers(Array(9).fill(3))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">27점 (고위험)</button>
             </div>
 
-            {/* Version 1: 0-9 */}
-            {totalScore <= 9 && (
-              <div className="bg-[#FFFBF0] rounded-2xl p-6 flex flex-col items-center text-center gap-4 text-gray-800">
-                <span className="bg-[#FFF3C4] text-[#D97706] px-3 py-1 rounded-full text-xs font-bold">🟡 낮음 · 경도 위험</span>
-                <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
-                <img src="/고슴도치 또치.png" alt="고슴도치 또치" className="w-32 h-32 object-contain my-2" />
-                <h4 className="text-lg font-bold">고슴도치 또치가 함께할게요!</h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  지금은 일상적인 돌봄이 필요한 상태예요.<br />
-                  또치와 편하게 이야기 나눠봐요 🌿
-                </p>
-                <button
-                  onClick={() => { setInitialPersona(1); setStep("chat"); }}
-                  className="bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706] font-bold py-3 px-8 rounded-xl transition-colors w-full mt-2"
-                >
-                  또치와 대화 시작 →
-                </button>
-              </div>
-            )}
+            {/* Result Configuration Selector */}
+            {(() => {
+              const config = totalScore <= 9 ? phq9ResultConfig.low : totalScore <= 19 ? phq9ResultConfig.medium : phq9ResultConfig.high;
+              
+              return (
+                <div className={`${config.bgColor} rounded-2xl p-6 flex flex-col items-center text-center gap-4 ${config.textColor}`}>
+                  <span className={`${config.badgeColor} px-3 py-1 rounded-full text-xs font-bold`}>{config.label}</span>
+                  <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
+                  <img src={config.image} alt={config.subtitle} className="w-32 h-32 object-contain my-2" />
+                  
+                  {totalScore >= 20 ? (
+                    <>
+                      <p className="text-lg font-bold">{config.subtitle}</p>
+                      {/* Crisis Buttons */}
+                      <div className="flex flex-col gap-3 w-full">
+                        <a href="tel:1393" className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
+                          <span>📞 1393 자살예방상담전화</span>
+                          <span>→</span>
+                        </a>
+                        <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
+                          <span>📞 1577-0199 정신건강위기상담</span>
+                          <span>→</span>
+                        </a>
+                        <a href="tel:119" className="bg-[#4B5563] hover:bg-[#374151] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
+                          <span>📞 119 응급</span>
+                          <span>→</span>
+                        </a>
+                      </div>
+                      <div className="bg-[#2A3B5C] border border-gray-700 rounded-xl p-4 w-full text-left mt-2">
+                        <div className="flex gap-2">
+                          <span className="text-2xl">🤍</span>
+                          <p className="text-sm text-gray-200 leading-relaxed">{config.desc}</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h4 className="text-lg font-bold">{config.subtitle}</h4>
+                      <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                        {config.desc}
+                      </p>
+                      {totalScore >= 10 && (
+                        <div className="bg-white p-3 rounded-lg text-xs text-gray-500 w-full text-left flex gap-2">
+                          <span>💡</span>
+                          <p>대화 중 상태에 따라 멘토 선생님 또는 개그맨 철수가 추가로 함께할 수 있어요</p>
+                        </div>
+                      )}
+                    </>
+                  )}
 
-            {/* Version 2: 10-19 */}
-            {totalScore >= 10 && totalScore <= 19 && (
-              <div className="bg-[#EEF4FF] rounded-2xl p-6 flex flex-col items-center text-center gap-4 text-gray-800">
-                <span className="bg-[#DBEAFE] text-[#1D4ED8] px-3 py-1 rounded-full text-xs font-bold">🟠 중등도 위험</span>
-                <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
-                <img src="/상담사 지우.png" alt="상담사 지우" className="w-32 h-32 object-contain my-2" />
-                <h4 className="text-lg font-bold">상담사 지우가 함께할게요</h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  전문적인 심리 상담이 필요한 상태예요.<br />
-                  지우와 함께 마음을 깊이 살펴볼게요.
-                </p>
-                <div className="bg-white p-3 rounded-lg text-xs text-gray-500 w-full text-left flex gap-2">
-                  <span>💡</span>
-                  <p>대화 중 상태에 따라 멘토 선생님 또는 개그맨 철수가 추가로 함께할 수 있어요</p>
+                  <button
+                    onClick={() => { setInitialPersona(config.persona as any); setStep("chat"); }}
+                    className={`font-bold py-3 px-8 rounded-xl transition-all duration-200 w-full mt-2 shadow-md ${
+                      totalScore >= 20 
+                        ? "bg-transparent border-2 border-white hover:bg-white hover:text-[#1A2744] text-white" 
+                        : totalScore >= 10 
+                          ? "bg-[#6096C8] hover:bg-[#5085B7] text-white" 
+                          : "bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706]"
+                    }`}
+                  >
+                    {config.buttonText}
+                  </button>
                 </div>
-                <button
-                  onClick={() => { setInitialPersona(2); setStep("chat"); }}
-                  className="bg-[#6096C8] hover:bg-[#5085B7] text-white font-bold py-3 px-8 rounded-xl transition-colors w-full mt-2 shadow-md"
-                >
-                  지우와 대화 시작 →
-                </button>
-              </div>
-            )}
+              );
+            })()}
 
-            {/* Version 3: 20-27 */}
-            {totalScore >= 20 && (
-              <div className="flex flex-col items-center text-center gap-6">
-                <span className="bg-[#EF4444] text-white px-3 py-1 rounded-full text-xs font-bold">🔴 고위험 · 즉각 도움 필요</span>
-                <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
-                <img src="/어시스턴트 클로.png" alt="어시스턴트 클로" className="w-32 h-32 object-contain my-2" />
-                <p className="text-lg font-bold text-white">지금은 AI보다 사람의 직접적인 도움이 필요해요</p>
-                
-                {/* Crisis Buttons */}
-                <div className="flex flex-col gap-3 w-full">
-                  <a href="tel:1393" className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
-                    <span>📞 1393 자살예방상담전화</span>
-                    <span>→</span>
-                  </a>
-                  <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
-                    <span>📞 1577-0199 정신건강위기상담</span>
-                    <span>→</span>
-                  </a>
-                  <a href="tel:119" className="bg-[#4B5563] hover:bg-[#374151] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
-                    <span>📞 119 응급</span>
-                    <span>→</span>
-                  </a>
-                </div>
 
-                {/* Bottom Card */}
-                <div className="bg-[#2A3B5C] border border-gray-700 rounded-xl p-4 w-full text-left">
-                  <div className="flex gap-2">
-                    <span className="text-2xl">🤍</span>
-                    <p className="text-sm text-gray-200 leading-relaxed">
-                      당신의 안전을 위해 위기 대응 모드로 전환합니다. 어시스턴트 클로가 긴급 지원 절차를 안내하고 곁을 지켜드릴게요.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Navigation Button */}
-                <button
-                  onClick={() => { setInitialPersona(5); setStep("chat"); }}
-                  className="bg-transparent border-2 border-white hover:bg-white hover:text-[#1A2744] text-white font-bold py-3.5 px-8 rounded-xl transition-all duration-200 w-full mt-2"
-                >
-                  클로와 안전 가이드 시작하기 →
-                </button>
-              </div>
-            )}
+            <button
+              onClick={() => setStep("pledge")}
+              className={`mt-8 text-sm transition-colors self-center ${totalScore >= 20 ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-700"}`}
+            >
+              ← 이전으로 돌아가기
+            </button>
           </div>
         </div>
       )}
@@ -1064,9 +1200,9 @@ export default function Home() {
             <div className="max-w-6xl mx-auto">
               {step === "counselor_dashboard" && <CounselorDashboard />}
               {step === "counselor_clients" && <CounselorPortal />}
-              {step === "counselor_report" && <div className="p-10 text-center text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">리포트 화면 (준비 중)</div>}
-              {step === "counselor_guide" && <div className="p-10 text-center text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">개입 가이드 화면 (준비 중)</div>}
-              {step === "counselor_settings" && <div className="p-10 text-center text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">설정 화면 (준비 중)</div>}
+              {step === "counselor_report" && <CounselorReport />}
+              {step === "counselor_guide" && <CounselorGuide />}
+              {step === "counselor_settings" && <CounselorSettings />}
             </div>
           </div>
         </div>

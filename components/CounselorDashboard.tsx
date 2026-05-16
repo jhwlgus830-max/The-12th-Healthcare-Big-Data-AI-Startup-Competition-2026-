@@ -2,8 +2,18 @@
 
 import { useState } from "react";
 import { Search, Bell, HelpCircle, User, Calendar, Clock, Activity, AlertCircle, FileText, CheckCircle, ArrowRight } from "lucide-react";
+import { counselorInfo, dashboardStats, schedules, monitoringList, recentActivities } from "@/lib/mockData";
 
 export default function CounselorDashboard() {
+  const getStatIcon = (type: string, color: string) => {
+    switch(type) {
+      case "user": return <User size={24} />;
+      case "alert": return <AlertCircle size={24} />;
+      case "calendar": return <Calendar size={24} />;
+      default: return null;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
@@ -26,11 +36,11 @@ export default function CounselorDashboard() {
           </button>
           <div className="flex items-center gap-2 border-l pl-4 border-gray-100">
             <div className="w-8 h-8 bg-[#6096C8] rounded-full flex items-center justify-center text-white font-bold text-sm">
-              김
+              {counselorInfo.avatar}
             </div>
             <div className="text-sm">
-              <p className="font-bold text-gray-800">김상담 전문가</p>
-              <p className="text-xs text-gray-500">수석 상담사</p>
+              <p className="font-bold text-gray-800">{counselorInfo.name}</p>
+              <p className="text-xs text-gray-500">{counselorInfo.role}</p>
             </div>
           </div>
         </div>
@@ -38,39 +48,22 @@ export default function CounselorDashboard() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Card 1 */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
-          <div>
-            <p className="text-xs text-gray-500 font-medium mb-1">활성 내담자</p>
-            <h3 className="text-2xl font-bold text-gray-900">42명</h3>
-            <p className="text-xs text-green-600 mt-1">↑ 지난주 대비 2명 증가</p>
+        {dashboardStats.map((stat, i) => (
+          <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div>
+              <p className="text-xs text-gray-500 font-medium mb-1">{stat.label}</p>
+              <h3 className={`text-2xl font-bold ${stat.color === 'red' ? 'text-red-600' : 'text-gray-900'}`}>{stat.value}</h3>
+              <p className={`text-xs mt-1 ${stat.color === 'red' ? 'text-red-500' : stat.color === 'blue' ? 'text-green-600' : 'text-gray-500'}`}>{stat.trend}</p>
+            </div>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+              stat.color === 'blue' ? 'bg-blue-50 text-[#6096C8]' : 
+              stat.color === 'red' ? 'bg-red-50 text-red-500' : 
+              'bg-purple-50 text-[#8B7BAD]'
+            }`}>
+              {getStatIcon(stat.type, stat.color)}
+            </div>
           </div>
-          <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#6096C8]">
-            <User size={24} />
-          </div>
-        </div>
-        {/* Card 2 */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
-          <div>
-            <p className="text-xs text-gray-500 font-medium mb-1">고위험 사례</p>
-            <h3 className="text-2xl font-bold text-red-600">3건</h3>
-            <p className="text-xs text-red-500 mt-1">⚠️ 즉시 모니터링 필요</p>
-          </div>
-          <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-500">
-            <AlertCircle size={24} />
-          </div>
-        </div>
-        {/* Card 3 */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
-          <div>
-            <p className="text-xs text-gray-500 font-medium mb-1">오늘의 상담</p>
-            <h3 className="text-2xl font-bold text-gray-900">5건</h3>
-            <p className="text-xs text-gray-500 mt-1">3건 완료 / 2건 대기</p>
-          </div>
-          <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-[#8B7BAD]">
-            <Calendar size={24} />
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Main Grid */}
@@ -86,62 +79,37 @@ export default function CounselorDashboard() {
               <button className="text-xs text-[#6096C8] hover:underline">전체 보기</button>
             </div>
             <div className="divide-y divide-gray-50">
-              {/* Item 1 */}
-              <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-[#F0F6FF] rounded-full flex items-center justify-center font-bold text-[#6096C8]">
-                    이
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-800 text-sm">이수진 내담자</p>
-                    <p className="text-xs text-gray-500 flex items-center gap-1">
-                      <Clock size={12} /> 14:00 - 15:00
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="w-32">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-500">상담 회차</span>
-                      <span className="font-medium text-gray-700">4/10회</span>
+              {schedules.map((session) => (
+                <div key={session.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                      session.color === 'blue' ? 'bg-[#F0F6FF] text-[#6096C8]' : 'bg-[#FFF4E5] text-[#C4956B]'
+                    }`}>
+                      {session.initial}
                     </div>
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#6096C8]" style={{ width: "40%" }}></div>
+                    <div>
+                      <p className="font-bold text-gray-800 text-sm">{session.clientName}</p>
+                      <p className="text-xs text-gray-500 flex items-center gap-1">
+                        <Clock size={12} /> {session.time}
+                      </p>
                     </div>
                   </div>
-                  <button className="px-3 py-1.5 border border-[#6096C8] text-[#6096C8] rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors">
-                    기록 열기
-                  </button>
-                </div>
-              </div>
-              {/* Item 2 */}
-              <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-[#FFF4E5] rounded-full flex items-center justify-center font-bold text-[#C4956B]">
-                    박
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-800 text-sm">박민수 내담자</p>
-                    <p className="text-xs text-gray-500 flex items-center gap-1">
-                      <Clock size={12} /> 16:00 - 17:00
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="w-32">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-500">상담 회차</span>
-                      <span className="font-medium text-gray-700">8/12회</span>
+                  <div className="flex items-center gap-6">
+                    <div className="w-32">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-gray-500">상담 회차</span>
+                        <span className="font-medium text-gray-700">{session.sessionCount}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className={`h-full ${session.color === 'blue' ? 'bg-[#6096C8]' : 'bg-[#C4956B]'}`} style={{ width: `${session.progress}%` }}></div>
+                      </div>
                     </div>
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#C4956B]" style={{ width: "66%" }}></div>
-                    </div>
+                    <button className="px-3 py-1.5 border border-[#6096C8] text-[#6096C8] rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors">
+                      기록 열기
+                    </button>
                   </div>
-                  <button className="px-3 py-1.5 border border-[#6096C8] text-[#6096C8] rounded-lg text-xs font-bold hover:bg-blue-50 transition-colors">
-                    기록 열기
-                  </button>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -169,30 +137,19 @@ export default function CounselorDashboard() {
               </h2>
             </div>
             <div className="p-4 flex flex-col gap-3">
-              {/* Card 1 */}
-              <div className="bg-red-50 p-3 rounded-xl border border-red-100">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-sm text-gray-800">익명 사용자 1</span>
-                  <span className="text-xs text-red-600 font-bold">DANGER</span>
+              {monitoringList.map((item) => (
+                <div key={item.id} className={`${item.color === 'red' ? 'bg-red-50 border-red-100' : 'bg-orange-50 border-orange-100'} p-3 rounded-xl border`}>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-sm text-gray-800">{item.name}</span>
+                    <span className={`text-xs font-bold ${item.color === 'red' ? 'text-red-600' : 'text-orange-600'}`}>{item.status}</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1">{item.desc}</p>
+                  <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+                    <span>마지막 활동: {item.lastActivity}</span>
+                    <button className="text-[#6096C8] hover:underline">상세보기</button>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-600 mt-1">우울 척도(PHQ-9) 급증 (18점 → 24점)</p>
-                <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                  <span>마지막 활동: 10분 전</span>
-                  <button className="text-[#6096C8] hover:underline">상세보기</button>
-                </div>
-              </div>
-              {/* Card 2 */}
-              <div className="bg-orange-50 p-3 rounded-xl border border-orange-100">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-sm text-gray-800">김지은 내담자</span>
-                  <span className="text-xs text-orange-600 font-bold">WARNING</span>
-                </div>
-                <p className="text-xs text-gray-600 mt-1">부정적 키워드 빈도 증가 (외로움, 자책)</p>
-                <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                  <span>마지막 활동: 2시간 전</span>
-                  <button className="text-[#6096C8] hover:underline">상세보기</button>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -205,24 +162,17 @@ export default function CounselorDashboard() {
             </div>
             <div className="p-4">
               <div className="relative pl-6 flex flex-col gap-4 before:content-[''] before:absolute before:left-2 before:top-1 before:bottom-1 before:w-0.5 before:bg-gray-100">
-                {/* Item 1 */}
-                <div className="relative">
-                  <span className="absolute -left-[22px] top-1 w-3 h-3 bg-[#6096C8] rounded-full border-2 border-white"></span>
-                  <p className="text-xs font-bold text-gray-800">이수진 내담자 상담 일지 작성</p>
-                  <p className="text-xs text-gray-400 mt-0.5">1시간 전</p>
-                </div>
-                {/* Item 2 */}
-                <div className="relative">
-                  <span className="absolute -left-[22px] top-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                  <p className="text-xs font-bold text-gray-800">박민수 내담자 정보 업데이트</p>
-                  <p className="text-xs text-gray-400 mt-0.5">3시간 전</p>
-                </div>
-                {/* Item 3 */}
-                <div className="relative">
-                  <span className="absolute -left-[22px] top-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white"></span>
-                  <p className="text-xs font-bold text-gray-800">익명 사용자 1 위험 경고 발생</p>
-                  <p className="text-xs text-gray-400 mt-0.5">5시간 전</p>
-                </div>
+                {recentActivities.map((activity) => (
+                  <div key={activity.id} className="relative">
+                    <span className={`absolute -left-[22px] top-1 w-3 h-3 rounded-full border-2 border-white ${
+                      activity.color === 'blue' ? 'bg-[#6096C8]' : 
+                      activity.color === 'green' ? 'bg-green-500' : 
+                      'bg-orange-500'
+                    }`}></span>
+                    <p className="text-xs font-bold text-gray-800">{activity.title}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{activity.time}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -231,3 +181,4 @@ export default function CounselorDashboard() {
     </div>
   );
 }
+

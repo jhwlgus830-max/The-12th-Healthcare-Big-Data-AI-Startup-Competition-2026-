@@ -3,17 +3,11 @@
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { ArrowRight, Calendar } from "lucide-react";
+import { userEmotionReport } from "@/lib/mockData";
 
 export default function EmotionReport({ onContinueChat }: { onContinueChat?: () => void }) {
   const [currentTab, setCurrentTab] = useState("대화턴");
   
-  const trendData = [
-    { turn: 1, 우울감: 0.0, 슬픔: 0.0, 외로움: 0.0, 분노: 0.0, 무기력: 1.0, 불면: 0.0, 피로: 0.0 },
-    { turn: 2, 우울감: 0.15, 슬픔: 0.15, 외로움: 0.2, 분노: 0.0, 무기력: 0.45, 불면: 0.0, 피로: 0.0 },
-    { turn: 3, 우울감: 0.05, 슬픔: 0.05, 외로움: 0.05, 분노: 0.0, 무기력: 0.6, 불면: 0.05, 피로: 0.25 },
-    { turn: 4, 우울감: 0.2, 슬픔: 0.0, 외로움: 0.0, 분노: 0.0, 무기력: 0.1, 불면: 0.6, 피로: 0.02 },
-  ];
-
   const emotions = [
     { name: "우울감", color: "#EF4444" },
     { name: "슬픔", color: "#3B82F6" },
@@ -31,22 +25,6 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
       prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
     );
   };
-
-  const pieData = [
-    { name: "무기력", value: 35, color: "#D946EF" },
-    { name: "우울감", value: 25, color: "#EF4444" },
-    { name: "슬픔", value: 15, color: "#3B82F6" },
-    { name: "외로움", value: 10, color: "#A855F7" },
-    { name: "불안", value: 10, color: "#C07070" },
-    { name: "기타", value: 5, color: "#D0D0D0" },
-  ];
-
-  const mindData = [
-    { key: "A", title: "정서", desc: "무기력, 슬픔 감지", color: "border-[#D946EF]" },
-    { key: "B", title: "행동", desc: "활동 감소, 수면 이상", color: "border-[#0D9488]" },
-    { key: "C", title: "인지", desc: "'난 아무것도 못해' 패턴", color: "border-[#8B7BAD]" },
-    { key: "D", title: "욕구", desc: "인정받고 싶은 욕구", color: "border-[#C4956B]" },
-  ];
 
   const tabs = ["대화턴", "1일", "7일", "14일", "30일"];
 
@@ -67,19 +45,19 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
           <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
             <p className="text-xs text-gray-500 font-medium mb-1">총 대화 턴</p>
-            <p className="text-2xl font-bold text-gray-800">12회</p>
+            <p className="text-2xl font-bold text-gray-800">{userEmotionReport.summary.totalTurns}회</p>
           </div>
           <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
             <p className="text-xs text-gray-500 font-medium mb-1">평균 위험도</p>
-            <p className="text-2xl font-bold text-[#D97706]">0.42</p>
+            <p className="text-2xl font-bold text-[#D97706]">{userEmotionReport.summary.avgRisk}</p>
           </div>
           <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
             <p className="text-xs text-gray-500 font-medium mb-1">주요 감정</p>
-            <p className="text-2xl font-bold text-gray-800">무기력</p>
+            <p className="text-2xl font-bold text-gray-800">{userEmotionReport.summary.mainEmotion}</p>
           </div>
           <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
             <p className="text-xs text-gray-500 font-medium mb-1">위험 등급</p>
-            <p className="text-xl font-bold text-[#D97706]">🟠 중등도</p>
+            <p className="text-xl font-bold text-[#D97706]">{userEmotionReport.summary.riskLevel}</p>
           </div>
         </div>
 
@@ -96,9 +74,9 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
                 </h3>
                 <div className="relative w-28 h-28 flex items-center justify-center rounded-full border-8 border-orange-200">
                    <div className="text-center">
-                     <span className="text-2xl font-black text-gray-800">45</span>
+                     <span className="text-2xl font-black text-gray-800">{userEmotionReport.summary.score}</span>
                      <span className="text-gray-400 text-xs">점</span>
-                     <div className="text-xs font-bold text-orange-500">🟠 중증</div>
+                     <div className="text-xs font-bold text-orange-500">{userEmotionReport.summary.riskLevel}</div>
                    </div>
                 </div>
               </div>
@@ -113,13 +91,13 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={pieData}
+                          data={userEmotionReport.pieData}
                           innerRadius={30}
                           outerRadius={50}
                           paddingAngle={3}
                           dataKey="value"
                         >
-                          {pieData.map((entry, index) => (
+                          {userEmotionReport.pieData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -127,7 +105,7 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
                     </ResponsiveContainer>
                   </div>
                   <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
-                    {pieData.slice(0, 4).map((item) => (
+                    {userEmotionReport.pieData.slice(0, 4).map((item) => (
                       <div key={item.name} className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: item.color }}></div>
                         <span className="text-gray-600 font-medium">{item.name}</span>
@@ -144,7 +122,7 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
                   🧠 MIND 프레임워크
                 </h3>
                 <div className="flex flex-col gap-2">
-                  {mindData.map((item) => (
+                  {userEmotionReport.mindData.map((item) => (
                     <div key={item.key} className={`border-l-4 ${item.color} bg-[#F7F9FC] p-2 rounded-r-lg flex flex-col`}>
                       <p className="text-xs font-bold text-gray-500">{item.key}. {item.title}</p>
                       <p className="text-xs font-bold text-gray-800">{item.desc}</p>
@@ -159,12 +137,11 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
                   ☁️ 자주 쓴 단어
                 </h3>
                 <div className="bg-[#F7F9FC] rounded-xl p-3 h-32 relative overflow-hidden">
-                  <span className="absolute text-2xl font-black text-[#5B82B5] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">힘들어</span>
-                  <span className="absolute text-lg font-bold text-[#8B7BAD] top-1/4 left-1/4">무기력</span>
-                  <span className="absolute text-sm font-bold text-[#D97706] bottom-1/4 right-1/4">혼자</span>
-                  <span className="absolute text-sm font-bold text-[#EF4444] top-1/4 right-1/3">잠</span>
-                  <span className="absolute text-xs font-semibold text-[#10B981] bottom-1/3 left-1/4">회사</span>
-                  <span className="absolute text-xs font-semibold text-[#6366F1] top-2/3 left-1/3">우울</span>
+                  {userEmotionReport.wordCloud.map((item, i) => (
+                    <span key={i} className={`absolute ${item.size} font-bold ${item.color} ${item.pos}`}>
+                      {item.text}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -203,7 +180,7 @@ export default function EmotionReport({ onContinueChat }: { onContinueChat?: () 
                   {/* Chart */}
                   <div className="h-64 w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <LineChart data={userEmotionReport.trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
                         <XAxis dataKey="turn" tick={{ fontSize: 11, fill: "#9CA3AF" }} />
                         <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: "#9CA3AF" }} />
