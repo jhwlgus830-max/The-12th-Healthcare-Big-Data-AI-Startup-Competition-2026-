@@ -18,6 +18,14 @@ export default function Home() {
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
   const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
 
+  // Real Auth states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<{ userId: string; nickname: string; email: string } | null>(null);
+  const [authError, setAuthError] = useState("");
+
   // Consent states
   const [agreements, setAgreements] = useState({
     privacy: false,
@@ -81,7 +89,7 @@ export default function Home() {
     q4_text: "",
   });
 
-  const isP4Valid = 
+  const isP4Valid =
     p4Answers.q1 !== "" &&
     p4Answers.q2 !== "" &&
     (p4Answers.q2 === "없음" || (p4Answers.q2 === "있음" && p4Answers.q2_text.trim() !== "")) &&
@@ -102,11 +110,11 @@ export default function Home() {
     contact: "",
   });
 
-  const isProfileValid = 
-    profile.nickname.trim() !== "" && 
-    profile.ageGroup !== "" && 
-    profile.gender !== "" && 
-    profile.occupation !== "" && 
+  const isProfileValid =
+    profile.nickname.trim() !== "" &&
+    profile.ageGroup !== "" &&
+    profile.gender !== "" &&
+    profile.occupation !== "" &&
     profile.region !== "";
 
   const handleProfileChange = (key: keyof typeof profile, value: string) => {
@@ -120,6 +128,66 @@ export default function Home() {
 
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${String(today.getMonth() + 1).padStart(2, "0")}월 ${String(today.getDate()).padStart(2, "0")}일`;
+
+  const handleAuth = async () => {
+    setAuthError("");
+    if (!email || !password || (isSignUp && !nickname)) {
+      setAuthError("모든 필드를 입력해주세요.");
+      return;
+    }
+
+    try {
+      // 상담사의 경우 데모 연동을 위해 임시 패스 허용
+      if (role === "counselor") {
+        setLoggedInUser({
+          userId: "counselor-001",
+          nickname: "상담사 지우",
+          email: email
+        });
+        setStep("counselor_dashboard");
+        return;
+      }
+
+      const endpoint = isSignUp ? "/api/auth/signup" : "/api/auth/login";
+      const payload = isSignUp
+        ? { email, password, nickname }
+        : { email, password };
+
+      const res = await fetch(`http://localhost:8000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "인증에 실패했습니다.");
+      }
+
+      const data = await res.json();
+      setLoggedInUser({
+        userId: data.user_id,
+        nickname: data.nickname,
+        email: data.email
+      });
+
+      // 사용자 프로필에 닉네임 자동 세팅
+      setProfile(prev => ({
+        ...prev,
+        nickname: data.nickname
+      }));
+
+      localStorage.setItem("mallang_user", JSON.stringify({
+        userId: data.user_id,
+        nickname: data.nickname,
+        email: data.email
+      }));
+
+      setStep("consent");
+    } catch (err: any) {
+      setAuthError(err.message);
+    }
+  };
 
   const totalScore = phq9Answers.reduce((acc, curr) => acc + (curr || 0), 0);
 
@@ -178,7 +246,7 @@ export default function Home() {
           <span className="text-5xl mb-4">🚪</span>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">로그인 유형을 선택해주세요</h2>
           <p className="text-sm text-gray-500 mb-8">당신에게 맞는 포털로 안내해 드릴게요</p>
-          
+
           <div className="flex flex-col gap-4 w-full">
             <button
               onClick={() => {
@@ -207,7 +275,7 @@ export default function Home() {
               <span className="text-xl text-gray-400 group-hover:text-[#8B7BAD] transition-colors">→</span>
             </button>
           </div>
-          
+
           <button
             onClick={() => setStep("onboarding")}
             className="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors"
@@ -222,45 +290,87 @@ export default function Home() {
         <div className="max-w-md w-full bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center animate-fade-in">
           <span className="text-5xl mb-4">{role === "user" ? "💙" : "💜"}</span>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {role === "user" ? "사용자 로그인" : "상담사 로그인"}
+            {role === "user"
+              ? (isSignUp ? "사용자 회원가입" : "사용자 로그인")
+              : "상담사 로그인"}
           </h2>
           <p className="text-sm text-gray-500 mb-8">
-            {role === "user" ? "마음의 이야기를 들려주세요" : "전문가용 관리 화면입니다"}
+            {role === "user"
+              ? (isSignUp ? "새로운 마음의 문을 열어보세요" : "마음의 이야기를 들려주세요")
+              : "전문가용 관리 화면입니다"}
           </p>
-          
+
           <div className="flex flex-col gap-4 w-full">
+            {/* 회원가입 시 닉네임 입력란 활성화 */}
+            {role === "user" && isSignUp && (
+              <div className="text-left w-full animate-fade-in">
+                <label className="text-xs font-bold text-gray-500 ml-1">닉네임</label>
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  placeholder="홍길동"
+                  className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
+                />
+              </div>
+            )}
+
             <div className="text-left w-full">
               <label className="text-xs font-bold text-gray-500 ml-1">이메일</label>
               <input
                 type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@mallang.com"
                 className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
               />
             </div>
+
             <div className="text-left w-full">
               <label className="text-xs font-bold text-gray-500 ml-1">비밀번호</label>
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
               />
             </div>
+
+            {authError && (
+              <div className="bg-red-50 text-red-500 text-xs py-2 px-3 rounded-lg text-left font-semibold">
+                ⚠️ {authError}
+              </div>
+            )}
+
             <button
-              onClick={() => {
-                if (role === "user") {
-                  setStep("consent");
-                } else {
-                  setStep("counselor_dashboard");
-                }
-              }}
-              className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white font-bold py-3.5 rounded-xl mt-4 shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all duration-200"
+              onClick={handleAuth}
+              className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white font-bold py-3.5 rounded-xl mt-2 shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all duration-200"
             >
-              로그인
+              {role === "user"
+                ? (isSignUp ? "회원가입 완료" : "로그인")
+                : "로그인"}
             </button>
+
+            {/* 회원가입 / 로그인 토글 */}
+            {role === "user" && (
+              <button
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setAuthError("");
+                }}
+                className="text-xs text-gray-400 hover:text-[#6096C8] mt-2 transition-colors hover:underline"
+              >
+                {isSignUp ? "이미 계정이 있으신가요? 로그인하기" : "계정이 없으신가요? 1초만에 회원가입"}
+              </button>
+            )}
           </div>
-          
+
           <button
-            onClick={() => setStep("select")}
+            onClick={() => {
+              setStep("select");
+              setAuthError("");
+            }}
             className="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors"
           >
             ← 이전으로 돌아가기
@@ -351,7 +461,7 @@ export default function Home() {
                     onClick={() => setShowTermsDetail(!showTermsDetail)}
                     className="text-xs text-[#6096C8] hover:underline"
                   >
-                                        {showTermsDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                    {showTermsDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showTermsDetail && (
@@ -394,7 +504,7 @@ export default function Home() {
                     onClick={() => setShowSafetyDetail(!showSafetyDetail)}
                     className="text-xs text-[#6096C8] hover:underline"
                   >
-                                        {showSafetyDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                    {showSafetyDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showSafetyDetail && (
@@ -422,7 +532,7 @@ export default function Home() {
                     onClick={() => setShowCounselorDetail(!showCounselorDetail)}
                     className="text-xs text-[#6096C8] hover:underline"
                   >
-                                        {showCounselorDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                    {showCounselorDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showCounselorDetail && (
@@ -465,7 +575,7 @@ export default function Home() {
                     onClick={() => setShowAgeDetail(!showAgeDetail)}
                     className="text-xs text-[#6096C8] hover:underline"
                   >
-                                        {showAgeDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                    {showAgeDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showAgeDetail && (
@@ -538,15 +648,18 @@ export default function Home() {
 
           <div className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[70vh]">
             {/* Card 1: Nickname */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-              <label className="text-sm font-bold text-gray-700 block mb-2">닉네임 (앱에서 불릴 이름)</label>
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm bg-gray-50/50">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-bold text-gray-700 block">닉네임</label>
+                <span className="text-[10px] text-[#8B7BAD] font-bold bg-[#8B7BAD]/10 px-2 py-0.5 rounded-full">🔒 조회 전용</span>
+              </div>
               <input
                 type="text"
-                placeholder="예: 말랑이"
+                disabled={true}
                 value={profile.nickname}
-                onChange={(e) => handleProfileChange("nickname", e.target.value)}
-                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full"
+                className="bg-gray-100/70 border border-gray-200 text-gray-400 cursor-not-allowed rounded-lg py-2.5 px-4 focus:outline-none transition-all w-full font-medium"
               />
+              <p className="text-[10px] text-gray-400 mt-1.5 ml-0.5">* 회원가입 시 설정한 닉네임으로 자동 동기화되어 수정이 불가합니다.</p>
             </div>
 
             {/* Card 2: Age Group */}
@@ -672,8 +785,8 @@ export default function Home() {
 
           {/* Progress Bar */}
           <div className="w-full bg-gray-100 h-2">
-            <div 
-              className="bg-[#6096C8] h-full transition-all duration-300" 
+            <div
+              className="bg-[#6096C8] h-full transition-all duration-300"
               style={{ width: `${((currentQuestionIndex + 1) / 9) * 100}%` }}
             ></div>
           </div>
@@ -704,11 +817,10 @@ export default function Home() {
                       newAnswers[currentQuestionIndex] = option.score;
                       setPhq9Answers(newAnswers);
                     }}
-                    className={`p-4 rounded-xl text-left font-bold text-sm transition-all flex items-center justify-between ${
-                      isSelected
+                    className={`p-4 rounded-xl text-left font-bold text-sm transition-all flex items-center justify-between ${isSelected
                         ? "bg-[#6096C8] text-white shadow-md"
                         : "bg-white border border-[#E5EEF7] text-gray-600 hover:bg-[#F7F9FC]"
-                    }`}
+                      }`}
                   >
                     <span>{option.label} · {option.score}점</span>
                     {isSelected && <span>✓</span>}
@@ -740,11 +852,10 @@ export default function Home() {
                   }
                 }}
                 disabled={phq9Answers[currentQuestionIndex] === null}
-                className={`flex-1 font-bold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 ${
-                  phq9Answers[currentQuestionIndex] !== null
+                className={`flex-1 font-bold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 ${phq9Answers[currentQuestionIndex] !== null
                     ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
                     : "bg-[#D1D5DB] text-white cursor-not-allowed"
-                }`}
+                  }`}
               >
                 {currentQuestionIndex === 8 ? "다음: P4 Screener →" : "다음 →"}
               </button>
@@ -784,11 +895,10 @@ export default function Home() {
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q1: opt })}
-                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
-                      p4Answers.q1 === opt
+                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${p4Answers.q1 === opt
                         ? "bg-[#6096C8] text-white"
                         : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
-                    }`}
+                      }`}
                   >
                     {opt}
                   </button>
@@ -804,11 +914,10 @@ export default function Home() {
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q2: opt })}
-                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
-                      p4Answers.q2 === opt
+                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${p4Answers.q2 === opt
                         ? "bg-[#6096C8] text-white"
                         : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
-                    }`}
+                      }`}
                   >
                     {opt}
                   </button>
@@ -835,11 +944,10 @@ export default function Home() {
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q3: opt })}
-                    className={`py-2.5 text-xs font-bold rounded-lg transition-colors ${
-                      p4Answers.q3 === opt
+                    className={`py-2.5 text-xs font-bold rounded-lg transition-colors ${p4Answers.q3 === opt
                         ? "bg-[#6096C8] text-white"
                         : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
-                    }`}
+                      }`}
                   >
                     {opt}
                   </button>
@@ -855,11 +963,10 @@ export default function Home() {
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q4: opt })}
-                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
-                      p4Answers.q4 === opt
+                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${p4Answers.q4 === opt
                         ? "bg-[#6096C8] text-white"
                         : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
-                    }`}
+                      }`}
                   >
                     {opt}
                   </button>
@@ -886,11 +993,10 @@ export default function Home() {
                 }
               }}
               disabled={!isP4Valid}
-              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${
-                isP4Valid
+              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${isP4Valid
                   ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
                   : "bg-[#D1D5DB] text-white cursor-not-allowed"
-              }`}
+                }`}
             >
               다음: 서약서 작성 →
             </button>
@@ -924,7 +1030,7 @@ export default function Home() {
             <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm flex flex-col items-center gap-4">
               <span className="text-5xl">💙</span>
               <h3 className="text-lg font-bold text-gray-900">나는 나 자신과 약속합니다</h3>
-              
+
               <div className="flex flex-col gap-3 text-sm text-gray-700 w-full">
                 <div className="flex gap-2">
                   <span className="text-[#6096C8]">✓</span>
@@ -950,7 +1056,7 @@ export default function Home() {
               <div className="text-center text-sm font-bold text-gray-600">
                 {formattedDate}
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 {/* Client Signature */}
                 <div className="bg-[#F7F9FC] border border-dashed border-gray-300 rounded-xl p-4 flex flex-col gap-2">
@@ -963,7 +1069,7 @@ export default function Home() {
                     className="bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8B7BAD] transition-all py-1 text-center font-serif italic text-lg text-gray-800"
                   />
                 </div>
-                
+
                 {/* Counselor Signature */}
                 <div className="bg-[#F7F9FC] border border-dashed border-gray-300 rounded-xl p-4 flex flex-col gap-2 items-center justify-center relative overflow-hidden">
                   <label className="text-xs font-bold text-gray-500 absolute top-4 left-4">상담자 서명</label>
@@ -986,11 +1092,10 @@ export default function Home() {
                 }
               }}
               disabled={signature.trim() === ""}
-              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${
-                signature.trim() !== ""
+              className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${signature.trim() !== ""
                   ? "bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
                   : "bg-[#D1D5DB] text-white cursor-not-allowed"
-              }`}
+                }`}
             >
               서약하고 시작하기 💙
             </button>
@@ -1007,9 +1112,8 @@ export default function Home() {
 
       {/* Result Screen */}
       {step === "result" && (
-        <div className={`max-w-2xl w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in ${
-          totalScore >= 20 ? "bg-[#1A2744] text-white" : "bg-white"
-        }`}>
+        <div className={`max-w-2xl w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in ${totalScore >= 20 ? "bg-[#1A2744] text-white" : "bg-white"
+          }`}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
             <h2 className="text-xl font-bold flex items-center justify-center gap-2">
@@ -1022,20 +1126,20 @@ export default function Home() {
             <div className={`p-2 rounded-lg flex gap-2 text-xs justify-center items-center ${totalScore >= 20 ? "bg-[#2A3B5C]" : "bg-gray-100"}`}>
               <span className="font-bold">테스트용 점수 선택:</span>
               <button onClick={() => setPhq9Answers(Array(9).fill(0))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">0점 (저위험)</button>
-              <button onClick={() => setPhq9Answers([1,2,1,2,1,2,1,2,2])} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">14점 (중등도)</button>
+              <button onClick={() => setPhq9Answers([1, 2, 1, 2, 1, 2, 1, 2, 2])} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">14점 (중등도)</button>
               <button onClick={() => setPhq9Answers(Array(9).fill(3))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">27점 (고위험)</button>
             </div>
 
             {/* Result Configuration Selector */}
             {(() => {
               const config = totalScore <= 9 ? phq9ResultConfig.low : totalScore <= 19 ? phq9ResultConfig.medium : phq9ResultConfig.high;
-              
+
               return (
                 <div className={`${config.bgColor} rounded-2xl p-6 flex flex-col items-center text-center gap-4 ${config.textColor}`}>
                   <span className={`${config.badgeColor} px-3 py-1 rounded-full text-xs font-bold`}>{config.label}</span>
                   <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
                   <img src={config.image} alt={config.subtitle} className="w-32 h-32 object-contain my-2" />
-                  
+
                   {totalScore >= 20 ? (
                     <>
                       <p className="text-lg font-bold">{config.subtitle}</p>
@@ -1078,13 +1182,12 @@ export default function Home() {
 
                   <button
                     onClick={() => { setInitialPersona(config.persona as any); setStep("chat"); }}
-                    className={`font-bold py-3 px-8 rounded-xl transition-all duration-200 w-full mt-2 shadow-md ${
-                      totalScore >= 20 
-                        ? "bg-transparent border-2 border-white hover:bg-white hover:text-[#1A2744] text-white" 
-                        : totalScore >= 10 
-                          ? "bg-[#6096C8] hover:bg-[#5085B7] text-white" 
+                    className={`font-bold py-3 px-8 rounded-xl transition-all duration-200 w-full mt-2 shadow-md ${totalScore >= 20
+                        ? "bg-transparent border-2 border-white hover:bg-white hover:text-[#1A2744] text-white"
+                        : totalScore >= 10
+                          ? "bg-[#6096C8] hover:bg-[#5085B7] text-white"
                           : "bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706]"
-                    }`}
+                      }`}
                   >
                     {config.buttonText}
                   </button>
@@ -1106,7 +1209,7 @@ export default function Home() {
       {/* Chat Screen */}
       {step === "chat" && (
         <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
-          <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("report")} />
+          <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("report")} userId={loggedInUser?.userId} />
         </div>
       )}
 
@@ -1134,43 +1237,38 @@ export default function Home() {
 
               {/* Menu */}
               <nav className="flex flex-col gap-1">
-                <button 
-                  onClick={() => setStep("counselor_dashboard")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_dashboard" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
+                <button
+                  onClick={() => setStep("counselor_dashboard")}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${step === "counselor_dashboard" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                    }`}
                 >
                   <span className="text-base">📊</span> 대시보드
                 </button>
-                <button 
-                  onClick={() => setStep("counselor_clients")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_clients" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
+                <button
+                  onClick={() => setStep("counselor_clients")}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${step === "counselor_clients" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                    }`}
                 >
                   <span className="text-base">👥</span> 내담자 목록
                 </button>
-                <button 
-                  onClick={() => setStep("counselor_report")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_report" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
+                <button
+                  onClick={() => setStep("counselor_report")}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${step === "counselor_report" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                    }`}
                 >
                   <span className="text-base">📋</span> 리포트
                 </button>
-                <button 
-                  onClick={() => setStep("counselor_guide")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_guide" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
+                <button
+                  onClick={() => setStep("counselor_guide")}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${step === "counselor_guide" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                    }`}
                 >
                   <span className="text-base">🧭</span> 개입 가이드
                 </button>
-                <button 
-                  onClick={() => setStep("counselor_settings")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_settings" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
+                <button
+                  onClick={() => setStep("counselor_settings")}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${step === "counselor_settings" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
+                    }`}
                 >
                   <span className="text-base">⚙️</span> 설정
                 </button>
@@ -1179,14 +1277,14 @@ export default function Home() {
 
             {/* Bottom: Hotline & Logout */}
             <div className="flex flex-col gap-3">
-              <a 
-                href="tel:1393" 
+              <a
+                href="tel:1393"
                 className="bg-[#EF4444] hover:bg-[#DC2626] text-white p-3 rounded-xl flex flex-col items-center text-center transition-colors shadow-lg shadow-red-900/20"
               >
                 <span className="font-bold flex items-center gap-1 text-sm">🚨 긴급 핫라인</span>
                 <span className="text-[10px] opacity-90 mt-0.5">1393 · 1577-0199 · 119</span>
               </a>
-              <button 
+              <button
                 onClick={() => setStep("onboarding")}
                 className="text-xs text-gray-400 hover:text-white mt-1 p-2 text-center transition-colors hover:underline"
               >

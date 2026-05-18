@@ -5,59 +5,132 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
 import { userPersonaMessages, checkPersonaSwitchTrigger } from "@/lib/mockData";
 
-export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: () => void }) {
+export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003" }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: () => void, userId?: string }) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
-  const [score, setScore] = useState(45);
-  const [level, setLevel] = useState("🟠 중증");
+  const [score, setScore] = useState(20);
+  const [level, setLevel] = useState("🟢 양호");
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
-  const scoreHistory = [
-    { turn: 1, score: 20 },
-    { turn: 2, score: 35 },
-    { turn: 3, score: 45 }
-  ];
+  const [scoreHistory, setScoreHistory] = useState<{ turn: number, score: number }[]>([
+    { turn: 1, score: 20 }
+  ]);
 
-  const [messages, setMessages] = useState(userPersonaMessages[initialPersona]);
+  const [messages, setMessages] = useState<any[]>([userPersonaMessages[initialPersona][0]]);
 
   const handlePersonaChange = (p: 1 | 2 | 3 | 4 | 5) => {
     setCurrentPersona(p);
-    setMessages(userPersonaMessages[p]);
+    setMessages([userPersonaMessages[p][0]]);
+    setSessionId(null); // 테스트용 페르소나 변경 시 세션 초기화
+    setScore(20);
+    setLevel("🟢 양호");
+    setScoreHistory([{ turn: 1, score: 20 }]);
   };
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
     
-    // NLP 위험도 감지 모사 (위험 키워드 및 checkPersonaSwitchTrigger 로직)
-    const riskKeywords = ["끝내고 싶", "죽고 싶", "자살", "자해", "수면제", "지쳤어요", "사라지고"];
-    const isRiskDetected = riskKeywords.some(kw => input.includes(kw));
-
-    const newMessages = [...messages, { role: "user", content: input }];
-    setMessages(newMessages);
-    const sentText = input;
+    const userText = input;
     setInput("");
-    
-    if (isRiskDetected && currentPersona !== 3) {
-      // 실시간 안전 라우팅 및 핫라인 모드 자동 전환
-      setTimeout(() => {
-        setCurrentPersona(3); // 클로 페르소나(고위험)로 강제 전환
-        setMessages(prev => [
-          ...prev,
-          { 
-            role: "bot", 
-            content: "🚨 [실시간 안전 가드레일 작동] 감정분석 모듈(KLUE-BERT)에서 위기 발화가 감지되었습니다. 안전을 위해 어시스턴트 클로 모드로 긴급 전환합니다. 서연님/민준님의 안전이 지금 가장 소중합니다. 아래 긴급 핫라인으로 연락해 주시거나 가까운 지인에게 즉시 도움을 요청해 주세요.", 
-            icon: "🤍" 
-          }
-        ]);
-      }, 500);
-      return;
-    }
+    setIsLoading(true);
 
-    // 일반 페르소나 모의 응답
-    setTimeout(() => {
-      const botIcon = currentPersona === 1 ? "🦔" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🤍" : currentPersona === 4 ? "🎓" : "😄";
-      setMessages(prev => [...prev, { role: "bot", content: "이해해요. 더 자세히 이야기해주시겠어요? (임시 모의 응답입니다)", icon: botIcon }]);
-    }, 1000);
+    // 즉시 유저 발화 화면에 추가
+    setMessages(prev => [...prev, { role: "user", content: userText }]);
+
+    try {
+      const res = await fetch("http://localhost:8000/api/chat/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          user_id: userId,
+          content: userText,
+          initial_persona: currentPersona
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error("서버 응답 오류");
+      }
+
+      const data = await res.json();
+      
+      // 세션 ID가 없었다면 신규 저장
+      if (!sessionId) {
+        setSessionId(data.session_id);
+      }
+
+      // 우울 점수 및 레벨 업데이트
+      const rawScore = data.bot_message.risk_score; // 0.0 ~ 1.0
+      const percentageScore = Math.round(rawScore * 100);
+      setScore(percentageScore);
+
+      // 점수 수준 라벨 결정
+      if (rawScore >= 0.60) {
+        setLevel("🔴 고위험");
+      } else if (rawScore >= 0.35) {
+        setLevel("🟠 중증");
+      } else if (rawScore >= 0.15) {
+        setLevel("🟡 경증");
+      } else {
+        setLevel("🟢 양호");
+      }
+
+      // 차트 추이 데이터 추가
+      setScoreHistory(prev => [
+        ...prev,
+        { turn: prev.length + 1, score: percentageScore }
+      ]);
+
+      // 페르소나 변경 (서버가 판단한 페르소나 적용)
+      setCurrentPersona(data.persona_id as 1 | 2 | 3 | 4 | 5);
+
+      // AI 답변 추가
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.bot_message.content,
+          icon: data.bot_message.icon
+        }
+      ]);
+
+    } catch (err) {
+      console.error("AI API 통신 오류:", err);
+      // 서버가 꺼져 있거나 오류 발생 시 가상 폴백 처리 (안전 모사)
+      const riskKeywords = ["끝내고 싶", "죽고 싶", "자살", "자해", "수면제", "지쳤어요", "사라지고"];
+      const isRiskDetected = riskKeywords.some(kw => userText.includes(kw));
+
+      setTimeout(() => {
+        if (isRiskDetected) {
+          setCurrentPersona(3);
+          setMessages(prev => [
+            ...prev,
+            {
+              role: "assistant",
+              content: "🚨 [안전 가드레일 로컬 백업 작동] 서버 연결 문제로 오프라인 상태이지만 위기 표현이 감지되었습니다. 1393 자살예방상담전화나 119로 즉시 전화해 주시기를 바랍니다. 당신은 소중한 사람입니다.",
+              icon: "🤍"
+            }
+          ]);
+        } else {
+          const botIcon = currentPersona === 1 ? "🦔" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🤍" : currentPersona === 4 ? "🎓" : "😄";
+          setMessages(prev => [
+            ...prev,
+            {
+              role: "assistant",
+              content: "오류가 발생해 답변을 불러오지 못했어요. (백엔드 서버 'python backend/main.py'가 켜져 있는지 확인해 주세요!)",
+              icon: botIcon
+            }
+          ]);
+        }
+      }, 500);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 페르소나별 스타일 셋업

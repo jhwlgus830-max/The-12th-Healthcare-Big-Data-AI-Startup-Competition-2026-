@@ -287,27 +287,15 @@ def get_depression_score(
     score = round((1.0 - daily_prob), 1)
     score = min(max(score, 0.0), 1.0)
 
-    '''# ── 고위험 키워드 감지 시 점수 보정 (미사용 — 필요 시 활성화) ──────────
-    if is_high_risk:
-        score = max(score, 0.65)     # 0~1 기준 (기존 65.0/100 → 0.65)
-        probs[18] = max(probs[18], 0.35)
+    # ── 고위험 키워드 감지 시 점수 보정 (미사용 — 필요 시 활성화) ──────────
+    # if is_high_risk:
+    #     score = max(score, 0.65)     # 0~1 기준 (기존 65.0/100 → 0.65)
+    #     probs[18] = max(probs[18], 0.35)
 
     # ── 다중 레이블 ──────────────────────────────────
     multi = [inv_map[i] for i, v in enumerate(logits.numpy()) if v > threshold]
     if is_high_risk and "자살충동" not in multi:
         multi.append("자살충동")
-
-    # ── 위험 등급 ────────────────────────────────────
-    if is_high_risk or "자살충동" in multi or probs[18] > 0.3:
-        level = "🔴 고위험"
-    elif score >= 0.6:
-        level = "🔴 고위험"
-    elif score >= 0.35:
-        level = "🟠 중증"
-    elif score >= 0.15:
-        level = "🟡 경증"
-    else:
-        level = "🟢 양호"'''
 
     # ── 상위 3개 감정 ────────────────────────────────
     top3 = [
@@ -319,8 +307,7 @@ def get_depression_score(
         "text":  text,
         "score": score,        # 0~1 우울 위험 확률
         "top3":  top3,         # [(감정명, 확률%), ...] 상위 3개
-        # "level": level,      # 활성화 시 반환 (현재 호출 측에서 score 기준 계산)
-        # "multi": multi,      # 활성화 시 반환 (다중 레이블)
+        "multi": multi,        # 다중 레이블 분류 결과
         "probs": probs,        # 전체 클래스 softmax 확률 배열
     }
 
