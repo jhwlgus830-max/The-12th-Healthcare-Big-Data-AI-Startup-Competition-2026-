@@ -8,5 +8,25 @@
     "email": "jhwlgus830@gmail.com",
     "password": "rhtmaehclEhcl",
     "nickname": "양지현"
+  },
+  "user-f369f442": {
+    "email": "agent_test@example.com",
+    "password": "password123",
+    "nickname": "AgentTest"
+  },
+  "user-e320b261": {
+    "email": "agent_test2@example.com",
+    "password": "password123",
+    "nickname": "AgentTest"
+  },
+  "user-3d4885b1": {
+    "email": "agent_test_7777777@example.com",
+    "password": "password123",
+    "nickname": "AgentTest"
+  },
+  "user-c1220124": {
+    "email": "agent_new_user_xyz_123@example.com",
+    "password": "password123",
+    "nickname": "AgentTest"
   }
 }
