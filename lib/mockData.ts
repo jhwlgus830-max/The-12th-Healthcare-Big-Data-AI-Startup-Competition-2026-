@@ -57,6 +57,7 @@ export interface P4Result {
   protectiveFactor: "강함" | "보통" | "약함";   // Q4: 보호요인 강도
   protectiveFactorDetail?: string;     // Q4 상세 ("가족, 반려동물")
   p4RiskFlag: boolean;                 // 하나라도 '있다/위험' 체크되면 true
+  p4Score?: number;                    // P4 스크리너 점수 (0~4점)
   overallRisk: RiskLevel;
 }
 
@@ -1012,19 +1013,20 @@ export function determinePersona(userId: string): PersonaType {
   const latestPHQ9 = user.phq9History.length > 0 ? user.phq9History[user.phq9History.length - 1] : null;
   const latestP4 = user.p4History.length > 0 ? user.p4History[user.p4History.length - 1] : null;
 
-  // PRD 연동 핵심 로직: 
-  // p4RiskFlag가 true이거나(자살사고 있음 등), PHQ-9 총점이 20점 이상(극심한 우울)이면
-  // 즉시 페르소나 3 (클로)로 지정하여 안전성 가드레일 모드 적용
-  if ((latestPHQ9 && latestPHQ9.totalScore >= 20) || (latestP4 && latestP4.p4RiskFlag)) {
+  // 1. 고위험군 (P4 1~4점 혹은 PHQ-9 20~27점)
+  const p4Score = latestP4 ? latestP4.p4Score || 0 : 0;
+  if (p4Score >= 1 || (latestPHQ9 && latestPHQ9.totalScore >= 20)) {
     return 3; // 클로
   }
 
-  // PHQ-9 10점 이상이면 지우(전문 상담) 지정
-  if (latestPHQ9 && latestPHQ9.totalScore >= 10) {
+  // 2. 중등도 위험군 (P4 0점 및 PHQ-9 10~19점)
+  if (latestPHQ9 && latestPHQ9.totalScore >= 10 && latestPHQ9.totalScore <= 19) {
     return 2; // 지우
   }
 
-  return 1; // 또치 (저위험 및 경도)
+  // 3. 정상 ~ 경도 위험군 (P4 0점 및 PHQ-9 5~9점) -> 사용자 자율 선택 (초기 기본값 또치)
+  // 4. 최소 우울 (P4 0점 및 PHQ-9 0~4점) -> 또치 자동
+  return 1; // 기본 또치
 }
 
 // 2. 채팅 메시지 NLP 분석 결과로 위험도 상승 감지 → 페르소나 전환 트리거 검사

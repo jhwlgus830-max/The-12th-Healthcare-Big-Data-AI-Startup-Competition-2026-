@@ -14,9 +14,11 @@ import { phq9ResultConfig } from "@/lib/mockData";
 
 export default function Home() {
   const router = useRouter();
-  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings">("onboarding");
+  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings">("onboarding");
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
   const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [diaryText, setDiaryText] = useState("");
+  const [journalWarning, setJournalWarning] = useState("");
 
   // Consent states
   const [agreements, setAgreements] = useState({
@@ -121,7 +123,22 @@ export default function Home() {
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${String(today.getMonth() + 1).padStart(2, "0")}월 ${String(today.getDate()).padStart(2, "0")}일`;
 
-  const totalScore = phq9Answers.reduce((acc, curr) => acc + (curr || 0), 0);
+  const getP4Score = () => {
+    let score = 0;
+    if (p4Answers.q1 === "있음") score += 1;
+    if (p4Answers.q2 === "있음") score += 1;
+    if (p4Answers.q3 === "매우 그렇다" || p4Answers.q3 === "약간 그렇다") score += 1;
+    if (p4Answers.q4 === "없음") score += 1;
+    return score;
+  };
+
+  const p4Score = getP4Score();
+  const totalScore = phq9Answers.reduce<number>((acc, curr) => (acc || 0) + (curr || 0), 0);
+
+  const isHighRisk = p4Score >= 1 || totalScore >= 20;
+  const isModerateRisk = !isHighRisk && totalScore >= 10 && totalScore <= 19;
+  const isUserSelection = !isHighRisk && totalScore >= 5 && totalScore <= 9;
+  const isLowRisk = !isHighRisk && totalScore >= 0 && totalScore <= 4;
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] flex flex-col items-center justify-center p-4 font-sans text-gray-800">
@@ -1007,8 +1024,8 @@ export default function Home() {
 
       {/* Result Screen */}
       {step === "result" && (
-        <div className={`max-w-2xl w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in ${
-          totalScore >= 20 ? "bg-[#1A2744] text-white" : "bg-white"
+        <div className={`max-w-3xl w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in ${
+          isHighRisk ? "bg-[#1A2744] text-white" : "bg-white text-gray-800"
         }`}>
           {/* Header */}
           <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
@@ -1017,85 +1034,197 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
+          <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[75vh]">
             {/* Score Selector for Testing */}
-            <div className={`p-2 rounded-lg flex gap-2 text-xs justify-center items-center ${totalScore >= 20 ? "bg-[#2A3B5C]" : "bg-gray-100"}`}>
-              <span className="font-bold">테스트용 점수 선택:</span>
-              <button onClick={() => setPhq9Answers(Array(9).fill(0))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">0점 (저위험)</button>
-              <button onClick={() => setPhq9Answers([1,2,1,2,1,2,1,2,2])} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">14점 (중등도)</button>
-              <button onClick={() => setPhq9Answers(Array(9).fill(3))} className="px-2 py-1 bg-white text-gray-800 rounded shadow hover:bg-gray-50">27점 (고위험)</button>
+            <div className={`p-3 rounded-xl flex flex-wrap gap-2 text-xs justify-center items-center shadow-inner ${isHighRisk ? "bg-[#2A3B5C]" : "bg-gray-50"}`}>
+              <span className="font-bold mr-1">🧪 시나리오 테스트용 점수 강제 세팅:</span>
+              <button onClick={() => { setPhq9Answers(Array(9).fill(0)); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🟢 0~4점 (저위험 또치)</button>
+              <button onClick={() => { setPhq9Answers([1,2,1,2,0,0,1,0,0]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🟡 5~9점 (자율 선택)</button>
+              <button onClick={() => { setPhq9Answers([2,2,2,2,2,2,0,0,2]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🔵 10~19점 (지우 상담)</button>
+              <button onClick={() => { setPhq9Answers(Array(9).fill(3)); setP4Answers({ q1: "있음", q2: "있음", q2_text: "위기", q3: "매우 그렇다", q4: "없음", q4_text: "없음" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🔴 P4 1+ 또는 PHQ 20+ (고위험 클로)</button>
             </div>
 
-            {/* Result Configuration Selector */}
-            {(() => {
-              const config = totalScore <= 9 ? phq9ResultConfig.low : totalScore <= 19 ? phq9ResultConfig.medium : phq9ResultConfig.high;
-              
-              return (
-                <div className={`${config.bgColor} rounded-2xl p-6 flex flex-col items-center text-center gap-4 ${config.textColor}`}>
-                  <span className={`${config.badgeColor} px-3 py-1 rounded-full text-xs font-bold`}>{config.label}</span>
-                  <h3 className="text-2xl font-bold">PHQ-9 {totalScore}점</h3>
-                  <img src={config.image} alt={config.subtitle} className="w-32 h-32 object-contain my-2" />
-                  
-                  {totalScore >= 20 ? (
-                    <>
-                      <p className="text-lg font-bold">{config.subtitle}</p>
-                      {/* Crisis Buttons */}
-                      <div className="flex flex-col gap-3 w-full">
-                        <a href="tel:1393" className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
-                          <span>📞 1393 자살예방상담전화</span>
-                          <span>→</span>
-                        </a>
-                        <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
-                          <span>📞 1577-0199 정신건강위기상담</span>
-                          <span>→</span>
-                        </a>
-                        <a href="tel:119" className="bg-[#4B5563] hover:bg-[#374151] text-white font-bold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-between shadow-md">
-                          <span>📞 119 응급</span>
-                          <span>→</span>
-                        </a>
-                      </div>
-                      <div className="bg-[#2A3B5C] border border-gray-700 rounded-xl p-4 w-full text-left mt-2">
-                        <div className="flex gap-2">
-                          <span className="text-2xl">🤍</span>
-                          <p className="text-sm text-gray-200 leading-relaxed">{config.desc}</p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <h4 className="text-lg font-bold">{config.subtitle}</h4>
-                      <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
-                        {config.desc}
-                      </p>
-                      {totalScore >= 10 && (
-                        <div className="bg-white p-3 rounded-lg text-xs text-gray-500 w-full text-left flex gap-2">
-                          <span>💡</span>
-                          <p>대화 중 상태에 따라 멘토 선생님 또는 개그맨 철수가 추가로 함께할 수 있어요</p>
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  <button
-                    onClick={() => { setInitialPersona(config.persona as any); setStep("chat"); }}
-                    className={`font-bold py-3 px-8 rounded-xl transition-all duration-200 w-full mt-2 shadow-md ${
-                      totalScore >= 20 
-                        ? "bg-transparent border-2 border-white hover:bg-white hover:text-[#1A2744] text-white" 
-                        : totalScore >= 10 
-                          ? "bg-[#6096C8] hover:bg-[#5085B7] text-white" 
-                          : "bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706]"
-                    }`}
-                  >
-                    {config.buttonText}
-                  </button>
+            {/* 1. 고위험군 (High Risk - Cloe) */}
+            {isHighRisk && (
+              <div className="bg-[#2A3B5C] border border-gray-700 rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-lg">
+                <span className="bg-[#EF4444] text-white px-4 py-1.5 rounded-full text-xs font-black animate-pulse shadow-md">
+                  🚨 고위험 · 즉각 위기 개입 필요
+                </span>
+                <div>
+                  <h3 className="text-2xl font-black">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
+                  <p className="text-sm text-gray-300 mt-2 leading-relaxed">
+                    당신의 안전을 위해 위기 대응 안전 모드로 즉각 전환합니다.<br />
+                    어시스턴트 클로가 긴급 지원 절차를 안내하고 안전대처 계획 수립을 도울 것입니다.
+                  </p>
                 </div>
-              );
-            })()}
+                <img src="/어시스턴트 클로.png" alt="어시스턴트 클로" className="w-32 h-32 object-contain my-1 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
 
+                {/* Crisis Emergency Contact Hotline Buttons */}
+                <div className="flex flex-col gap-2.5 w-full mt-2">
+                  <a href="tel:1393" className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
+                    <span>📞 1393 자살예방 상담전화 (24시간)</span>
+                    <span className="font-extrabold">지금 연결 →</span>
+                  </a>
+                  <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
+                    <span>📞 1577-0199 정신건강 위기상담전화</span>
+                    <span className="font-extrabold">지금 연결 →</span>
+                  </a>
+                  <a href="tel:119" className="bg-[#4B5563] hover:bg-[#374151] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
+                    <span>📞 119 안전신고센터 및 긴급구조</span>
+                    <span className="font-extrabold">지금 연결 →</span>
+                  </a>
+                </div>
+
+                <div className="bg-[#1A2744] border border-gray-700 rounded-xl p-4 w-full text-left mt-2">
+                  <h4 className="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">🛡️ 어시스턴트 클로 위기 개입 프로토콜</h4>
+                  <ul className="text-xs text-gray-200 space-y-1.5 list-disc list-inside">
+                    <li>심리적 응급처치(Psychological First Aid) 대화 진행</li>
+                    <li>사용자 안전 서약서 작성 및 긴급 안전망 재구축</li>
+                    <li>위기대처 세부 행동 계획(Crisis Action Plan) 수립</li>
+                    <li>정신건강 전문의 및 오프라인 긴급 안전 전문가 유치 지원</li>
+                  </ul>
+                </div>
+
+                <button
+                  onClick={() => { setInitialPersona(3); setStep("chat"); }}
+                  className="font-bold py-4 px-8 rounded-xl transition-all duration-300 w-full mt-4 shadow-lg bg-white text-[#1A2744] hover:bg-gray-100 hover:scale-[1.01]"
+                >
+                  클로와 안전 가이드 대화 시작하기 🤍
+                </button>
+              </div>
+            )}
+
+            {/* 2. 중등도 위험군 (Moderate Risk - Jiwoo) */}
+            {isModerateRisk && (
+              <div className="bg-[#EEF4FF] border border-[#DBEAFE] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-md">
+                <span className="bg-[#DBEAFE] text-[#1D4ED8] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                  🔵 중등도 위험 · 전문 심리 상담 모드
+                </span>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
+                  <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                    마음의 그늘이 조금 깊어져 전문적인 지원이 도움이 되는 단계입니다.<br />
+                    상담사 지우와 1:1 심층 상담을 통해 당신의 마음을 안전하게 성찰해봐요.
+                  </p>
+                </div>
+                <img src="/상담사 지우.png" alt="상담사 지우" className="w-32 h-32 object-contain my-1" />
+
+                <div className="bg-white rounded-xl p-4 w-full text-left text-xs text-gray-500 flex gap-2">
+                  <span>💡</span>
+                  <p>
+                    성찰과 치유를 목적으로 하는 CBT-ACT(인지행동치료/수용전념치료) 기반의 대화를 진행합니다.<br />
+                    상태에 따라 토닥 민트 선생님이 추가적으로 지원을 도울 수 있습니다.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => { setInitialPersona(2); setStep("chat"); }}
+                  className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-md bg-[#6096C8] hover:bg-[#5085B7] text-white hover:scale-[1.01]"
+                >
+                  지우와 심층 심리상담 시작하기 →
+                </button>
+              </div>
+            )}
+
+            {/* 3. 정상 ~ 경도 위험군 (User Selection - 통합 노드) */}
+            {isUserSelection && (
+              <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-6 border border-gray-100 shadow-sm">
+                <span className="bg-[#FFF3C4] text-[#D97706] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                  🟡 정상 ~ 경도 위험 · 자율 선택 케어
+                </span>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
+                  <p className="text-sm text-gray-500 mt-2">
+                    경미한 우울이나 일시적인 정서적 무거움이 관찰되는 단계입니다.<br />
+                    오늘의 기분과 고민 영역에 맞는 챗봇을 직접 선택하여 대화를 시작해보세요.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-2">
+                  {/* Card A: Tochi */}
+                  <div className="bg-[#FFFDF5] border-2 border-[#FEF3C7] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-sm hover:shadow-md hover:scale-[1.03] transition-all duration-300">
+                    <span className="text-4xl">🦔</span>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">고슴도치 또치</h4>
+                      <p className="text-[11px] text-[#B7791F] font-semibold mt-1">따뜻한 위로와 친근한 대화</p>
+                      <p className="text-xs text-gray-500 mt-2 leading-relaxed">
+                        다정한 정서적 래포 형성과 일상의 따뜻한 이야기를 나눕니다.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => { setInitialPersona(1); setStep("chat"); }}
+                      className="w-full bg-[#D97706] hover:bg-[#B75A00] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
+                    >
+                      또치 선택
+                    </button>
+                  </div>
+
+                  {/* Card B: Mint Mentor */}
+                  <div className="bg-[#ECFDF5] border-2 border-[#D1FAE5] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-sm hover:shadow-md hover:scale-[1.03] transition-all duration-300">
+                    <span className="text-4xl">🌿</span>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">토닥 민트 선생님</h4>
+                      <p className="text-[11px] text-[#065F46] font-semibold mt-1">인지 왜곡 및 부정 생각 정리</p>
+                      <p className="text-xs text-gray-500 mt-2 leading-relaxed">
+                        생각 오류를 소크라테스식 문답으로 스스로 고치도록 유도합니다.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => { setInitialPersona(4); setStep("chat"); }}
+                      className="w-full bg-[#10B981] hover:bg-[#047857] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
+                    >
+                      민트 선생님 선택
+                    </button>
+                  </div>
+
+                  {/* Card C: Gardener Hyunsu */}
+                  <div className="bg-[#FDF4FF] border-2 border-[#FAE8FF] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-sm hover:shadow-md hover:scale-[1.03] transition-all duration-300">
+                    <span className="text-4xl">🏡</span>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">마음치유 가드너 현수</h4>
+                      <p className="text-[11px] text-[#86198F] font-semibold mt-1">웰니스 가이드 및 명상</p>
+                      <p className="text-xs text-gray-500 mt-2 leading-relaxed">
+                        스트레스를 완화하고 차분하게 감정 일기 작성을 지원합니다.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => { setInitialPersona(5); setStep("chat"); }}
+                      className="w-full bg-[#D946EF] hover:bg-[#A21CAF] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
+                    >
+                      가드너 현수 선택
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 4. 최소 우울 (Low Risk - Tochi) */}
+            {isLowRisk && (
+              <div className="bg-[#FFFBF0] border border-[#FEF3C7] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-md">
+                <span className="bg-[#FFF3C4] text-[#D97706] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                  🟢 저위험 · 안정적인 정서 상태
+                </span>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
+                  <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                    정서적으로 비교적 매우 안정된 상태로 감지되었습니다.<br />
+                    고슴도치 또치와 즐거운 이야기를 나누고 소중한 감정 자원을 충전해봐요.
+                  </p>
+                </div>
+                <img src="/고슴도치 또치.png" alt="고슴도치 또치" className="w-32 h-32 object-contain my-1" />
+
+                <button
+                  onClick={() => { setInitialPersona(1); setStep("chat"); }}
+                  className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-md bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706] hover:scale-[1.01]"
+                >
+                  또치와 대화 시작하기 →
+                </button>
+              </div>
+            )}
 
             <button
               onClick={() => setStep("pledge")}
-              className={`mt-8 text-sm transition-colors self-center ${totalScore >= 20 ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-700"}`}
+              className={`mt-4 text-xs transition-colors self-center font-semibold ${isHighRisk ? "text-gray-400 hover:text-white" : "text-gray-400 hover:text-gray-700"}`}
             >
               ← 이전으로 돌아가기
             </button>
@@ -1106,7 +1235,87 @@ export default function Home() {
       {/* Chat Screen */}
       {step === "chat" && (
         <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
-          <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("report")} />
+          <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("journal")} />
+        </div>
+      )}
+
+      {/* Emotional Journal Screen */}
+      {step === "journal" && (
+        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in border border-gray-100">
+          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
+            <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+              ✏️ 오늘의 마음 일기 작성
+            </h2>
+            <p className="text-xs opacity-90 mt-1">오늘 챗봇과의 대화를 돌아보며 감정을 기록해 보세요</p>
+          </div>
+
+          <div className="p-6 flex flex-col gap-5">
+            <div className="bg-[#F7F9FC] rounded-2xl p-5 border border-gray-100">
+              <h4 className="font-bold text-gray-800 text-sm flex items-center gap-1">
+                🌱 일기를 쓰며 생각을 정리해 볼까요?
+              </h4>
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                오늘 챗봇과 나눈 감정과 떠오르는 생각들, 지금 마음에 남아있는 느낌들을 자유롭게 적어보세요. 
+                글을 쓰는 과정 자체만으로도 마음의 짐이 한결 가벼워지고 인지적인 환기가 이루어질 수 있답니다.
+              </p>
+            </div>
+
+            {journalWarning && (
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-xs flex flex-col gap-1.5 animate-pulse">
+                <span className="font-bold flex items-center gap-1">⚠️ 안전 경고 및 위기 전환 안내</span>
+                <p className="leading-relaxed font-medium">
+                  {journalWarning}
+                </p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold text-gray-500 flex justify-between">
+                <span>일기 내용 (최소 10자 이상 권장)</span>
+                <span className="text-gray-400">{diaryText.length}자</span>
+              </label>
+              <textarea
+                value={diaryText}
+                onChange={(e) => setDiaryText(e.target.value)}
+                placeholder="여기에 오늘 하루의 마음과 대화 소감을 솔직하게 채워주세요... (예: 오늘 또치와 이야기 나누며 마음이 한결 편안해졌어요. 걱정이 가라앉는 기분이에요.)"
+                className="w-full h-44 p-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#6096C8] focus:border-transparent text-sm resize-none leading-relaxed transition-all shadow-inner text-gray-800"
+              />
+            </div>
+
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => setStep("chat")}
+                className="flex-1 bg-white border border-gray-200 text-gray-600 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-sm"
+              >
+                ← 대화로 돌아가기
+              </button>
+              <button
+                onClick={() => {
+                  const riskKeywords = ["죽고 싶", "자살", "자해", "끝내고 싶", "수면제", "사라지고", "약 먹고"];
+                  const hasRisk = riskKeywords.some(kw => diaryText.includes(kw));
+
+                  if (hasRisk) {
+                    setJournalWarning("작성하신 내용에서 안전이 깊이 우려되는 위험 단어 또는 표현이 포착되었습니다. 지금은 혼자 글을 쓰는 것보다, 당신의 안전을 절대적으로 수호해 주는 어시스턴트 클로와의 안전 가이드 대화로 즉시 전환합니다. 🤍");
+                    setTimeout(() => {
+                      setJournalWarning("");
+                      setInitialPersona(3); // 클로 강제 전환
+                      setStep("chat");
+                    }, 5000);
+                  } else {
+                    setStep("report");
+                  }
+                }}
+                disabled={diaryText.trim().length === 0}
+                className={`flex-1 font-bold py-3.5 rounded-xl transition-all text-sm shadow-md text-white ${
+                  diaryText.trim().length === 0
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#6096C8] hover:bg-[#5085B7]"
+                }`}
+              >
+                일기 제출 및 리포트 확인 →
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

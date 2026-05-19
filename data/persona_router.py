@@ -5,32 +5,35 @@
 
 import random
 
-# mallang_최종파일.py 171~267줄에 정의된 페르소나 키값들
+# 신규 플로우(mermaid-diagram (4).png) 기준의 5가지 페르소나 정의
 PERSONA_KEYS = [
-    "🦔 고슴도치 또치",   # 라포 형성 (양호/경도)
-    "😄 개그맨 철수",      # 라포 형성 (양호/경도)
-    "🧑‍⚕️ 상담사 지우",   # MIND 프레임워크 (중증)
-    "🧑‍⚕️ 멘토 선생님",   # 소크라테스식 질문 (중증)
-    "🤖 AI 어시스턴트 클로" # LLM Bypass / MIND-SAFE 프로토콜 (고위험)
+    "🦔 또치 (Tochi)",                  # Persona 1: 따뜻하고 아동적인 일상 공감 (저위험 및 자율 선택)
+    "👩 상담사 지우 (Jiwoo)",             # Persona 2: 전문 CBT-ACT 심층 상담 (중등도 위험)
+    "🤍 어시스턴트 클로 (Cloe)",          # Persona 3: 위기개입 및 안전 서약서 (고위험 - P4 >= 1 또는 PHQ-9 >= 20)
+    "🌿 토닥 선생님 (민트 선생님)",        # Persona 4: 소크라테스식 문답 및 인지오류 교정 (자율 선택)
+    "🏡 마음치유 챗봇 (가드너 현수)"       # Persona 5: 마음챙김 명상 및 웰니스 일기 (자율 선택)
 ]
 
-def route_persona(score: float, is_high_risk: bool) -> str:
+def route_persona(phq9_score: int, p4_score: int, is_safety_threat: bool = False) -> str:
     """
-    우울 점수와 고위험 여부를 바탕으로 다음 대화에 사용할 페르소나를 결정합니다.
+    PHQ-9 점수와 P4 스크리너 점수, 실시간 위기 발화 여부를 바탕으로 최적의 페르소나를 라우팅합니다.
     
     라우팅 규칙:
-    - HIGH_RISK_KEYWORDS 감지 → 즉시 클로 (MIND-SAFE 적용됨)
-    - score >= 0.60 (고위험) → 클로
-    - 0.35 <= score < 0.60 (중증) → 지우 또는 멘토
-    - score < 0.35 (양호/경도) → 또치 또는 철수
+    - 실시간 위기 발화 위협 감지(is_safety_threat) ➔ 즉시 '어시스턴트 클로'로 강제 전환
+    - 1단계 고위험군: P4점수 >= 1 또는 PHQ-9점수 >= 20 ➔ '어시스턴트 클로' (위기대응 및 응급)
+    - 2단계 중등도 위험군: P4점수 == 0 이고 PHQ-9점수 10~19점 ➔ '상담사 지우' (전문 심리상담)
+    - 3단계 정상 ~ 경도 위험군: P4점수 == 0 이고 PHQ-9점수 5~9점 ➔ 사용자 자율 선택 노드 (기본: '또치', '민트 선생님', '가드너 현수')
+    - 4단계 최소 우울: P4점수 == 0 이고 PHQ-9점수 0~4점 ➔ '또치' 직접 배정
     """
-    if is_high_risk or score >= 0.60:
-        return "🤖 AI 어시스턴트 클로"
-    
-    elif score >= 0.35:
-        # 중증의 경우 상담사 지우나 멘토 선생님 중 랜덤 선택 또는 번갈아가며 사용 (여기서는 랜덤)
-        return random.choice(["🧑‍⚕️ 상담사 지우", "🧑‍⚕️ 멘토 선생님"])
+    if is_safety_threat or p4_score >= 1 or phq9_score >= 20:
+        return "🤍 어시스턴트 클로 (Cloe)"
+        
+    elif phq9_score >= 10:
+        return "👩 상담사 지우 (Jiwoo)"
+        
+    elif phq9_score >= 5:
+        # 정상~경도: 자율 선택에 들어가며 기본값 배정 시 지능적인 3지 선다 지원 가능
+        return "🦔 또치 (Tochi)"
         
     else:
-        # 양호/경도의 경우 또치나 철수 중 랜덤 선택
-        return random.choice(["🦔 고슴도치 또치", "😄 개그맨 철수"])
+        return "🦔 또치 (Tochi)"
