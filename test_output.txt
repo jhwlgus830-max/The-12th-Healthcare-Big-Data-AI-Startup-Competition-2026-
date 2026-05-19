@@ -1,0 +1,4 @@
+﻿Sending request to FastAPI backend...
+Status Code: 200
+Response successfully received!
+Failed to connect to API: 'cp949' codec can't encode character '\U0001f916' in position 74: illegal multibyte sequence

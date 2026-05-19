@@ -123,6 +123,48 @@ export default function Home() {
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${String(today.getMonth() + 1).padStart(2, "0")}월 ${String(today.getDate()).padStart(2, "0")}일`;
 
+  const handleAuth = async () => {
+    setAuthError("");
+    if (!email || !password || (isSignUp && !nickname)) {
+      setAuthError("모든 필드를 입력해주세요.");
+      return;
+    }
+
+    try {
+      if (role === "counselor") {
+        setLoggedInUser({
+          userId: "counselor-001",
+          nickname: "상담사 지우",
+          email: email
+        });
+        setStep("counselor_dashboard");
+        return;
+      }
+
+      const endpoint = isSignUp ? "/api/auth/signup" : "/api/auth/login";
+      const payload = isSignUp ? { email, password, nickname } : { email, password };
+
+      const res = await fetch(`http://localhost:8000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "인증에 실패했습니다.");
+      }
+
+      const data = await res.json();
+      setLoggedInUser({ userId: data.user_id, nickname: data.nickname, email: data.email });
+      setProfile(prev => ({ ...prev, nickname: data.nickname }));
+      localStorage.setItem("mallang_user", JSON.stringify({ userId: data.user_id, nickname: data.nickname, email: data.email }));
+      setStep("consent");
+    } catch (err: any) {
+      setAuthError(err.message);
+    }
+  };
+
   const getP4Score = () => {
     let score = 0;
     if (p4Answers.q1 === "있음") score += 1;

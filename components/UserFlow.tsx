@@ -11,6 +11,8 @@ export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPer
   const [score, setScore] = useState(45);
   const [level, setLevel] = useState("🟠 중증");
   const [showWarningPopup, setShowWarningPopup] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const scoreHistory = [
     { turn: 1, score: 20 },
@@ -25,119 +27,117 @@ export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPer
     setMessages(userPersonaMessages[p]);
   };
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
     
     const userText = input.trim();
-    const newMessages = [...messages, { role: "user", content: userText }];
-    setMessages(newMessages);
     setInput("");
+    setIsLoading(true);
     
-    // 1. 위기 자살/자해 키워드 감지 (Phase 3 상시 감시)
     const riskKeywords = ["끝내고 싶", "죽고 싶", "자살", "자해", "수면제", "사라지고", "약 먹고", "죽어버"];
     const isRiskDetected = riskKeywords.some(kw => userText.includes(kw));
- 
-    if (isRiskDetected && currentPersona !== 3) {
-      setShowWarningPopup(true);
-      setCurrentPersona(3); // 즉각 클로 모드로 전환
-      setTimeout(() => {
-        setShowWarningPopup(false);
-        setMessages(prev => [
-          ...prev,
-          { 
-            role: "bot", 
-            content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 어시스턴트 클로 모드로 강제 긴급 전환합니다. 🤍 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 클로가 당신 곁을 함께 지키겠습니다.", 
-            icon: "🤍" 
-          }
-        ]);
-      }, 3500);
-      return;
-    }
- 
-    // 2. 고위험군이 아닐 때의 실시간 동적 페르소나 피드백 루프 (Dynamic Loop)
-    const distortionKeywords = ["항상", "실패", "해야만 해", "아무것도 못해", "다 끝났어"];
-    const apathyKeywords = ["귀찮아", "무기력", "피곤", "일어나기 싫", "아무것도 하기 싫"];
-    const depressionKeywords = ["우울", "슬퍼", "눈물", "답답", "괴로워"];
- 
-    // 인지 왜곡 감지 시 ➔ 민트 선생님 (4)
-    if (distortionKeywords.some(kw => userText.includes(kw)) && currentPersona !== 4 && currentPersona !== 3) {
-      setTimeout(() => {
-        setCurrentPersona(4);
-        setMessages(prev => [
-          ...prev,
-          {
-            role: "bot",
-            content: "🌿 [토닥 민트 선생님 호출] 방금 말씀하신 문장 속에 다소 극단적이거나 이분법적인 인지 왜곡 패턴('항상 실패한다' 등)이 엿보여요. 정말 단 한 번도 예외 없이 실패만 했던 걸까요? 저와 차분히 소크라테스식 질문을 주고받으며 생각을 조금 더 유연하게 다듬어 보아요. 🎓",
-            icon: "🎓"
-          }
-        ]);
-      }, 1000);
-      return;
-    }
- 
-    // 무기력 감지 시 ➔ 가드너 현수 (5)
-    if (apathyKeywords.some(kw => userText.includes(kw)) && currentPersona !== 5 && currentPersona !== 3) {
-      setTimeout(() => {
-        setCurrentPersona(5);
-        setMessages(prev => [
-          ...prev,
-          {
-            role: "bot",
-            content: "🏡 [마음치유 가드너 현수 호출] 마음에 깊은 소진과 무기력이 찾아오셨군요. 귀찮고 힘겨울 때는 억지로 노력하기보다, 몸을 이완시키는 것이 최고예요. 현수와 함께 1분간 코로 숨을 깊게 들이쉬고 입으로 뱉는 마음챙김 명상 호흡 가이드를 편안히 따라해 볼까요? 🌿",
-            icon: "😄"
-          }
-        ]);
-      }, 1000);
-      return;
-    }
- 
-    // 슬픔/우울 감지 시 ➔ 상담사 지우 (2)
-    if (depressionKeywords.some(kw => userText.includes(kw)) && currentPersona !== 2 && currentPersona !== 3) {
-      setTimeout(() => {
-        setCurrentPersona(2);
-        setMessages(prev => [
-          ...prev,
-          {
-            role: "bot",
-            content: "👩 [상담사 지우 호출] 깊은 우울과 답답함으로 인해 눈물이 쏟아질 것 같은 마음이 느껴집니다. 혼자서 이 슬픔을 꾹꾹 눌러 담지 않아도 괜찮아요. 전문 상담사 지우가 당신의 이야기를 온전히 경청하고 따뜻하게 위로해 드릴게요. 🧑‍⚕️ 어떤 부분이 가장 당신을 힘들게 하나요?",
-            icon: "👩"
-          }
-        ]);
-      }, 1000);
-      return;
-    }
- 
-    // 특별한 키워드 매칭이 없을 때의 캐릭터별 개성 있는 일반 모의 대답
-    setTimeout(() => {
-      let botContent = "";
-      let botIcon = "🦔";
- 
-      switch (currentPersona) {
-        case 1:
-          botContent = "그랬구나... 마음속 이야기를 솔직하게 들려줘서 고마워. 또치가 네 곁에서 항상 다정하게 귀 기울이고 있을게. 🦔 너는 존재 자체로 소중해!";
-          botIcon = "🦔";
-          break;
-        case 2:
-          botContent = "보내주신 이야기를 찬찬히 숙고해 보았어요. 그 감정은 지극히 자연스러운 반응입니다. 지우와 함께 이 슬픔의 이면을 조금씩 짚어가며 상처를 보듬어봐요. 🧑‍⚕️";
-          botIcon = "👩";
-          break;
-        case 3:
-          botContent = "클로입니다. 지금 당신의 안전 계획을 함께 논의하고 있어요. 🤍 위험한 물건이 가까이 있다면 즉시 물리적 거리를 두시고, 핫라인 연락을 잊지 마세요. 생명은 정말 귀한 것입니다.";
-          botIcon = "🤍";
-          break;
-        case 4:
-          botContent = "좋은 시도입니다! 🌿 생각을 흑백이 아닌 다양한 색깔의 회색지대로 바라보니 어떤 느낌이 드시나요? 천천히 다음 질문에 답해 보세요.";
-          botIcon = "🎓";
-          break;
-        case 5:
-          botContent = "잘하셨어요! 🏡 평온한 마음챙김 호흡이 몸에 안정을 줍니다. 명상 후 대화를 차분히 마무리하고 마음 일기를 쓰러 가보시는 건 어떨까요?";
-          botIcon = "😄";
-          break;
+
+    setMessages(prev => [...prev, { role: "user", content: userText }]);
+
+    try {
+      const res = await fetch("http://localhost:8000/api/chat/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          user_id: userId,
+          content: userText,
+          initial_persona: currentPersona
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error("서버 응답 오류");
       }
- 
-      setMessages(prev => [...prev, { role: "bot", content: botContent, icon: botIcon }]);
-    }, 1200);
+
+      const data = await res.json();
+      
+      if (!sessionId) {
+        setSessionId(data.session_id);
+      }
+
+      const rawScore = data.bot_message.risk_score;
+      const percentageScore = Math.round(rawScore * 100);
+      setScore(percentageScore);
+
+      if (rawScore >= 0.60) {
+        setLevel("🔴 고위험");
+      } else if (rawScore >= 0.35) {
+        setLevel("🟠 중증");
+      } else if (rawScore >= 0.15) {
+        setLevel("🟡 경증");
+      } else {
+        setLevel("🟢 양호");
+      }
+
+      const newPersona = data.persona_id as 1 | 2 | 3 | 4 | 5;
+
+      if ((isRiskDetected || newPersona === 3) && currentPersona !== 3) {
+        setShowWarningPopup(true);
+        setCurrentPersona(3);
+        setTimeout(() => {
+          setShowWarningPopup(false);
+          setMessages(prev => [
+            ...prev,
+            {
+              role: "assistant",
+              content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 어시스턴트 클로 모드로 강제 긴급 전환합니다. 🤍 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 클로가 당신 곁을 함께 지키겠습니다.",
+              icon: "🤍"
+            }
+          ]);
+        }, 3500);
+        setIsLoading(false);
+        return;
+      }
+
+      setCurrentPersona(newPersona);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.bot_message.content,
+          icon: data.bot_message.icon
+        }
+      ]);
+
+    } catch (err) {
+      console.error("AI API 통신 오류:", err);
+      if (isRiskDetected && currentPersona !== 3) {
+        setShowWarningPopup(true);
+        setCurrentPersona(3);
+        setTimeout(() => {
+          setShowWarningPopup(false);
+          setMessages(prev => [
+            ...prev,
+            {
+              role: "assistant",
+              content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 어시스턴트 클로 모드로 강제 긴급 전환합니다. 🤍 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 클로가 당신 곁을 함께 지키겠습니다.",
+              icon: "🤍"
+            }
+          ]);
+        }, 3500);
+      } else {
+        const botIcon = currentPersona === 1 ? "🦔" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🤍" : currentPersona === 4 ? "🎓" : "😄";
+        setMessages(prev => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "오류가 발생해 답변을 불러오지 못했어요. (백엔드 서버 'python backend/main.py'가 켜져 있는지 확인해 주세요!)",
+            icon: botIcon
+          }
+        ]);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 페르소나별 스타일 셋업
