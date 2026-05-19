@@ -17,8 +17,21 @@ export default function Home() {
   const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings">("onboarding");
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
   const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
+<<<<<<< Updated upstream
   const [diaryText, setDiaryText] = useState("");
   const [journalWarning, setJournalWarning] = useState("");
+=======
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [devOpen, setDevOpen] = useState(false);
+
+  // Real Auth states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<{ userId: string; nickname: string; email: string } | null>(null);
+  const [authError, setAuthError] = useState("");
+>>>>>>> Stashed changes
 
   // Consent states
   const [agreements, setAgreements] = useState({
@@ -165,6 +178,7 @@ export default function Home() {
     }
   };
 
+<<<<<<< Updated upstream
   const getP4Score = () => {
     let score = 0;
     if (p4Answers.q1 === "있음") score += 1;
@@ -181,6 +195,9 @@ export default function Home() {
   const isModerateRisk = !isHighRisk && totalScore >= 10 && totalScore <= 19;
   const isUserSelection = !isHighRisk && totalScore >= 5 && totalScore <= 9;
   const isLowRisk = !isHighRisk && totalScore >= 0 && totalScore <= 4;
+=======
+  const totalScore = phq9Answers.reduce<number>((acc, curr) => (acc || 0) + (curr || 0), 0);
+>>>>>>> Stashed changes
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] flex flex-col items-center justify-center p-4 font-sans text-gray-800">
@@ -1277,6 +1294,7 @@ export default function Home() {
       {/* Chat Screen */}
       {step === "chat" && (
         <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
+<<<<<<< Updated upstream
           <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("journal")} />
         </div>
       )}
@@ -1358,13 +1376,34 @@ export default function Home() {
               </button>
             </div>
           </div>
+=======
+          <UserFlow 
+            initialPersona={initialPersona} 
+            onEndChat={(sid) => {
+              setCurrentSessionId(sid);
+              setStep("report");
+            }} 
+            userId={loggedInUser?.userId} 
+          />
+>>>>>>> Stashed changes
         </div>
       )}
 
       {/* Emotion Report Screen */}
       {step === "report" && (
         <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
-          <EmotionReport onContinueChat={() => setStep("chat")} />
+          <EmotionReport 
+            onContinueChat={() => setStep("chat")} 
+            phq9Score={totalScore}
+            phq9Severity={
+              totalScore <= 9 
+                ? "🟡 경도 우울" 
+                : totalScore <= 19 
+                  ? "🟠 중등도 우울" 
+                  : "🔴 고위험 우울"
+            }
+            sessionId={currentSessionId}
+          />
         </div>
       )}
 
@@ -1458,6 +1497,110 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Developer Quick Navigation Panel */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 font-sans">
+        {devOpen && (
+          <div className="bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-2xl rounded-2xl p-4 w-80 text-[11px] text-gray-700 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-2 mb-3">
+              <span className="font-bold text-gray-800 flex items-center gap-1">🛠️ 개발자 퀵 네비게이션</span>
+              <button 
+                onClick={() => setDevOpen(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold px-1"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="mb-3">
+              <span className="text-[10px] text-gray-400 font-semibold block mb-1">🔑 자동 로그인 단축키</span>
+              <button
+                onClick={() => {
+                  setLoggedInUser({
+                    userId: "user-developer",
+                    email: "test@test.com",
+                    nickname: "개발자테스트"
+                  });
+                  setStep("chat");
+                  setDevOpen(false);
+                }}
+                className="w-full py-1.5 px-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold rounded-lg text-center transition-all flex items-center justify-center gap-1 border border-indigo-100"
+              >
+                👤 test@test.com 자동 로그인 + 챗방 이동
+              </button>
+            </div>
+            
+            <div className="mb-3">
+              <span className="text-[10px] text-gray-400 font-semibold block mb-1.5">👤 사용자 화면 바로가기</span>
+              <div className="grid grid-cols-2 gap-1">
+                {[
+                  { label: "온보딩", val: "onboarding" },
+                  { label: "역할 선택", val: "select" },
+                  { label: "로그인", val: "login" },
+                  { label: "개인정보동의", val: "consent" },
+                  { label: "프로필 설정", val: "profile" },
+                  { label: "PHQ-9 진단", val: "phq9" },
+                  { label: "P4 위기진단", val: "p4" },
+                  { label: "생명존중서약", val: "pledge" },
+                  { label: "결과 리포트", val: "result" },
+                  { label: "실시간 대화", val: "chat" },
+                  { label: "감정 리포트", val: "report" }
+                ].map((s) => (
+                  <button
+                    key={s.val}
+                    onClick={() => {
+                      setStep(s.val as any);
+                      setDevOpen(false);
+                    }}
+                    className={`py-1 px-1.5 text-left rounded transition-all truncate border ${
+                      step === s.val 
+                        ? "bg-indigo-600 text-white font-bold border-indigo-600" 
+                        : "bg-gray-50 hover:bg-gray-100 text-gray-600 border-gray-100"
+                    }`}
+                  >
+                    • {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <span className="text-[10px] text-gray-400 font-semibold block mb-1.5">🧑‍⚕️ 상담사 화면 바로가기</span>
+              <div className="grid grid-cols-2 gap-1">
+                {[
+                  { label: "상담사 대시보드", val: "counselor_dashboard" },
+                  { label: "내담자 관리", val: "counselor_clients" },
+                  { label: "감정 분석 리포트", val: "counselor_report" },
+                  { label: "임상 가이드라인", val: "counselor_guide" },
+                  { label: "전문가 포털 설정", val: "counselor_settings" }
+                ].map((s) => (
+                  <button
+                    key={s.val}
+                    onClick={() => {
+                      setStep(s.val as any);
+                      setDevOpen(false);
+                    }}
+                    className={`py-1 px-1.5 text-left rounded transition-all truncate border ${
+                      step === s.val 
+                        ? "bg-emerald-600 text-white font-bold border-emerald-600" 
+                        : "bg-gray-50 hover:bg-gray-100 text-gray-600 border-gray-100"
+                    }`}
+                  >
+                    • {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <button
+          onClick={() => setDevOpen(!devOpen)}
+          className="bg-white/80 hover:bg-white backdrop-blur-md border border-gray-200/60 shadow-lg text-[10px] font-bold px-3 py-1.5 rounded-full text-gray-500 hover:text-indigo-600 transition-all flex items-center gap-1 cursor-pointer select-none"
+        >
+          🛠️ Dev Panel
+        </button>
+      </div>
     </div>
   );
 }

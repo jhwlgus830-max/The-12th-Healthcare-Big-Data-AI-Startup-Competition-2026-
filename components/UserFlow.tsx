@@ -5,7 +5,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
 import { userPersonaMessages, checkPersonaSwitchTrigger } from "@/lib/mockData";
 
+<<<<<<< Updated upstream
 export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: () => void }) {
+=======
+export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003" }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string }) {
+>>>>>>> Stashed changes
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(45);
@@ -206,7 +210,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat }: { initialPer
             </p>
           </div>
           <button 
-            onClick={onEndChat}
+            onClick={() => onEndChat && onEndChat(sessionId)}
             className="px-3 py-1.5 bg-white text-gray-800 text-xs font-bold rounded-lg shadow-sm hover:bg-gray-50 transition-colors shrink-0"
           >
             대화 종료 및 리포트 보기

@@ -4,6 +4,11 @@
     "password": "testpassword123",
     "nickname": "테스터길동"
   },
+  "user-developer": {
+    "email": "test@test.com",
+    "password": "test123",
+    "nickname": "개발자테스트"
+  },
   "user-ee310c69": {
     "email": "jhwlgus830@gmail.com",
     "password": "rhtmaehclEhcl",

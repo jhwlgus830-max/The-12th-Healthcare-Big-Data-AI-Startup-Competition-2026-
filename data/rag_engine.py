@@ -13,7 +13,9 @@ from langchain_core.documents import Document
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 EMBEDDING_DIM = 384  # 모델 교체 시 이 값만 변경
 
-VECTOR_STORE_DIR = "./vector_store/"
+# 실행되는 위치에 무관하게 항상 절대경로로 vector_store를 로드할 수 있도록 수정
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VECTOR_STORE_DIR = os.path.join(BASE_DIR, "vector_store")
 
 class RAGEngine:
     def __init__(self, model_name: str = EMBEDDING_MODEL):
