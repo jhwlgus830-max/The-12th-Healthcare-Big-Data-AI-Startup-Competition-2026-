@@ -186,8 +186,24 @@ async def send_chat(request: ChatSendRequest):
             p4_answers[3] == "없음"):
             is_p4_high_risk = True
 
-    # 최종 위험 분류 기준
-    if phq9_score >= 20 or is_p4_high_risk:
+    # 실시간 입력 메시지 내 고위험 시그널 감지 (초기 설문 점수 외에 대화 중 위기 대처)
+    is_realtime_high_risk = False
+    if "자살충동" in analysis.get("multi", []):
+        is_realtime_high_risk = True
+        
+    # [RAG 한국형 표준자살예방 생명지킴이 가이드라인 자살 암시 경고신호 기반 탐지 키워드]
+    # - 언어적/행동적 고위험 위해/절망/신변정리 직접 감지
+    crisis_keywords = [
+        "손목", "그어버", "칼로", "뛰어내", "투신", "동반자살", "번개탄", "수면제", "자해",
+        "사라지고싶", "없어지고싶", "다끝내고싶", "차라리죽", "죽는게낫", "죽고싶", 
+        "세상하직", "마지막인사", "신변정리", "물건정리", "모두끝내", "쓸모가없", "내가다망쳤"
+    ]
+    normalized_content = content.replace(" ", "")
+    if any(ckw in normalized_content for ckw in crisis_keywords):
+        is_realtime_high_risk = True
+
+    # 최종 위험 분류 기준 (설문 점수 고위험군 또는 실시간 입력 메시지 고위험 감지 시 클로 배정)
+    if phq9_score >= 20 or is_p4_high_risk or is_realtime_high_risk:
         persona_id = 3
         routed_persona_name = "🤖 AI 어시스턴트 클로"
     elif phq9_score >= 10:
@@ -294,10 +310,19 @@ async def send_chat(request: ChatSendRequest):
     except Exception as pf_err:
         print(f"[Persona Prompt Loader Warning] 철수 프롬프트 파일 로드 실패: {pf_err}")
 
+    chloe_prompt_text = "당신은 위기 극복 안전 가이드 '클로'입니다. 침착하고 안전한 대응을 돕기 위해 차분하게 위기상담 전화를 권장해 주세요."
+    try:
+        chloe_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chloe_prompt_fixed.txt")
+        if os.path.exists(chloe_path):
+            with open(chloe_path, "r", encoding="utf-8") as pf:
+                chloe_prompt_text = pf.read().strip()
+    except Exception as pf_err:
+        print(f"[Persona Prompt Loader Warning] 클로 프롬프트 파일 로드 실패: {pf_err}")
+
     persona_prompts = {
         1: ttochi_prompt_text,
         2: "당신은 10년 차 경력의 따뜻하고 전문적인 심리 상담사 '지우'입니다. 경청과 긍정적 존중을 담아 정중한 어조로 조언해 주세요.",
-        3: "당신은 위기 극복 안전 가이드 '클로'입니다. 침착하고 안전한 대응을 돕기 위해 차분하게 위기상담 전화를 권장해 주세요.",
+        3: chloe_prompt_text,
         4: mentor_prompt_text,
         5: chulsoo_prompt_text
     }
