@@ -17,10 +17,8 @@ export default function Home() {
   const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings">("onboarding");
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
   const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
-<<<<<<< Updated upstream
   const [diaryText, setDiaryText] = useState("");
   const [journalWarning, setJournalWarning] = useState("");
-=======
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [devOpen, setDevOpen] = useState(false);
 
@@ -31,7 +29,6 @@ export default function Home() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<{ userId: string; nickname: string; email: string } | null>(null);
   const [authError, setAuthError] = useState("");
->>>>>>> Stashed changes
 
   // Consent states
   const [agreements, setAgreements] = useState({
@@ -178,7 +175,6 @@ export default function Home() {
     }
   };
 
-<<<<<<< Updated upstream
   const getP4Score = () => {
     let score = 0;
     if (p4Answers.q1 === "있음") score += 1;
@@ -195,9 +191,6 @@ export default function Home() {
   const isModerateRisk = !isHighRisk && totalScore >= 10 && totalScore <= 19;
   const isUserSelection = !isHighRisk && totalScore >= 5 && totalScore <= 9;
   const isLowRisk = !isHighRisk && totalScore >= 0 && totalScore <= 4;
-=======
-  const totalScore = phq9Answers.reduce<number>((acc, curr) => (acc || 0) + (curr || 0), 0);
->>>>>>> Stashed changes
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] flex flex-col items-center justify-center p-4 font-sans text-gray-800">
@@ -1294,8 +1287,14 @@ export default function Home() {
       {/* Chat Screen */}
       {step === "chat" && (
         <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
-<<<<<<< Updated upstream
-          <UserFlow initialPersona={initialPersona} onEndChat={() => setStep("journal")} />
+          <UserFlow 
+            initialPersona={initialPersona} 
+            onEndChat={(sid) => {
+              setCurrentSessionId(sid);
+              setStep("journal");
+            }} 
+            userId={loggedInUser?.userId} 
+          />
         </div>
       )}
 
@@ -1376,16 +1375,6 @@ export default function Home() {
               </button>
             </div>
           </div>
-=======
-          <UserFlow 
-            initialPersona={initialPersona} 
-            onEndChat={(sid) => {
-              setCurrentSessionId(sid);
-              setStep("report");
-            }} 
-            userId={loggedInUser?.userId} 
-          />
->>>>>>> Stashed changes
         </div>
       )}
 

@@ -1,6 +1,8 @@
 import os
+import json
+import uuid
+from datetime import datetime
 from dotenv import load_dotenv
-from supabase import create_client, Client
 
 # .env.local 파일 로드 (Next.js 컨벤션에 맞춤)
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.local")
@@ -9,8 +11,153 @@ load_dotenv(dotenv_path=env_path)
 SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY")
 
-if not SUPABASE_URL or not SUPABASE_KEY:
-    raise ValueError("Supabase URL or Key is missing. Check your .env.local file in the project root.")
+class MockResponse:
+    def __init__(self, data):
+        self.data = data
 
-# Supabase 클라이언트 초기화
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    def execute(self):
+        return self
+
+class MockTable:
+    def __init__(self, name):
+        self.name = name
+        self.filters = []
+        self.order_by = None
+        self.limit_val = None
+
+    def select(self, *args, **kwargs):
+        return self
+
+    def eq(self, field, value):
+        self.filters.append((field, value))
+        return self
+
+    def order(self, field, desc=False):
+        self.order_by = (field, desc)
+        return self
+
+    def limit(self, val):
+        self.limit_val = val
+        return self
+
+    def insert(self, data):
+        file_path = os.path.join(os.path.dirname(__file__), f"{self.name}.json")
+        if self.name == "custom_users":
+            file_path = os.path.join(os.path.dirname(__file__), "users.json")
+            
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as f:
+                    records = json.load(f)
+            else:
+                records = {} if self.name == "custom_users" else []
+        except Exception:
+            records = {} if self.name == "custom_users" else []
+
+        if self.name == "custom_users":
+            # custom_users insert logic (mapping to local users.json format)
+            # data is a dict: {"id": user_id, "email": ..., "password": ..., "nickname": ...}
+            uid = data.get("id", f"user-{uuid.uuid4().hex[:8]}")
+            records[uid] = {
+                "email": data.get("email"),
+                "password": data.get("password"),
+                "nickname": data.get("nickname")
+            }
+            inserted_data = [{"id": uid, **data}]
+        else:
+            # General records (list)
+            if isinstance(data, list):
+                new_records = []
+                for item in data:
+                    item_copy = dict(item)
+                    if "id" not in item_copy:
+                        item_copy["id"] = str(uuid.uuid4())
+                    if "created_at" not in item_copy:
+                        item_copy["created_at"] = datetime.utcnow().isoformat() + "Z"
+                    records.append(item_copy)
+                    new_records.append(item_copy)
+                inserted_data = new_records
+            else:
+                item_copy = dict(data)
+                if "id" not in item_copy:
+                    item_copy["id"] = str(uuid.uuid4())
+                if "created_at" not in item_copy:
+                    item_copy["created_at"] = datetime.utcnow().isoformat() + "Z"
+                records.append(item_copy)
+                inserted_data = [item_copy]
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(records, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"[Mock DB Error] Failed to write {self.name}.json: {e}")
+
+        return MockResponse(inserted_data)
+
+    def execute(self):
+        file_path = os.path.join(os.path.dirname(__file__), f"{self.name}.json")
+        if self.name == "custom_users":
+            file_path = os.path.join(os.path.dirname(__file__), "users.json")
+            
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as f:
+                    raw_records = json.load(f)
+            else:
+                raw_records = {} if self.name == "custom_users" else []
+        except Exception:
+            raw_records = {} if self.name == "custom_users" else []
+
+        # Convert custom_users to standard list form
+        if self.name == "custom_users":
+            records = []
+            for uid, u in raw_records.items():
+                records.append({
+                    "id": uid,
+                    "email": u.get("email"),
+                    "password": u.get("password"),
+                    "nickname": u.get("nickname")
+                })
+        else:
+            records = raw_records
+
+        # Apply filters
+        filtered_records = []
+        for r in records:
+            match = True
+            for field, value in self.filters:
+                if r.get(field) != value:
+                    match = False
+                    break
+            if match:
+                filtered_records.append(r)
+
+        # Apply order
+        if self.order_by:
+            field, desc = self.order_by
+            filtered_records.sort(key=lambda x: x.get(field, ""), reverse=desc)
+
+        # Apply limit
+        if self.limit_val:
+            filtered_records = filtered_records[:self.limit_val]
+
+        return MockResponse(filtered_records)
+
+class MockSupabaseClient:
+    def table(self, name):
+        return MockTable(name)
+
+# Supabase 클라이언트 초기화 및 Fallback 처리
+supabase = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        from supabase import create_client
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("[DB Server] Supabase client initialized successfully!")
+    except Exception as e:
+        print(f"[DB Server Warning] Failed to initialize Supabase client: {e}")
+
+if supabase is None:
+    print("[DB Server Warning] Supabase credentials missing or invalid. Initializing Local Mock Database Client...")
+    supabase = MockSupabaseClient()
+

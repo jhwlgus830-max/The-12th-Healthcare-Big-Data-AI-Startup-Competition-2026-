@@ -1,10 +1,10 @@
 """
 build_knowledge_db.py — RAG 상담 지식 DB 구축 자동화 스크립트
 ============================================================
-rag_documents/ 폴더에 위치한 모든 PDF 파일을 자동으로 감지하여 텍스트를 추출하고,
+rag_documents/ 폴더에 위치한 모든 PDF, DOCX, PNG 파일을 자동으로 감지하여 텍스트를 추출하고,
 청킹(Chunking) 및 임베딩 과정을 거쳐 FAISS 벡터 DB(vector_store/clinical_kb)를 빌드합니다.
 
-추후 새로운 전문 서적이나 임상 매뉴얼 PDF가 추가되면, rag_documents/ 폴더에 파일만 넣고
+추후 새로운 전문 서적이나 임상 매뉴얼 파일이 추가되면, rag_documents/ 폴더에 파일만 넣고
 이 스크립트를 재실행(python data/build_knowledge_db.py)하는 것만으로 지식 DB가 자동으로 확장됩니다.
 """
 
@@ -12,6 +12,7 @@ import os
 import sys
 from typing import List
 from pypdf import PdfReader
+from docx import Document as DocxDocument
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
@@ -31,9 +32,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DIR = os.path.join(BASE_DIR, "rag_documents")
 VECTOR_STORE_DIR = os.path.join(BASE_DIR, "vector_store")
 
+_ocr_reader = None
+
+def get_ocr_reader():
+    """EasyOCR 리더를 싱글톤 패턴으로 초기화하여 메모리 및 실행 속도를 최적화합니다."""
+    global _ocr_reader
+    if _ocr_reader is None:
+        # OpenMP 초기화 에러 방지
+        os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+        import easyocr
+        # 한국어와 영어를 함께 검출할 수 있도록 지원
+        _ocr_reader = easyocr.Reader(['ko', 'en'], gpu=False)
+    return _ocr_reader
+
 def extract_text_from_pdf(pdf_path: str) -> str:
     """PDF 파일로부터 전체 텍스트를 정밀하게 추출합니다."""
-    print(f"  └─ 텍스트 추출 중: {os.path.basename(pdf_path)}")
+    print(f"  └─ PDF 텍스트 추출 중: {os.path.basename(pdf_path)}")
     try:
         reader = PdfReader(pdf_path)
         full_text = []
@@ -46,8 +60,54 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         print(f"[Error] PDF 파싱 중 오류 발생: {pdf_path}. 상세: {e}")
         return ""
 
+def extract_text_from_docx(docx_path: str) -> str:
+    """DOCX 파일로부터 본문 문단 및 표(Table) 내부의 텍스트를 정밀하게 추출합니다."""
+    print(f"  └─ DOCX 텍스트 추출 중: {os.path.basename(docx_path)}")
+    try:
+        doc = DocxDocument(docx_path)
+        full_text = []
+        
+        # 1. 문단 텍스트 추출
+        for para in doc.paragraphs:
+            if para.text.strip():
+                full_text.append(para.text)
+                
+        # 2. 표(Table) 내부의 모든 텍스트 추출 및 결합
+        for table in doc.tables:
+            for row in table.rows:
+                row_text = [cell.text.strip() for cell in row.cells if cell.text.strip()]
+                if row_text:
+                    full_text.append(" | ".join(row_text))
+                    
+        return "\n\n".join(full_text)
+    except Exception as e:
+        print(f"[Error] DOCX 파싱 중 오류 발생: {docx_path}. 상세: {e}")
+        return ""
+
+def extract_text_from_png(png_path: str) -> str:
+    """PNG 이미지 파일로부터 PIL을 사용하여 로딩한 뒤 EasyOCR로 한글/영어 텍스트를 추출합니다.
+    (Windows 환경의 OpenCV 한글 경로 디코딩 우회 적용)
+    """
+    print(f"  └─ 이미지(OCR) 텍스트 추출 중: {os.path.basename(png_path)}")
+    try:
+        from PIL import Image
+        import numpy as np
+        reader = get_ocr_reader()
+        # PIL Image로 로드하여 OpenCV 파일 경로 인코딩 문제 해결
+        with Image.open(png_path) as img:
+            # RGB로 변환 (투명도가 있는 RGBA 등도 처리)
+            img = img.convert('RGB')
+            img_np = np.array(img)
+        result = reader.readtext(img_np)
+        # 검출된 텍스트 조각들을 순서대로 결합
+        text_lines = [line[1].strip() for line in result if line[1].strip()]
+        return "\n".join(text_lines)
+    except Exception as e:
+        print(f"[Error] PNG OCR 중 오류 발생: {png_path}. 상세: {e}")
+        return ""
+
 def process_and_chunk_documents() -> List[Document]:
-    """rag_documents 폴더 안의 모든 PDF 파일을 청킹하여 Document 객체 리스트로 반환합니다."""
+    """rag_documents 폴더 안의 모든 PDF, DOCX, PNG 파일을 청킹하여 Document 객체 리스트로 반환합니다."""
     if not os.path.exists(DOCS_DIR):
         print(f"[Warning] 문서 폴더가 존재하지 않아 새로 생성합니다: {DOCS_DIR}")
         os.makedirs(DOCS_DIR, exist_ok=True)
@@ -62,18 +122,29 @@ def process_and_chunk_documents() -> List[Document]:
     )
 
     all_chunks = []
-    pdf_files = [f for f in os.listdir(DOCS_DIR) if f.lower().endswith('.pdf')]
+    
+    # PDF, DOCX, PNG 지원 확장자 목록 정의
+    supported_extensions = ('.pdf', '.docx', '.png')
+    all_files = [f for f in os.listdir(DOCS_DIR) if f.lower().endswith(supported_extensions)]
 
-    if not pdf_files:
-        print(f"[Information] {DOCS_DIR} 폴더에 처리할 PDF 파일이 없습니다.")
+    if not all_files:
+        print(f"[Information] {DOCS_DIR} 폴더에 처리할 지원 문서가 없습니다.")
         return []
 
-    print(f"■ 총 {len(pdf_files)}개의 PDF 문서 분석을 시작합니다.")
+    print(f"■ 총 {len(all_files)}개의 문서 분석을 시작합니다.")
 
-    for file_name in pdf_files:
-        pdf_path = os.path.join(DOCS_DIR, file_name)
-        text = extract_text_from_pdf(pdf_path)
+    for file_name in all_files:
+        file_path = os.path.join(DOCS_DIR, file_name)
+        ext = os.path.splitext(file_name)[1].lower()
         
+        text = ""
+        if ext == '.pdf':
+            text = extract_text_from_pdf(file_path)
+        elif ext == '.docx':
+            text = extract_text_from_docx(file_path)
+        elif ext == '.png':
+            text = extract_text_from_png(file_path)
+            
         if not text.strip():
             print(f"  └─ [패스] 추출된 텍스트가 비어있습니다.")
             continue
@@ -99,7 +170,7 @@ def build_kb():
     print("   [말랑해도 돼] RAG 상담 지식 DB 구축 파이프라인")
     print("===================================================\n")
 
-    # 1. PDF 문서들을 읽어와 청킹
+    # 1. 문서들을 읽어와 청킹
     chunks = process_and_chunk_documents()
     
     if not chunks:

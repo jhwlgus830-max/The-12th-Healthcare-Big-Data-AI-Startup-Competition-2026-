@@ -1,0 +1,23 @@
+[
+  {
+    "user_id": "user-003",
+    "initial_persona": 1,
+    "status": "active",
+    "id": "56cbfb48-af31-4f0c-afee-149d8f20f8ba",
+    "created_at": "2026-05-20T01:03:57.830560Z"
+  },
+  {
+    "user_id": "user-003",
+    "initial_persona": 1,
+    "status": "active",
+    "id": "88c1add5-e1ab-425a-8819-3404fec5ca9f",
+    "created_at": "2026-05-20T01:12:48.580326Z"
+  },
+  {
+    "user_id": "user-003",
+    "initial_persona": 3,
+    "status": "active",
+    "id": "c7ceb89e-f20d-4c21-8db7-51df50c7d32b",
+    "created_at": "2026-05-20T01:15:53.601216Z"
+  }
+]
