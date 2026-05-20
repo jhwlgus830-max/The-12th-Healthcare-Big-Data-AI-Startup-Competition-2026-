@@ -53,5 +53,30 @@
     "email": "tester_1779257707@mallang.com",
     "password": "securepassword123",
     "nickname": "김말랑_테스터"
+  },
+  "user-9f6ccb65": {
+    "email": "ttochi_test@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-f9b1fac2": {
+    "email": "ttochi_test_1779260680@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-f1d23fdb": {
+    "email": "ttochi_test_1779260728@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-7f44893b": {
+    "email": "ttochi_test_1779261106@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-689bf371": {
+    "email": "ttochi_test_1779261133@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
   }
 }

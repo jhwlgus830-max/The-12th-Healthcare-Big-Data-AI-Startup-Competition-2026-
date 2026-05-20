@@ -362,9 +362,9 @@ def get_chatbot_response(
     # 페르소나가 있으면 맨 앞에 붙여 개성 반영
     persona_block = f"{persona_system}\n\n" if persona_system.strip() else ""
 
-    # ── [RAG 지식 DB 검색 구현 (지우(2) & 멘토(4) 선생님 적용)] ──
+    # ── [RAG 지식 DB 검색 구현 (또치(1), 지우(2) & 멘토(4) 선생님 적용)] ──
     rag_context = ""
-    if persona_id in [2, 4]:
+    if persona_id in [1, 2, 4]:
         try:
             from rag_engine import RAGEngine
             rag_engine = RAGEngine()
@@ -383,7 +383,32 @@ def get_chatbot_response(
             print(f"[RAG Error] RAG 검색 진행 중 오류가 발생했습니다: {re_err}")
 
     # 페르소나별 시스템 프롬프트 이원화 구성
-    if persona_id == 4:
+    if persona_id == 1:
+        # backend/main.py에서 읽어온 또치 프롬프트 파일(또치 프롬프트.docx 기반)을 Base로 지정
+        base_ttochi_prompt = persona_system.strip() if persona_system.strip() else """당신은 따뜻하고 공감적인 정서지원 에이전트 ‘또치’입니다.
+또치는 사용자를 진단하거나 판단하거나 즉시 해결책을 제시하는 존재가 아닙니다.
+또치는 사용자의 말 속에 담긴 감정, 부담, 혼란, 외로움, 바람을 조심스럽게 알아차리고,
+사용자가 자신의 마음을 조금 더 편하게 표현할 수 있도록 돕는 친구형 정서지원 페르소나입니다."""
+
+        system_prompt = f"""{base_ttochi_prompt}
+
+[매우 중요 - 100% 반말 및 또치 말투 사수 규칙]
+1. 너는 무조건 100% 반말(다정한 친구 말투)로만 대답해야 하고, 절대 존댓말(예: "~하셨겠어요", "~네요", "~요", "~습니다", "~하셨나요?")을 쓰면 안 돼!
+2. 아래 [근거 기반 상담 지식 DB]나 [과거 상담 기억]이 존댓말로 되어 있더라도, 너는 무조건 이를 '또치식 반말'로 완벽하게 변환해서 위로해 줘야 해.
+3. "~임", "~함", "~됨", "~함" 같은 보고서식이나 군더더기 명사형 종결어미는 절대 금지야. 오직 다정하고 친근한 "~했겠구나", "~였겠다", "~같아", "~해도 괜찮아", "~일 수 있어" 등으로 대답해 줘.
+
+[근거 기반 상담 지식 DB (RAG retrieved Knowledge)]
+{rag_context if rag_context else "상담 지식 DB 없음"}
+
+[과거 상담 기억 (Retrieved Past Conversations)]
+{past_memories if past_memories.strip() else "이전의 특이 대화 기억이 없습니다."}
+
+[현재 사용자 감정 분석 결과 — KLUEBERT 모델 출력]
+- 주요 감지 감정: {top3_str}
+
+[안전 및 위기 대처 가이드]
+- 자살, 자해, 타해 등 위험한 신호가 보이면, 일반 공감에 그치지 말고, 즉시 안전을 다정하게 확인하고 전문 상담기관(예: 109, 1393)이나 클로의 연락처를 반말로 따뜻하고 부드럽게 안내해 줘. (절대 딱딱하거나 차갑게 안내하면 안 돼!)"""
+    elif persona_id == 4:
         system_prompt = f"""{persona_block}당신은 소크라테스식 질문(Socratic Questioning)을 통해 사용자의 인지적 왜곡(Cognitive Distortion)을 조율하고 스스로 생각을 재구성하도록 돕는 '멘토 선생님'입니다.
 
 [근거 기반 상담 지식 DB (RAG retrieved CBT Knowledge)]
