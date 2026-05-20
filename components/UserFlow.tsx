@@ -5,7 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
 import { userPersonaMessages, checkPersonaSwitchTrigger } from "@/lib/mockData";
 
-export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003" }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string }) {
+export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003", phq9Score = 0, phq9Answers = null, p4Answers = null }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string, phq9Score?: number, phq9Answers?: number[] | null, p4Answers?: string[] | null }) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(45);
@@ -50,7 +50,10 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
           session_id: sessionId,
           user_id: userId,
           content: userText,
-          initial_persona: currentPersona
+          initial_persona: currentPersona,
+          phq9_score: phq9Score,
+          phq9_answers: phq9Answers,
+          p4_answers: p4Answers
         })
       });
 

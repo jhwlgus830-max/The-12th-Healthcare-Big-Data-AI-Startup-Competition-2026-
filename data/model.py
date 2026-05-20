@@ -252,16 +252,7 @@ def get_depression_score(
     threshold: float = 3.0,
 ) -> dict:
     """
-    문장 하나를 받아 전처리 → 감정 분류 → 우울 위험 확률을 계산합니다.
-
-    우울 위험 확률 정의:
-        score = 1 - P(일상)   (0~1 사이 실수)
-
-        - P(일상): 모델이 해당 문장을 '일상' 발화로 분류할 확률
-        - 일상 확률이 높을수록(=우울하지 않을수록) score가 낮아짐
-        - 일상 확률이 낮을수록(=우울 발화일수록) score가 높아짐
-        - score 0.6 이상 → 고위험 / 0.35 이상 → 중증 / 0.15 이상 → 경증
-        - 근거: 오재동·오하영(2022) 우울 감정 탐지 논문 기반
+    문장 하나를 받아 전처리 → 감정 분류 → 우울 위험 확률(prob = 1 - P(일상))을 계산합니다.
     """
     # ── 전처리 ──────────────────────────────────────
     normalized_text, is_high_risk = preprocess_text(text)
@@ -282,19 +273,34 @@ def get_depression_score(
 
     probs = F.softmax(logits, dim=0).numpy()
 
-    # ── 우울 점수: P(우울) = 1 - P(일상) ────────────
-    # 우울 위험 점수 계산 로직 제거 -> 0.0 고정 (PHQ-9로 우울 척도 대체)
-    score = 0.0
+    # ── 우울 위험 확률: prob = 1 - P(일상) ────────────
+    # DAILY_IDX = 11 이므로 probs[11] 이 일상 확률
+    prob = float(1.0 - probs[DAILY_IDX])
 
-    # ── 고위험 키워드 감지 시 점수 보정 (미사용 — 필요 시 활성화) ──────────
-    # if is_high_risk:
-    #     score = max(score, 0.65)     # 0~1 기준 (기존 65.0/100 → 0.65)
-    #     probs[18] = max(probs[18], 0.35)
+    # ── 다중 레이블 및 logit > 3.0인 정답 감정 추출 ───
+    logits_np = logits.numpy()
+    detected_emotions = []
+    
+    # 20가지 감정에 대해 logit > 3.0 인 것 검출
+    for i, logit_val in enumerate(logits_np):
+        emotion_name = inv_map[i]
+        if logit_val > threshold:
+            detected_emotions.append({
+                "emotion": emotion_name,
+                "prob": float(probs[i]),
+                "logit": float(logit_val)
+            })
 
-    # ── 다중 레이블 ──────────────────────────────────
-    multi = [inv_map[i] for i, v in enumerate(logits.numpy()) if v > threshold]
-    if is_high_risk and "자살충동" not in multi:
-        multi.append("자살충동")
+    # 고위험 키워드가 있고 자살충동이 아직 검출되지 않은 경우 강제 추가
+    has_suicide_impulse = any(e["emotion"] == "자살충동" for e in detected_emotions)
+    if is_high_risk and not has_suicide_impulse:
+        detected_emotions.append({
+            "emotion": "자살충동",
+            "prob": float(probs[18]),  # 자살충동 인덱스 = 18
+            "logit": float(logits_np[18]) if logits_np[18] > 3.0 else 3.5  # 강제 보정 또는 그대로 유지
+        })
+
+    multi = [e["emotion"] for e in detected_emotions]
 
     # ── 상위 3개 감정 ────────────────────────────────
     top3 = [
@@ -304,10 +310,12 @@ def get_depression_score(
 
     return {
         "text":  text,
-        "score": score,        # 0~1 우울 위험 확률
-        "top3":  top3,         # [(감정명, 확률%), ...] 상위 3개
-        "multi": multi,        # 다중 레이블 분류 결과
-        "probs": probs,        # 전체 클래스 softmax 확률 배열
+        "prob":  prob,          # 0~1 우울 위험 확률
+        "top3":  top3,          # [(감정명, 확률%), ...] 상위 3개
+        "multi": multi,         # 다중 레이블 분류 결과 (detected emotions)
+        "probs": [float(p) for p in probs],          # 20가지 감정 softmax 확률
+        "logits": [float(l) for l in logits_np],      # 20가지 감정 logit 값
+        "detected_emotions": detected_emotions,     # logit > 3.0인 감정 정보 리스트
     }
 
 
@@ -328,6 +336,7 @@ def get_chatbot_response(
     conversation_history: list,
     persona_system: str = "",
     persona_id: int = None,
+    past_memories: str = "",
 ) -> str:
     """
     KLUEBERT 분석 결과를 GPT-4o mini 프롬프트에 포함해서
@@ -339,7 +348,8 @@ def get_chatbot_response(
         conversation_history — 이전 대화 목록 [{"role":"user","content":"..."}, ...]
         persona_system       — (선택) 페르소나 system 프롬프트
                                예: "당신은 '지우'라는 전문 심리 상담사입니다."
-        persona_id           — (선택) 페르소나 고유 ID (4: 멘토 선생님)
+        persona_id           — (선택) 페르소나 고유 ID (2: 지우, 4: 멘토 선생님)
+        past_memories        — (선택) 과거 대화 중 유사 사건/발화 추출 텍스트
     반환값:
         str — GPT-4o mini 응답 텍스트
     """
@@ -348,19 +358,17 @@ def get_chatbot_response(
     client = OpenAI()  # OPENAI_API_KEY 환경변수에서 자동 로드
 
     top3_str = ", ".join(f"{emo}({prob}%)" for emo, prob in analysis["top3"])
-    score    = 0.0
-    level    = "🟢 양호"
 
     # 페르소나가 있으면 맨 앞에 붙여 개성 반영
     persona_block = f"{persona_system}\n\n" if persona_system.strip() else ""
 
-    # ── [RAG 지식 DB 검색 구현 (멘토 선생님 전용)] ──
+    # ── [RAG 지식 DB 검색 구현 (지우(2) & 멘토(4) 선생님 적용)] ──
     rag_context = ""
-    if persona_id == 4:
+    if persona_id in [2, 4]:
         try:
             from rag_engine import RAGEngine
             rag_engine = RAGEngine()
-            # 사용자 입력과 유사한 CBT 상담 전문 지식을 FAISS DB에서 검색
+            # 사용자 입력과 유사한 CBT/ACT 상담 전문 지식을 FAISS DB에서 검색
             retrieved_docs = rag_engine.retrieve(user_text, kb_category="clinical_kb")
             if retrieved_docs:
                 doc_contents = []
@@ -368,9 +376,9 @@ def get_chatbot_response(
                     source_name = doc.metadata.get('source', 'CBT 지식DB')
                     doc_contents.append(f"[{idx+1}] (출처: {source_name})\n{doc.page_content.strip()}")
                 rag_context = "\n\n".join(doc_contents)
-                print(f"[RAG Engine] {len(retrieved_docs)}개의 CBT 전문 가이드 지식을 성공적으로 로드하여 대화에 주입합니다.")
+                print(f"[RAG Engine] {len(retrieved_docs)}개의 CBT/ACT 가이드 지식을 성공적으로 로드하여 대화에 주입합니다. (페르소나 ID: {persona_id})")
             else:
-                print("[RAG Engine] 매칭되는 지식 조각이 없습니다. 일반 CBT 인지치료 질문 기법을 사용합니다.")
+                print(f"[RAG Engine] 매칭되는 지식 조각이 없습니다. 일반 상담 기법을 사용합니다. (페르소나 ID: {persona_id})")
         except Exception as re_err:
             print(f"[RAG Error] RAG 검색 진행 중 오류가 발생했습니다: {re_err}")
 
@@ -381,33 +389,55 @@ def get_chatbot_response(
 [근거 기반 상담 지식 DB (RAG retrieved CBT Knowledge)]
 {rag_context if rag_context else "상담 지식 DB 로드 실패: 일반적인 인지 재구조화 가이드라인에 따라 질문하세요."}
 
+[과거 상담 기억 (Retrieved Past Conversations)]
+{past_memories if past_memories.strip() else "이전의 특이 대화 기억이 없습니다."}
+
 [현재 사용자 감정 분석 결과 — KLUEBERT 모델 출력]
 - 주요 감지 감정: {top3_str}
 
 [멘토 선생님 대화 지침]
-1. 사용자가 "나는 실패자야", "아무도 날 좋아하지 않아"와 같은 비합리적 신념이나 인지적 왜곡을 보일 때, 위의 [상담 지식 DB]를 근거로 상황을 파악하세요.
+1. 사용자가 "나는 실패자야", "아무도 날 좋아하지 않아"와 같은 비합리적 신념이나 인지적 왜곡을 보일 때, 위의 [상담 지식 DB] 및 [과거 상담 기억]을 근거로 상황을 파악하세요.
 2. 절대 정답을 바로 주지 마세요. 소크라테스식 질문법의 단계(명료화 질문 -> 대안 탐색 -> 증거 탐색 -> 영향 탐색)를 활용해 논리적으로 질문을 던져주세요.
    * 예: "그렇게 생각하시게 된 구체적인 근거가 있을까요?", "만약 친한 친구가 이런 상황에 처했다면 뭐라고 말해주고 싶으신가요?"
 3. 사용자의 마음 상처에 깊이 공감하면서도, 인생 멘토로서 정중하고 지적이며 지혜로운 조언의 어조를 유지하세요.
 4. 질문은 한 번에 딱 하나만 던져 대화가 자연스럽게 이어지도록 하세요.
 5. 답변은 3~5문장 내외로 간결하고 깊이 있게 작성하세요.
 6. 절대 의학적 진단을 내리거나 약을 권유하지 마세요."""
+    elif persona_id == 2:
+        system_prompt = f"""{persona_block}당신은 10년 차 경력의 따뜻하고 전문적인 심리 상담사 '지우'입니다. 경청과 긍정적 존중을 담아 정중한 어조로 조언해 주세요.
+사용자의 무거운 마음과 상처를 진심으로 안아주고, 인지행동치료(CBT) 및 수용전념치료(ACT) 기법을 기반으로 스스로 마음을 마주하고 치유할 수 있게 돕습니다.
+
+[근거 기반 상담 지식 DB (RAG retrieved CBT/ACT Knowledge)]
+{rag_context if rag_context else "상담 지식 DB 로드 실패: 일반적인 마음챙김 및 수용 가이드라인에 따라 질문하세요."}
+
+[과거 상담 기억 (Retrieved Past Conversations)]
+{past_memories if past_memories.strip() else "이전의 특이 대화 기억이 없습니다."}
+
+[현재 사용자 감정 분석 결과 — KLUEBERT 모델 출력]
+- 주요 감지 감정: {top3_str}
+
+[상담사 지우 대화 지침]
+1. 먼저 사용자의 현재 감정을 온전하게 공감하고 이해해 주세요. 따뜻하고 전문적인 경청의 표현을 핵심적으로 건네야 합니다.
+2. [상담 지식 DB]와 [과거 상담 기억]에 기반하여, 사용자의 인지 왜곡이나 감정을 지지해 줄 구체적인 조언이나 개방형 성찰 질문을 건네세요.
+3. 정답을 섣불리 내리기보다 사용자가 마음을 활짝 열고 본인의 진짜 기분을 관찰(Self-observation)하도록 차분하게 유도하세요.
+4. 질문은 한 번에 하나만 하여 대화가 무리 없이 부드럽게 흘러가게 하세요.
+5. 답변은 3~5문장 내외로 따뜻하고 정중하게 존댓말로 작성하세요.
+6. 절대 환자라 부르거나 약을 진단하는 행위는 삼가해 주세요."""
     else:
         system_prompt = f"""{persona_block}당신은 공감 능력이 뛰어난 심리 상담 챗봇입니다.
 사용자의 말에 귀 기울이고, 따뜻하게 공감하며 대화를 이어가세요.
+
+[과거 상담 기억 (Retrieved Past Conversations)]
+{past_memories if past_memories.strip() else "이전의 특이 대화 기억이 없습니다."}
 
 [현재 사용자 감정 분석 결과 — KLUEBERT 모델 출력]
 - 주요 감지 감정: {top3_str}
 
 [응답 지침]
 1. 먼저 사용자의 감정에 진심으로 공감하세요.
-2. 위험 등급이 🟠 중증 이상이면 전문 상담을 조심스럽게 권유하세요.
-3. 위험 등급이 🔴 고위험이거나 자살충동 감정이 감지되면 반드시 위기 상담 정보를 안내하세요:
-   - 자살예방상담전화: 1393 (24시간)
-   - 정신건강위기상담전화: 1577-0199 (24시간)
-4. 질문은 한 번에 하나만 하세요.
-5. 답변은 3~5문장 내외로 간결하게 작성하세요.
-6. 절대 진단을 내리거나 약을 권유하지 마세요."""
+2. 질문은 한 번에 하나만 하세요.
+3. 답변은 3~5문장 내외로 간결하게 작성하세요.
+4. 절대 진단을 내리거나 약을 권유하지 마세요."""
 
     # OpenAI Chat Completions API 호출
     messages = (

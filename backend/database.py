@@ -143,6 +143,94 @@ class MockTable:
 
         return MockResponse(filtered_records)
 
+class SafeSupabaseClient:
+    def __init__(self, real_client):
+        self.real_client = real_client
+        self.mock_client = MockSupabaseClient()
+
+    def table(self, name):
+        return SafeTable(self.real_client, self.mock_client, name)
+
+FORCE_LOCAL_MOCK = False
+
+class SafeTable:
+    def __init__(self, real_client, mock_client, name):
+        self.real_client = real_client
+        self.mock_client = mock_client
+        self.name = name
+        self.filters = []
+        self.order_by = None
+        self.limit_val = None
+        self.insert_data = None
+
+    def select(self, *args, **kwargs):
+        return self
+
+    def eq(self, field, value):
+        self.filters.append((field, value))
+        return self
+
+    def order(self, field, desc=False):
+        self.order_by = (field, desc)
+        return self
+
+    def limit(self, val):
+        self.limit_val = val
+        return self
+
+    def insert(self, data):
+        self.insert_data = data
+        return self
+
+    def execute(self):
+        global FORCE_LOCAL_MOCK
+        if FORCE_LOCAL_MOCK or self.real_client is None:
+            # 즉시 Mock DB 사용
+            mock_table = self.mock_client.table(self.name)
+            for field, value in self.filters:
+                mock_table = mock_table.eq(field, value)
+            if self.order_by:
+                mock_table = mock_table.order(self.order_by[0], desc=self.order_by[1])
+            if self.limit_val:
+                mock_table = mock_table.limit(self.limit_val)
+            
+            if self.insert_data is not None:
+                return mock_table.insert(self.insert_data).execute()
+            else:
+                return mock_table.execute()
+
+        try:
+            # 실제 Supabase 호출 시도
+            real_table = self.real_client.table(self.name)
+            for field, value in self.filters:
+                real_table = real_table.eq(field, value)
+            if self.order_by:
+                real_table = real_table.order(self.order_by[0], desc=self.order_by[1])
+            if self.limit_val:
+                real_table = real_table.limit(self.limit_val)
+            
+            if self.insert_data is not None:
+                res = real_table.insert(self.insert_data).execute()
+            else:
+                res = real_table.execute()
+            return res
+        except Exception as e:
+            print(f"[Supabase Fallback Activated] Error on table '{self.name}': {e}. Enforcing global Mock database from now on...")
+            FORCE_LOCAL_MOCK = True
+            # 실패 시 Mock DB 사용
+            mock_table = self.mock_client.table(self.name)
+            for field, value in self.filters:
+                mock_table = mock_table.eq(field, value)
+            if self.order_by:
+                mock_table = mock_table.order(self.order_by[0], desc=self.order_by[1])
+            if self.limit_val:
+                mock_table = mock_table.limit(self.limit_val)
+            
+            if self.insert_data is not None:
+                return mock_table.insert(self.insert_data).execute()
+            else:
+                return mock_table.execute()
+
 class MockSupabaseClient:
     def table(self, name):
         return MockTable(name)
@@ -152,12 +240,14 @@ supabase = None
 if SUPABASE_URL and SUPABASE_KEY:
     try:
         from supabase import create_client
-        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-        print("[DB Server] Supabase client initialized successfully!")
+        real_client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        supabase = SafeSupabaseClient(real_client)
+        print("[DB Server] Supabase client initialized and wrapped with SafeSupabaseClient successfully!")
     except Exception as e:
         print(f"[DB Server Warning] Failed to initialize Supabase client: {e}")
 
 if supabase is None:
     print("[DB Server Warning] Supabase credentials missing or invalid. Initializing Local Mock Database Client...")
     supabase = MockSupabaseClient()
+
 

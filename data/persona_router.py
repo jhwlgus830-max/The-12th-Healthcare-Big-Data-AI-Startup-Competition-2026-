@@ -7,33 +7,48 @@ import random
 
 # 신규 플로우(mermaid-diagram (4).png) 기준의 5가지 페르소나 정의
 PERSONA_KEYS = [
-    "🦔 또치 (Tochi)",                  # Persona 1: 따뜻하고 아동적인 일상 공감 (저위험 및 자율 선택)
-    "👩 상담사 지우 (Jiwoo)",             # Persona 2: 전문 CBT-ACT 심층 상담 (중등도 위험)
-    "🤍 어시스턴트 클로 (Cloe)",          # Persona 3: 위기개입 및 안전 서약서 (고위험 - P4 >= 1 또는 PHQ-9 >= 20)
-    "🌿 토닥 선생님 (민트 선생님)",        # Persona 4: 소크라테스식 문답 및 인지오류 교정 (자율 선택)
-    "🏡 마음치유 챗봇 (가드너 현수)"       # Persona 5: 마음챙김 명상 및 웰니스 일기 (자율 선택)
+    "🦔 고슴도치 또치",
+    "🧑‍⚕️ 상담사 지우",
+    "🤖 AI 어시스턴트 클로",
+    "🧑‍⚕️ 멘토 선생님",
+    "😄 개그맨 철수"
 ]
 
-def route_persona(phq9_score: int, p4_score: int, is_safety_threat: bool = False) -> str:
+def route_persona(phq9_score: int, p4_answers: dict) -> str:
     """
-    PHQ-9 점수와 P4 스크리너 점수, 실시간 위기 발화 여부를 바탕으로 최적의 페르소나를 라우팅합니다.
+    PHQ-9 점수와 P4 스크리너 개별 문항 선택값을 바탕으로 최적의 페르소나를 라우팅합니다.
     
     라우팅 규칙:
-    - 실시간 위기 발화 위협 감지(is_safety_threat) ➔ 즉시 '어시스턴트 클로'로 강제 전환
-    - 1단계 고위험군: P4점수 >= 1 또는 PHQ-9점수 >= 20 ➔ '어시스턴트 클로' (위기대응 및 응급)
-    - 2단계 중등도 위험군: P4점수 == 0 이고 PHQ-9점수 10~19점 ➔ '상담사 지우' (전문 심리상담)
-    - 3단계 정상 ~ 경도 위험군: P4점수 == 0 이고 PHQ-9점수 5~9점 ➔ 사용자 자율 선택 노드 (기본: '또치', '민트 선생님', '가드너 현수')
-    - 4단계 최소 우울: P4점수 == 0 이고 PHQ-9점수 0~4점 ➔ '또치' 직접 배정
+    - 고위험 ('고위험'): PHQ-9 점수 >= 20 또는 P4 고위험 기준 중 하나라도 충족 시 -> '어시스턴트 클로' (3)
+      * P4 고위험 기준: Q1 == '있음' | Q2 == '있음' | Q3 in ['약간 그렇다', '매우 그렇다'] | Q4 == '없음'
+    - 중증 ('중증'): PHQ-9 점수 10~19점 -> '상담사 지우' (2)
+    - 경도 ('경도'): PHQ-9 점수 5~9점 -> 사용자 자율 선택 구간 (기본: '또치', '멘토 선생님', '개그맨 철수')
+    - 경도 ('경도'): PHQ-9 점수 0~4점 -> '또치' 직접 배정
     """
-    if is_safety_threat or p4_score >= 1 or phq9_score >= 20:
-        return "🤍 어시스턴트 클로 (Cloe)"
+    is_p4_high_risk = False
+    if p4_answers:
+        q1 = p4_answers.get("q1")
+        q2 = p4_answers.get("q2")
+        q3 = p4_answers.get("q3")
+        q4 = p4_answers.get("q4")
+        
+        if (q1 == "있음" or 
+            q2 == "있음" or 
+            q3 in ["약간 그렇다", "매우 그렇다"] or 
+            q4 == "없음"):
+            is_p4_high_risk = True
+
+    if phq9_score >= 20 or is_p4_high_risk:
+        return "🤖 AI 어시스턴트 클로"
         
     elif phq9_score >= 10:
-        return "👩 상담사 지우 (Jiwoo)"
+        return "🧑‍⚕️ 상담사 지우"
         
     elif phq9_score >= 5:
-        # 정상~경도: 자율 선택에 들어가며 기본값 배정 시 지능적인 3지 선다 지원 가능
-        return "🦔 또치 (Tochi)"
+        # 경도 (5~9점): 자율 선택 구간의 기본 배정은 '또치'
+        return "🦔 고슴도치 또치"
         
     else:
-        return "🦔 또치 (Tochi)"
+        # 경도 (0~4점): '또치' 직접 배정
+        return "🦔 고슴도치 또치"
+
