@@ -78,5 +78,35 @@
     "email": "ttochi_test_1779261133@mallang.com",
     "password": "testpassword123",
     "nickname": "또치테스터"
+  },
+  "user-2c8add22": {
+    "email": "testuser@example.com",
+    "password": "testpass123",
+    "nickname": "테스트유저",
+    "name": "홍길동수정",
+    "phone": "010-1111-2222",
+    "age_group": "30대",
+    "gender": "남성",
+    "region": "부산",
+    "emergency_contact": "010-2222-3333",
+    "phq9_score": 8,
+    "phq9_answers": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 그렇지 않다",
+      "있음"
+    ],
+    "service_agreement": true
   }
 }
