@@ -362,18 +362,23 @@ def get_chatbot_response(
     # 페르소나가 있으면 맨 앞에 붙여 개성 반영
     persona_block = f"{persona_system}\n\n" if persona_system.strip() else ""
 
-    # ── [RAG 지식 DB 검색 구현 (또치(1), 지우(2) & 멘토(4) 선생님 적용)] ──
+    # ── [RAG 지식 DB 검색 구현 (또치(1), 지우(2), 멘토(4) 및 철수(5) 선생님 적용)] ──
     rag_context = ""
-    if persona_id in [1, 2, 4]:
+    if persona_id in [1, 2, 4, 5]:
         try:
             from rag_engine import RAGEngine
             rag_engine = RAGEngine()
-            # 사용자 입력과 유사한 전문 상담 지식(지우: CBT/ACT, 멘토: 소크라테스식 인지 재구조화)을 FAISS DB에서 검색
+            # 사용자 입력과 유사한 전문 상담 지식(지우: CBT/ACT, 멘토: 소크라테스식 인지 재구조화, 철수: 행동 활성화)을 FAISS DB에서 검색
             retrieved_docs = rag_engine.retrieve(user_text, kb_category="clinical_kb")
             if retrieved_docs:
                 doc_contents = []
                 for idx, doc in enumerate(retrieved_docs):
-                    default_db_name = 'CBT/ACT 지식DB' if persona_id == 2 else '인지 재구조화 지식DB'
+                    if persona_id == 2:
+                        default_db_name = 'CBT/ACT 지식DB'
+                    elif persona_id == 5:
+                        default_db_name = '행동 활성화 지식DB'
+                    else:
+                        default_db_name = '인지 재구조화 지식DB'
                     source_name = doc.metadata.get('source', default_db_name)
                     doc_contents.append(f"[{idx+1}] (출처: {source_name})\n{doc.page_content.strip()}")
                 rag_context = "\n\n".join(doc_contents)
@@ -451,6 +456,27 @@ def get_chatbot_response(
 4. 질문은 한 번에 하나만 하여 대화가 무리 없이 부드럽게 흘러가게 하세요.
 5. 답변은 3~5문장 내외로 따뜻하고 정중하게 존댓말로 작성하세요.
 6. 절대 환자라 부르거나 약을 진단하는 행위는 삼가해 주세요."""
+    elif persona_id == 5:
+        # backend/main.py에서 읽어온 철수 프롬프트 파일(개그맨 철수 프롬프트.docx 기반)을 Base로 지정
+        base_chulsoo_prompt = persona_system.strip() if persona_system.strip() else """당신은 유머러스하고 밝으며, 행동 활성화(Behavioral Activation) 원리에 따라 사용자가 작고 구체적인 행동을 다시 시작하도록 돕는 '개그맨 철수'입니다."""
+
+        system_prompt = f"""{base_chulsoo_prompt}
+
+[근거 기반 상담 지식 DB (RAG retrieved Behavioral Activation Knowledge)]
+{rag_context if rag_context else "상담 지식 DB 로드 실패: 일반적인 행동 활성화 가이드라인에 따라 질문하세요."}
+
+[과거 상담 기억 (Retrieved Past Conversations)]
+{past_memories if past_memories.strip() else "이전의 특이 대화 기억이 없습니다."}
+
+[현재 사용자 감정 분석 결과 — KLUEBERT 모델 출력]
+- 주요 감지 감정: {top3_str}
+
+[매우 중요 - 개그맨 철수 핵심 대화 규칙]
+1. 너는 무조건 100% 반말(다정하고 밝은 개그맨 친구 말투)로만 대답해야 해! 절대 존댓말(예: "~요", "~습니다", "~하셨나요?")을 쓰면 안 돼!
+2. 사용자의 우울과 무기력을 절대 가볍게 보거나 놀리지 않고, 진심으로 인정한 뒤에 "행동 활성화" 미션을 던져야 해.
+3. 제안하는 행동은 사용자가 귀찮음을 전혀 느끼지 않을 만큼 극도로 작고 가벼운 것이어야 해 (예: "발가락 5번 꼼지락하기", "물 한 모금 마시기").
+4. 질문은 반드시 한 번에 딱 하나만 던져 대화의 부담을 덜어주고, 사용자가 행동을 선택하게 하거나 실행 여부를 편하게 답하게 유도해.
+5. 자살, 자해 등 위험 신호가 감지되면 즉시 유머와 행동 활성화 미션 제안을 중단하고 안전 확인을 우선시해줘. 어시스턴트 클로에게 전환한다는 다정한 멘트를 전해줘."""
     else:
         system_prompt = f"""{persona_block}당신은 공감 능력이 뛰어난 심리 상담 챗봇입니다.
 사용자의 말에 귀 기울이고, 따뜻하게 공감하며 대화를 이어가세요.

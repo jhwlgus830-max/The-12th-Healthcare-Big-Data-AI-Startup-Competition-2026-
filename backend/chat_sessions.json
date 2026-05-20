@@ -131,5 +131,19 @@
     "status": "active",
     "id": "45e4a339-7266-4287-af22-214186fea27e",
     "created_at": "2026-05-20T07:41:28.670623Z"
+  },
+  {
+    "user_id": "test_user_chulsoo",
+    "initial_persona": 5,
+    "status": "active",
+    "id": "a3613dea-2303-4815-a207-4083f4fa642a",
+    "created_at": "2026-05-20T07:46:18.430405Z"
+  },
+  {
+    "user_id": "user-003",
+    "initial_persona": 5,
+    "status": "active",
+    "id": "7d5ab756-8647-4c07-8b50-7e75611512a2",
+    "created_at": "2026-05-20T07:50:56.125546Z"
   }
 ]
