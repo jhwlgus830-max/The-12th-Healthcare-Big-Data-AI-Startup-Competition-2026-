@@ -186,7 +186,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
           <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded shadow ${currentPersona === 1 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>1. 또치 (경증)</button>
           <button onClick={() => handlePersonaChange(2)} className={`px-2 py-1 rounded shadow ${currentPersona === 2 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>2. 지우 (중등도)</button>
           <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded shadow ${currentPersona === 3 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>3. 클로 (고위험)</button>
-          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded shadow ${currentPersona === 4 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>4. 멘토 (CBT)</button>
+          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded shadow ${currentPersona === 4 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>4. 멘토 (소크라테스식 질문)</button>
           <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded shadow ${currentPersona === 5 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>5. 철수 (행동)</button>
         </div>
 
@@ -204,7 +204,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               {currentPersona === 1 && "경도 · 일상 케어 모드"}
               {currentPersona === 2 && "중등도 · 전문 상담 모드"}
               {currentPersona === 3 && "혼자 감당하지 않아도 됩니다 · 위기 대응 모드"}
-              {currentPersona === 4 && "인지 재구조화 (CBT) 모드"}
+              {currentPersona === 4 && "소크라테스식 질문을 통한 인지 재구조화 모드"}
               {currentPersona === 5 && "행동 활성화 (유머) 모드"}
             </p>
           </div>

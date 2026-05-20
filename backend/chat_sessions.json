@@ -82,5 +82,54 @@
     "status": "active",
     "id": "e6bb9d87-4f5a-470f-979f-3a346513b5d1",
     "created_at": "2026-05-20T07:14:36.938186Z"
+  },
+  {
+    "user_id": "test_user_mentor",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "7cfa42ae-b7fe-4a4f-ad18-7e673705cba6",
+    "created_at": "2026-05-20T07:27:09.048259Z"
+  },
+  {
+    "user_id": "test_user_mentor",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "d05f48c3-18b6-44b5-85ce-549b8daf5680",
+    "created_at": "2026-05-20T07:27:31.192746Z"
+  },
+  {
+    "user_id": "test_user_mentor",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "b2a7446e-bca3-49e2-9a9a-a9c77b230878",
+    "created_at": "2026-05-20T07:27:57.960340Z"
+  },
+  {
+    "user_id": "test_user_mentor",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "23934019-e74b-4662-8192-06deaa806cbd",
+    "created_at": "2026-05-20T07:34:59.963480Z"
+  },
+  {
+    "user_id": "user-003",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "d91caa65-f248-40bb-9e69-b09066121784",
+    "created_at": "2026-05-20T07:36:16.612673Z"
+  },
+  {
+    "user_id": "test_user_mentor",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "d1cb83ef-bfa3-4914-8354-a589ee48edb1",
+    "created_at": "2026-05-20T07:39:35.562018Z"
+  },
+  {
+    "user_id": "test_user_mentor",
+    "initial_persona": 4,
+    "status": "active",
+    "id": "45e4a339-7266-4287-af22-214186fea27e",
+    "created_at": "2026-05-20T07:41:28.670623Z"
   }
 ]

@@ -276,11 +276,20 @@ async def send_chat(request: ChatSendRequest):
     except Exception as pf_err:
         print(f"[Persona Prompt Loader Warning] 또치 프롬프트 파일 로드 실패: {pf_err}")
 
+    mentor_prompt_text = "당신은 현명하고 따뜻하게 인지 왜곡을 짚어주는 '멘토 선생님'입니다. 생각을 전환할 수 있는 소크라테스식 질문을 던져주세요."
+    try:
+        mentor_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "mentor_prompt_fixed.txt")
+        if os.path.exists(mentor_path):
+            with open(mentor_path, "r", encoding="utf-8") as pf:
+                mentor_prompt_text = pf.read().strip()
+    except Exception as pf_err:
+        print(f"[Persona Prompt Loader Warning] 멘토 프롬프트 파일 로드 실패: {pf_err}")
+
     persona_prompts = {
         1: ttochi_prompt_text,
         2: "당신은 10년 차 경력의 따뜻하고 전문적인 심리 상담사 '지우'입니다. 경청과 긍정적 존중을 담아 정중한 어조로 조언해 주세요.",
         3: "당신은 위기 극복 안전 가이드 '클로'입니다. 침착하고 안전한 대응을 돕기 위해 차분하게 위기상담 전화를 권장해 주세요.",
-        4: "당신은 현명하고 따뜻하게 인지 왜곡을 짚어주는 '멘토 선생님'입니다. 생각을 전환할 수 있는 소크라테스식 질문을 던져주세요.",
+        4: mentor_prompt_text,
         5: "당신은 유머러스하고 긍정적인 에너지를 불어넣는 '개그맨 철수'입니다. 활기차고 가벼운 기분 전환 이야기를 나눠주세요."
     }
     

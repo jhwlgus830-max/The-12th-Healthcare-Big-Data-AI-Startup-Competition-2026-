@@ -208,5 +208,35 @@
     "contact": "010-4180-6449",
     "id": "31906339-f27c-4685-910b-ebbdbc17cf0c",
     "created_at": "2026-05-20T06:30:01.378019Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "phq9_score": 9,
+    "phq9_answers": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "경증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "서울",
+    "contact": "010-4180-6449",
+    "id": "24e68063-4163-4f5c-b45c-529488c09d65",
+    "created_at": "2026-05-20T07:36:03.042878Z"
   }
 ]
