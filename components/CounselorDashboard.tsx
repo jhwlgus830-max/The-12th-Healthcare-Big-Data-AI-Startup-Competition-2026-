@@ -1,10 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Bell, HelpCircle, User, Calendar, Clock, Activity, AlertCircle, FileText, CheckCircle, ArrowRight } from "lucide-react";
 import { counselorInfo, dashboardStats, schedules, monitoringList, recentActivities } from "@/lib/mockData";
 
-export default function CounselorDashboard() {
+interface RealClient {
+  id: string;
+  name: string;
+  gender: string;
+  age: string;
+  risk: "High" | "Medium" | "Low";
+  phq9: number;
+  p4: number;
+  summary: string;
+  updated: string;
+}
+
+export default function CounselorDashboard({ onSelectClient }: { onSelectClient?: (id: string) => void }) {
+  const [realHighRiskClients, setRealHighRiskClients] = useState<RealClient[]>([]);
+
+  useEffect(() => {
+    async function fetchRealClients() {
+      try {
+        const res = await fetch("http://localhost:8000/api/counselor/clients");
+        if (res.ok) {
+          const data: RealClient[] = await res.json();
+          // Filter only High-risk clients
+          const highRisk = data.filter(c => c.risk === "High");
+          setRealHighRiskClients(highRisk);
+        }
+      } catch (err) {
+        console.error("실시간 내담자 대시보드 패칭 실패:", err);
+      }
+    }
+    fetchRealClients();
+  }, []);
   const getStatIcon = (type: string, color: string) => {
     switch(type) {
       case "user": return <User size={24} />;
@@ -116,10 +146,47 @@ export default function CounselorDashboard() {
                   <p className="text-xs text-gray-600 mt-1">{item.desc}</p>
                   <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                     <span>마지막 활동: {item.lastActivity}</span>
-                    <button className="text-[#1E2D4E] hover:underline font-bold">상세보기</button>
+                    <button 
+                      onClick={() => {
+                        if (item.name === "김지민") onSelectClient?.("C005");
+                        else if (item.name === "이현우") onSelectClient?.("C001");
+                        else onSelectClient?.("C005");
+                      }} 
+                      className="text-[#1E2D4E] hover:underline font-bold"
+                    >
+                      상세보기
+                    </button>
                   </div>
                 </div>
               ))}
+
+              {/* Real-time high-risk clients */}
+              {realHighRiskClients.length > 0 && (
+                <>
+                  <div className="border-t border-dashed border-gray-200 my-2 pt-2 text-[10px] font-bold text-red-500 tracking-wider uppercase flex items-center gap-1.5 animate-pulse">
+                    <span className="inline-block w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                    실시간 감지 고위험 내담자
+                  </div>
+                  {realHighRiskClients.map((client) => (
+                    <div 
+                      key={client.id} 
+                      onClick={() => onSelectClient?.(client.id)}
+                      className="bg-red-50/70 border-red-100/80 p-3 rounded-xl border hover:shadow-sm transition-all cursor-pointer hover:border-red-300"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-sm text-red-900">{client.name}</span>
+                        <span className="text-xs font-bold text-red-600 animate-pulse">위험군 감지</span>
+                      </div>
+                      <p className="text-xs text-red-700 mt-1">PHQ-9 {client.phq9}점 · P4 {client.p4}점</p>
+                      <p className="text-[10px] text-red-600/80 mt-1 line-clamp-2 italic">"{client.summary}"</p>
+                      <div className="flex justify-between items-center mt-2 text-xs text-red-500">
+                        <span>업데이트: {client.updated}</span>
+                        <button className="text-red-700 font-bold hover:underline">리포트 열기 →</button>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           </div>
 

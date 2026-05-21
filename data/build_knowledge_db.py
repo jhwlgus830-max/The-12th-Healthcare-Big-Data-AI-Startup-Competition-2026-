@@ -106,8 +106,18 @@ def extract_text_from_png(png_path: str) -> str:
         print(f"[Error] PNG OCR 중 오류 발생: {png_path}. 상세: {e}")
         return ""
 
+def extract_text_from_md(md_path: str) -> str:
+    """MD 파일로부터 전체 텍스트를 정밀하게 추출합니다."""
+    print(f"  └─ MD 텍스트 추출 중: {os.path.basename(md_path)}")
+    try:
+        with open(md_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        print(f"[Error] MD 파싱 중 오류 발생: {md_path}. 상세: {e}")
+        return ""
+
 def process_and_chunk_documents() -> List[Document]:
-    """rag_documents 폴더 안의 모든 PDF, DOCX, PNG 파일을 청킹하여 Document 객체 리스트로 반환합니다."""
+    """rag_documents 폴더 안의 모든 PDF, DOCX, PNG, MD 파일을 청킹하여 Document 객체 리스트로 반환합니다."""
     if not os.path.exists(DOCS_DIR):
         print(f"[Warning] 문서 폴더가 존재하지 않아 새로 생성합니다: {DOCS_DIR}")
         os.makedirs(DOCS_DIR, exist_ok=True)
@@ -123,8 +133,8 @@ def process_and_chunk_documents() -> List[Document]:
 
     all_chunks = []
     
-    # PDF, DOCX, PNG 지원 확장자 목록 정의
-    supported_extensions = ('.pdf', '.docx', '.png')
+    # PDF, DOCX, PNG, MD 지원 확장자 목록 정의
+    supported_extensions = ('.pdf', '.docx', '.png', '.md')
     all_files = [f for f in os.listdir(DOCS_DIR) if f.lower().endswith(supported_extensions)]
 
     if not all_files:
@@ -144,6 +154,8 @@ def process_and_chunk_documents() -> List[Document]:
             text = extract_text_from_docx(file_path)
         elif ext == '.png':
             text = extract_text_from_png(file_path)
+        elif ext == '.md':
+            text = extract_text_from_md(file_path)
             
         if not text.strip():
             print(f"  └─ [패스] 추출된 텍스트가 비어있습니다.")

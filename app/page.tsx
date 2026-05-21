@@ -22,6 +22,7 @@ export default function Home() {
   const [diaryText, setDiaryText] = useState("");
   const [journalWarning, setJournalWarning] = useState("");
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [devOpen, setDevOpen] = useState(false);
 
   // Real Auth states
@@ -1018,8 +1019,32 @@ export default function Home() {
 
             {/* Submit Button */}
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (signature.trim() !== "") {
+                  try {
+                    const filteredPhq9 = phq9Answers.filter((a) => a !== null) as number[];
+                    const p4List = [p4Answers.q1, p4Answers.q2, p4Answers.q3, p4Answers.q4];
+                    
+                    const res = await fetch("http://localhost:8000/api/survey/save", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        user_id: loggedInUser?.userId || "anonymous_user",
+                        phq9_answers: filteredPhq9,
+                        p4_answers: p4List,
+                        gender: profile.gender,
+                        age_group: profile.ageGroup,
+                        occupation: profile.occupation,
+                        region: profile.region,
+                        contact: profile.contact
+                      })
+                    });
+                    if (!res.ok) {
+                      console.error("설문 저장 실패");
+                    }
+                  } catch (err) {
+                    console.error("설문 저장 API 연동 실패:", err);
+                  }
                   setStep("result");
                 }
               }}
@@ -1264,6 +1289,9 @@ export default function Home() {
               setStep("journal");
             }} 
             userId={loggedInUser?.userId} 
+            phq9Score={totalScore}
+            phq9Answers={phq9Answers.filter((a) => a !== null) as number[]}
+            p4Answers={[p4Answers.q1, p4Answers.q2, p4Answers.q3, p4Answers.q4]}
           />
         </div>
       )}
@@ -1319,7 +1347,25 @@ export default function Home() {
                 ← 대화로 돌아가기
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
+                  if (diaryText.trim().length === 0) return;
+
+                  try {
+                    const res = await fetch("http://localhost:8000/api/journal/save", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        user_id: loggedInUser?.userId || "anonymous_user",
+                        content: diaryText
+                      })
+                    });
+                    if (!res.ok) {
+                      console.error("일기 저장 실패");
+                    }
+                  } catch (err) {
+                    console.error("일기 저장 API 연동 실패:", err);
+                  }
+
                   const riskKeywords = ["죽고 싶", "자살", "자해", "끝내고 싶", "수면제", "사라지고", "약 먹고"];
                   const hasRisk = riskKeywords.some(kw => diaryText.includes(kw));
 
@@ -1454,13 +1500,32 @@ export default function Home() {
             {/* Content Area */}
             <main className="flex-1 p-6 md:p-8">
               <div className="max-w-7xl mx-auto">
-                {step === "counselor_dashboard" && <CounselorDashboard />}
-                {step === "counselor_clients" && <CounselorPortal />}
-                {step === "counselor_report" && <CounselorReport />}
+                {step === "counselor_dashboard" && (
+                  <CounselorDashboard 
+                    onSelectClient={(id) => { 
+                      setSelectedClientId(id); 
+                      setStep("counselor_report"); 
+                    }} 
+                  />
+                )}
+                {step === "counselor_clients" && (
+                  <CounselorPortal 
+                    onSelectClient={(id) => { 
+                      setSelectedClientId(id); 
+                      setStep("counselor_report"); 
+                    }} 
+                  />
+                )}
+                {step === "counselor_report" && (
+                  <CounselorReport 
+                    clientId={selectedClientId} 
+                  />
+                )}
                 {step === "counselor_guide" && <CounselorGuide />}
                 {step === "counselor_settings" && <CounselorSettings />}
               </div>
             </main>
+          </div>
           </div>
         </div>
       )}

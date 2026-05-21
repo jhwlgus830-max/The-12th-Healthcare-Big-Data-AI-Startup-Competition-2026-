@@ -1,0 +1,32 @@
+[
+  {
+    "user_id": "user-7d33e7df",
+    "content": "하루하루가 너무 피곤하고 지친다. 내일도 언제나 똑같이 힘들겠지.",
+    "id": "bbdf47ca-5448-4e40-a3ec-4660a7b7548f",
+    "created_at": "2026-05-20T06:11:51.410825Z"
+  },
+  {
+    "user_id": "user-7d5b6296",
+    "content": "하루하루가 너무 피곤하고 지친다. 내일도 언제나 똑같이 힘들겠지.",
+    "id": "69465e5d-bbcb-4ee3-8f41-003ed50f91fc",
+    "created_at": "2026-05-20T06:13:37.341394Z"
+  },
+  {
+    "user_id": "user-0bcd2cad",
+    "content": "하루하루가 너무 피곤하고 지친다. 내일도 언제나 똑같이 힘들겠지.",
+    "id": "705649dd-73ce-478f-b61a-0f35c3dd7666",
+    "created_at": "2026-05-20T06:15:18.633756Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "content": "일기 테스트",
+    "id": "673b0fec-c7dc-4d74-80b8-296272702c0b",
+    "created_at": "2026-05-20T06:20:59.253230Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "content": "하루하루가 너무 피곤하고 지친다. 내일도 언제나 똑같이 힘들겠지.",
+    "id": "7ef53ead-cb95-40e8-a7f0-eea8b1a8be7c",
+    "created_at": "2026-05-20T06:21:34.721883Z"
+  }
+]

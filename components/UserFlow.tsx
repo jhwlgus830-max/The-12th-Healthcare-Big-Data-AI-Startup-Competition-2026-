@@ -5,7 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
 import { userPersonaMessages, checkPersonaSwitchTrigger } from "@/lib/mockData";
 
-export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003" }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string }) {
+export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003", phq9Score = 0, phq9Answers = null, p4Answers = null }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string, phq9Score?: number, phq9Answers?: number[] | null, p4Answers?: string[] | null }) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(45);
@@ -50,7 +50,10 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
           session_id: sessionId,
           user_id: userId,
           content: userText,
-          initial_persona: currentPersona
+          initial_persona: currentPersona,
+          phq9_score: phq9Score,
+          phq9_answers: phq9Answers,
+          p4_answers: p4Answers
         })
       });
 
@@ -183,8 +186,9 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
           <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 1 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>1. 또치 (경증)</button>
           <button onClick={() => handlePersonaChange(2)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 2 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>2. 지우 (중등도)</button>
           <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 3 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>3. 클로 (고위험)</button>
-          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 4 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>4. 멘토 (CBT)</button>
+          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 4 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>4. 멘토 (소크라테스식 질문)</button>
           <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 5 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>5. 철수 (행동)</button>
+        </div>
         </div>
 
         {/* Banner */}
@@ -201,7 +205,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               {currentPersona === 1 && "경도 · 일상 케어 모드"}
               {currentPersona === 2 && "중등도 · 전문 상담 모드"}
               {currentPersona === 3 && "혼자 감당하지 않아도 됩니다 · 위기 대응 모드"}
-              {currentPersona === 4 && "인지 재구조화 (CBT) 모드"}
+              {currentPersona === 4 && "소크라테스식 질문을 통한 인지 재구조화 모드"}
               {currentPersona === 5 && "행동 활성화 (유머) 모드"}
             </p>
           </div>

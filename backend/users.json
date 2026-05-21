@@ -33,5 +33,80 @@
     "email": "agent_new_user_xyz_123@example.com",
     "password": "password123",
     "nickname": "AgentTest"
+  },
+  "user-eb01d361": {
+    "email": "tester_1779257434@mallang.com",
+    "password": "securepassword123",
+    "nickname": "Tester_Mallang"
+  },
+  "user-7d33e7df": {
+    "email": "tester_1779257497@mallang.com",
+    "password": "securepassword123",
+    "nickname": "김말랑_테스터"
+  },
+  "user-7d5b6296": {
+    "email": "tester_1779257605@mallang.com",
+    "password": "securepassword123",
+    "nickname": "김말랑_테스터"
+  },
+  "user-0bcd2cad": {
+    "email": "tester_1779257707@mallang.com",
+    "password": "securepassword123",
+    "nickname": "김말랑_테스터"
+  },
+  "user-9f6ccb65": {
+    "email": "ttochi_test@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-f9b1fac2": {
+    "email": "ttochi_test_1779260680@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-f1d23fdb": {
+    "email": "ttochi_test_1779260728@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-7f44893b": {
+    "email": "ttochi_test_1779261106@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-689bf371": {
+    "email": "ttochi_test_1779261133@mallang.com",
+    "password": "testpassword123",
+    "nickname": "또치테스터"
+  },
+  "user-2c8add22": {
+    "email": "testuser@example.com",
+    "password": "testpass123",
+    "nickname": "테스트유저",
+    "name": "홍길동수정",
+    "phone": "010-1111-2222",
+    "age_group": "30대",
+    "gender": "남성",
+    "region": "부산",
+    "emergency_contact": "010-2222-3333",
+    "phq9_score": 8,
+    "phq9_answers": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 그렇지 않다",
+      "있음"
+    ],
+    "service_agreement": true
   }
 }

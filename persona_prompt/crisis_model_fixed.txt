@@ -1,0 +1,27 @@
+위기개입의 모델
+
+위기개입(crisis intervention)은 개인이 갑작스러운 사건이나 스트레스 상황으로 인해 기존의 대처능력을 상실했을 때, 심리적 안정을 회복하고 적응을 돕기 위한 단기적 개입이다. 위기개입 이론은 내담자의 상태와 위기의 특성에 따라 다양한 접근을 활용하는데, 대표적으로 평형/비평형 모델(The Equilibrium Model), 인지적 모델(The Cognitive Model), 심리사회적 전환 모델(The Psychosocial Transition Model), 그리고 통합적 절충모델(Eclectic Crisis Intervention Model)이 있다. 이러한 모델들은 Caplan(1964), Aguilera와 Messick(1982), Roberts(2005), James와 Gilliland(2017)의 연구를 중심으로 발전하였다.
+
+평형/비평형 모델(The Equilibrium Model)은 위기로 인해 무너진 심리적 균형을 회복하는 데 초점을 둔다. Caplan(1964)은 위기를 기존의 대처기제가 더 이상 효과적으로 작동하지 않는 상태로 정의하였으며, 상담의 목표를 위기 이전의 정서적 평형 상태로 되돌리는 것에 두었다. 따라서 이 모델은 위기 초기 단계에서 가장 적절하며, 상담자는 공감적 경청, 지지, 현실 검증, 안정화(stabilization) 기법 등을 활용하여 내담자의 불안과 혼란을 감소시킨다. Roberts(2005)는 초기 안정화 과정이 이후 회복과 적응의 기초가 된다고 강조하였다.
+
+인지적 모델(The Cognitive Model)은 위기 상황 자체보다 사건을 해석하는 개인의 인지 과정이 정서적 혼란을 결정한다고 본다. Beck의 인지이론과 Ellis의 합리정서행동치료 이론에 기반한 접근으로, 위기 속에서 형성된 왜곡된 사고와 비합리적 신념을 수정하는 데 목적이 있다. 예를 들어 “나는 실패했다”, “아무 희망이 없다”와 같은 자동적 사고를 재구조화함으로써 불안과 우울을 감소시키고 현실적인 사고를 회복하도록 돕는다. Dattilio와 Freeman(2007)은 인지 재구조화가 외상 후 스트레스와 우울 증상을 감소시키는 데 효과적이라고 보고하였다. 이 모델은 내담자가 어느 정도 정서적 안정을 회복한 이후 적용하는 것이 적절하다.
+
+심리사회적 전환 모델(The Psychosocial Transition Model)은 위기를 개인 내부의 문제로만 보지 않고, 사회적·환경적 맥락 속에서 이해한다. Aguilera와 Messick(1982)는 위기 반응이 개인의 지각, 사회적 지지체계, 대처능력의 상호작용에 의해 결정된다고 설명하였다. 따라서 상담자는 내담자의 심리 상태뿐 아니라 가족관계, 경제적 상황, 직업 환경, 사회적 자원 등을 함께 평가해야 한다. 이후 지역사회 자원 연계, 가족 지지 강화, 환경 조정 등을 통해 장기적인 적응을 돕는다. 최근 정신건강 연구에서도 사회적 지지체계가 회복탄력성(resilience)을 높이는 핵심 보호요인으로 제시되고 있다.
+
+통합적 절충모델(Eclectic Crisis Intervention Model)은 다양한 위기개입 이론과 기술을 통합하여 내담자에게 가장 적합한 개입을 선택하는 접근이다. James와 Gilliland(2017)는 모든 위기와 개인은 각각 독특하지만 동시에 공통적인 반응 양상을 가진다고 설명하였다. 따라서 상담자는 특정 이론 하나에 고착되지 않고, 내담자의 상태와 상황에 따라 평형 모델, 인지적 접근, 심리사회적 접근 등을 유연하게 활용해야 한다. 이 모델은 과업 중심(task-oriented)으로 작동하며, 내담자의 현재 문제와 필요를 우선적으로 평가한 뒤 가장 효과적인 기술을 계획하고 적용한다. 예를 들어 초기에는 정서 안정화 기법을 사용하고, 이후에는 인지 재구조화와 사회적 자원 연계를 병행할 수 있다. Roberts와 Ottens(2005)는 실제 임상 현장에서 통합적 접근이 위기 상황의 복합성과 다양성에 가장 효과적으로 대응할 수 있다고 보고하였다.
+
+결론적으로, 평형 모델은 초기 안정화, 인지적 모델은 왜곡된 사고 수정, 심리사회적 모델은 환경과 자원의 통합적 평가에 중점을 두며, 통합적 절충모델은 이러한 접근들을 상황에 맞게 융합하여 활용한다. 실제 위기개입 현장에서는 단일 이론만 적용하기보다 내담자의 상태와 위기 단계에 따라 다양한 모델을 유기적으로 통합하는 것이 가장 효과적인 방법으로 평가된다.
+
+참고문헌
+
+Caplan, G. (1964). Principles of Preventive Psychiatry.
+
+Aguilera, D. C., & Messick, J. M. (1982). Crisis Intervention: Theory and Methodology.
+
+Roberts, A. R. (2005). Crisis Intervention Handbook.
+
+Roberts, A. R., & Ottens, A. J. (2005). “The Seven-Stage Crisis Intervention Model.” Brief Treatment and Crisis Intervention.
+
+James, R. K., & Gilliland, B. E. (2017). Crisis Intervention Strategies.
+
+Dattilio, F. M., & Freeman, A. (2007). Cognitive-Behavioral Strategies in Crisis Intervention.

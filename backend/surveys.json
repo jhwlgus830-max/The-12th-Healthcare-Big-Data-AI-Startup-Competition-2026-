@@ -1,0 +1,242 @@
+[
+  {
+    "user_id": "user-eb01d361",
+    "phq9_score": 22,
+    "phq9_answers": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2
+    ],
+    "p4_answers": [
+      "있음",
+      "있음",
+      "매우 그렇다",
+      "없음"
+    ],
+    "is_p4_high_risk": true,
+    "severity": "고위험",
+    "gender": "남성",
+    "age_group": "20대",
+    "occupation": "대학생",
+    "region": "서울",
+    "contact": "010-1234-5678",
+    "id": "6dc982e0-e4bb-4548-bd58-78e747cbe3ba",
+    "created_at": "2026-05-20T06:10:40.687271Z"
+  },
+  {
+    "user_id": "user-7d33e7df",
+    "phq9_score": 22,
+    "phq9_answers": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2
+    ],
+    "p4_answers": [
+      "있음",
+      "있음",
+      "매우 그렇다",
+      "없음"
+    ],
+    "is_p4_high_risk": true,
+    "severity": "고위험",
+    "gender": "남성",
+    "age_group": "20대",
+    "occupation": "대학생",
+    "region": "서울",
+    "contact": "010-1234-5678",
+    "id": "248f094a-fd9b-4ae6-bc8d-742d36527ebc",
+    "created_at": "2026-05-20T06:11:41.693295Z"
+  },
+  {
+    "user_id": "user-7d5b6296",
+    "phq9_score": 22,
+    "phq9_answers": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2
+    ],
+    "p4_answers": [
+      "있음",
+      "있음",
+      "매우 그렇다",
+      "없음"
+    ],
+    "is_p4_high_risk": true,
+    "severity": "고위험",
+    "gender": "남성",
+    "age_group": "20대",
+    "occupation": "대학생",
+    "region": "서울",
+    "contact": "010-1234-5678",
+    "id": "f455aa32-2686-4cd3-b333-2cbeac930c31",
+    "created_at": "2026-05-20T06:13:29.638276Z"
+  },
+  {
+    "user_id": "user-0bcd2cad",
+    "phq9_score": 22,
+    "phq9_answers": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2
+    ],
+    "p4_answers": [
+      "있음",
+      "있음",
+      "매우 그렇다",
+      "없음"
+    ],
+    "is_p4_high_risk": true,
+    "severity": "고위험",
+    "gender": "남성",
+    "age_group": "20대",
+    "occupation": "대학생",
+    "region": "서울",
+    "contact": "010-1234-5678",
+    "id": "9ef46b77-b605-4ab5-813e-76f35a3be978",
+    "created_at": "2026-05-20T06:15:11.539467Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "phq9_score": 9,
+    "phq9_answers": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "경증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "서울",
+    "contact": "010-4180-6449",
+    "id": "339a7ddc-f303-40a2-97a9-abd7b1a32a70",
+    "created_at": "2026-05-20T06:20:10.584767Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "phq9_score": 9,
+    "phq9_answers": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "경증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "서울",
+    "contact": "010-4180-6449",
+    "id": "d0e5f25c-f956-4127-a4c6-fc6bdf98f4f7",
+    "created_at": "2026-05-20T06:29:14.051898Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "phq9_score": 9,
+    "phq9_answers": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "경증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "서울",
+    "contact": "010-4180-6449",
+    "id": "31906339-f27c-4685-910b-ebbdbc17cf0c",
+    "created_at": "2026-05-20T06:30:01.378019Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "phq9_score": 9,
+    "phq9_answers": [
+      2,
+      2,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "경증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "서울",
+    "contact": "010-4180-6449",
+    "id": "24e68063-4163-4f5c-b45c-529488c09d65",
+    "created_at": "2026-05-20T07:36:03.042878Z"
+  }
+]
