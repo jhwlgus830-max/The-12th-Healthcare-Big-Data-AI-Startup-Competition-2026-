@@ -11,12 +11,14 @@ import CounselorReport from "../components/CounselorReport";
 import CounselorGuide from "../components/CounselorGuide";
 import CounselorSettings from "../components/CounselorSettings";
 import OwlLogo from "../components/OwlLogo";
+import InteractiveMap from "../components/InteractiveMap";
 import { phq9ResultConfig } from "@/lib/mockData";
 
 
 export default function Home() {
   const router = useRouter();
-  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings">("onboarding");
+  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "map">("onboarding");
+  const [prevStep, setPrevStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "map">("onboarding");
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
   const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [diaryText, setDiaryText] = useState("");
@@ -30,7 +32,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<{ userId: string; nickname: string; email: string } | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<{ userId: string; nickname: string; email: string; region?: string } | null>(null);
   const [authError, setAuthError] = useState("");
 
   // Consent states
@@ -174,9 +176,9 @@ export default function Home() {
       }
 
       const data = await res.json();
-      setLoggedInUser({ userId: data.user_id, nickname: data.nickname, email: data.email });
-      setProfile(prev => ({ ...prev, nickname: data.nickname }));
-      localStorage.setItem("uulppae_user", JSON.stringify({ userId: data.user_id, nickname: data.nickname, email: data.email }));
+      setLoggedInUser({ userId: data.user_id, nickname: data.nickname, email: data.email, region: data.region });
+      setProfile(prev => ({ ...prev, nickname: data.nickname, region: data.region || "" }));
+      localStorage.setItem("uulppae_user", JSON.stringify({ userId: data.user_id, nickname: data.nickname, email: data.email, region: data.region }));
       setStep("consent");
     } catch (err: any) {
       console.warn("Backend connection failed. Using mock offline fallback for demo...", err);
@@ -185,16 +187,18 @@ export default function Home() {
         setLoggedInUser({
           userId: "user-" + Math.random().toString(36).substring(2, 7),
           nickname: nickname,
-          email: email
+          email: email,
+          region: "서울"
         });
-        setProfile(prev => ({ ...prev, nickname: nickname }));
+        setProfile(prev => ({ ...prev, nickname: nickname, region: "서울" }));
       } else {
         setLoggedInUser({
           userId: "user-001",
           nickname: email.split("@")[0] || "우울이",
-          email: email
+          email: email,
+          region: "서울"
         });
-        setProfile(prev => ({ ...prev, nickname: email.split("@")[0] || "우울이" }));
+        setProfile(prev => ({ ...prev, nickname: email.split("@")[0] || "우울이", region: "서울" }));
       }
       setStep("consent");
     }
@@ -1045,6 +1049,20 @@ export default function Home() {
                   } catch (err) {
                     console.error("설문 저장 API 연동 실패:", err);
                   }
+                  
+                  // 거주지역(region) 세션 및 로컬스토리지 즉시 동기화
+                  setLoggedInUser(prev => prev ? { ...prev, region: profile.region } : null);
+                  const localUser = localStorage.getItem("uulppae_user");
+                  if (localUser) {
+                    try {
+                      const parsed = JSON.parse(localUser);
+                      parsed.region = profile.region;
+                      localStorage.setItem("uulppae_user", JSON.stringify(parsed));
+                    } catch (e) {
+                      console.error("로컬 스토리지 갱신 에러", e);
+                    }
+                  }
+                  
                   setStep("result");
                 }
               }}
@@ -1292,6 +1310,10 @@ export default function Home() {
             phq9Score={totalScore}
             phq9Answers={phq9Answers.filter((a) => a !== null) as number[]}
             p4Answers={[p4Answers.q1, p4Answers.q2, p4Answers.q3, p4Answers.q4]}
+            onNavigateToMap={() => {
+              setPrevStep("chat");
+              setStep("map");
+            }}
           />
         </div>
       )}
@@ -1408,6 +1430,20 @@ export default function Home() {
                   : "🔴 고위험 우울"
             }
             sessionId={currentSessionId}
+            onNavigateToMap={() => {
+              setPrevStep("report");
+              setStep("map");
+            }}
+          />
+        </div>
+      )}
+
+      {/* Map Screen */}
+      {step === "map" && (
+        <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen animate-fade-in">
+          <InteractiveMap 
+            userRegion={loggedInUser?.region || profile.region || "서울"} 
+            onBack={() => setStep(prevStep)} 
           />
         </div>
       )}
@@ -1575,7 +1611,8 @@ export default function Home() {
                   { label: "생명존중서약", val: "pledge" },
                   { label: "결과 리포트", val: "result" },
                   { label: "실시간 대화", val: "chat" },
-                  { label: "감정 리포트", val: "report" }
+                  { label: "감정 리포트", val: "report" },
+                  { label: "내 주변 지도", val: "map" }
                 ].map((s) => (
                   <button
                     key={s.val}

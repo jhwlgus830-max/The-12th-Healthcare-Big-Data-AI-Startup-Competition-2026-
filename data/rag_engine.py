@@ -85,6 +85,7 @@ class RAGEngine:
         # 메타데이터 필터링 적용 (지역) - LangChain FAISS 필터 지원 활용
         if region and kb_category == 'public_resource_kb':
             retriever.search_kwargs["filter"] = {"region": region}
+            retriever.search_kwargs["fetch_k"] = 2000
             
         docs = retriever.invoke(query)
         return docs

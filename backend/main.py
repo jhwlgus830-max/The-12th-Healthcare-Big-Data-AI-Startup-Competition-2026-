@@ -334,7 +334,20 @@ async def send_chat(request: ChatSendRequest):
         5: chulsoo_prompt_text
     }
     
-    print(f"[DEBUG MAIN] Calling get_chatbot_response with persona_id={persona_id}, system_prompt_len={len(persona_prompts.get(persona_id, ''))}")
+    # ── [로그인한 사용자의 거주지(region) 조회] ──
+    region = "서울"
+    try:
+        survey_res = supabase.table("surveys").select("region").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
+        if survey_res.data and survey_res.data[0].get("region"):
+            region = survey_res.data[0]["region"]
+        else:
+            users = load_local_users()
+            if user_id in users and users[user_id].get("region"):
+                region = users[user_id]["region"]
+    except Exception as reg_err:
+        print(f"[Backend Chat Error] Failed to resolve user region for chat. Error: {reg_err}")
+
+    print(f"[DEBUG MAIN] Calling get_chatbot_response with persona_id={persona_id}, region={region}")
     try:
         bot_reply = get_chatbot_response(
             user_text=content,
@@ -342,7 +355,8 @@ async def send_chat(request: ChatSendRequest):
             conversation_history=conversation_history,
             persona_system=persona_prompts.get(persona_id, ""),
             persona_id=persona_id,
-            past_memories=past_memories
+            past_memories=past_memories,
+            region=region
         )
     except Exception as e:
         bot_reply = f"감정을 깊이 있게 이해하는 도중 잠시 지연이 발생했어요. 조금만 천천히 이야기해 주시겠어요? (오류: {e})"
@@ -612,10 +626,21 @@ def login(request: LoginRequest):
         if res.data:
             user = res.data[0]
             if user["password"] == request.password:
+                user_id = user["id"]
+                # 최신 설문 조사를 조회하여 region 가져오기
+                region = "서울"
+                try:
+                    survey_res = supabase.table("surveys").select("region").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
+                    if survey_res.data and survey_res.data[0].get("region"):
+                        region = survey_res.data[0]["region"]
+                except Exception as ex:
+                    print(f"[Login Detail Alert] Failed to fetch region from surveys for user {user_id}. Error: {ex}")
+                
                 return {
-                    "user_id": user["id"],
+                    "user_id": user_id,
                     "email": user["email"],
-                    "nickname": user["nickname"]
+                    "nickname": user["nickname"],
+                    "region": region
                 }
             else:
                 raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
@@ -629,7 +654,8 @@ def login(request: LoginRequest):
                 return {
                     "user_id": uid,
                     "email": u["email"],
-                    "nickname": u["nickname"]
+                    "nickname": u["nickname"],
+                    "region": u.get("region", "서울")
                 }
             else:
                 raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
@@ -1070,3 +1096,31 @@ async def save_note(request: NoteSaveRequest):
         print(f"Failed to write counselor_notes.json: {we}")
         
     return {"status": "success", "data": new_note}
+
+@app.get("/api/resources/search")
+async def search_resources(region: str = "서울"):
+    try:
+        from rag_engine import RAGEngine
+        rag_engine = RAGEngine()
+        
+        index = rag_engine.indices.get("public_resource_kb")
+        if not index:
+            return {"status": "error", "message": "Public resource KB not built or loaded."}
+        
+        # 해당 지역(region)의 모든 기관들을 docstore에서 필터링하여 반환
+        filtered_docs = [d for d in index.docstore._dict.values() if d.metadata.get("region") == region]
+        
+        results = []
+        for d in filtered_docs:
+            results.append({
+                "name": d.metadata.get("name", "기관명 없음"),
+                "category": d.metadata.get("category", "public"),
+                "address": d.metadata.get("address", "주소 없음"),
+                "homepage": d.metadata.get("homepage", ""),
+                "region": d.metadata.get("region", region)
+            })
+        return {"status": "success", "data": results}
+    except Exception as e:
+        print(f"[API Search Error] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+

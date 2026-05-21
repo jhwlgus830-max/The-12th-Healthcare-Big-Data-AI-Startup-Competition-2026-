@@ -337,6 +337,7 @@ def get_chatbot_response(
     persona_system: str = "",
     persona_id: int = None,
     past_memories: str = "",
+    region: str = None,
 ) -> str:
     """
     KLUEBERT 분석 결과를 GPT-4o mini 프롬프트에 포함해서
@@ -350,6 +351,7 @@ def get_chatbot_response(
                                예: "당신은 '지우'라는 전문 심리 상담사입니다."
         persona_id           — (선택) 페르소나 고유 ID (2: 지우, 4: 멘토 선생님)
         past_memories        — (선택) 과거 대화 중 유사 사건/발화 추출 텍스트
+        region               — (선택) 사용자의 거주지역 정보
     반환값:
         str — GPT-4o mini 응답 텍스트
     """
@@ -390,6 +392,27 @@ def get_chatbot_response(
         except Exception as re_err:
             print(f"[RAG Error] RAG 검색 진행 중 오류가 발생했습니다: {re_err}")
 
+    # ── [RAG 공공 지원 자원 검색 (public_resource_kb) 적용] ──
+    rag_context_public = ""
+    if region and persona_id in [1, 2, 3, 4, 5]:
+        try:
+            recommend_keywords = ["주변", "상담소", "센터", "복지센터", "병원", "기관", "가까운", "근처", "위치", "어디", "연락처", "홈페이지", "추천", "도움", "지도", "의원"]
+            if any(kw in user_text for kw in recommend_keywords) or persona_id == 3:
+                from rag_engine import RAGEngine
+                rag_engine = RAGEngine()
+                retrieved_public = rag_engine.retrieve(user_text, kb_category="public_resource_kb", region=region)
+                if retrieved_public:
+                    public_contents = []
+                    for idx, doc in enumerate(retrieved_public):
+                        name = doc.metadata.get("name", "기관명 정보 없음")
+                        addr = doc.metadata.get("address", "주소 정보 없음")
+                        hp = doc.metadata.get("homepage", "홈페이지 정보 없음")
+                        public_contents.append(f"[{idx+1}] 기관명: {name} | 주소: {addr} | 홈페이지: {hp}")
+                    rag_context_public = "\n".join(public_contents)
+                    print(f"[RAG Engine] {len(retrieved_public)}개의 {region} 지역 공공 지원 기관 정보를 대화에 주입합니다.")
+        except Exception as rep_err:
+            print(f"[RAG Public Error] 공공 자원 RAG 검색 오류: {rep_err}")
+
     # 페르소나별 시스템 프롬프트 이원화 구성
     if persona_id == 1:
         # backend/main.py에서 읽어온 또치 프롬프트 파일(또치 프롬프트.docx 기반)을 Base로 지정
@@ -421,6 +444,12 @@ def get_chatbot_response(
 
 [과거 상담 기억 (Retrieved Past Conversations)]
 {past_memories if past_memories.strip() else "이전의 특이 대화 기억이 없습니다."}
+
+[사용자 거주지 주변 전문 상담 기관 정보 (RAG)]
+거주지역: {region if region else "전국"}
+추천 기관 목록:
+{rag_context_public if rag_context_public else "현재 조회된 거주지 주변 전문 기관 정보가 없습니다."}
+*지침: 사용자가 거주지 근처 상담소나 의원, 도움 받을 곳을 찾으면 위 추천 기관 목록에 근거해서 이름, 주소, 홈페이지를 친근한 반말로 설명해줘. 억지로 정보를 지어내지는 마.
 
 [현재 사용자 감정 분석 결과 — KLUEBERT 모델 출력]
 - 주요 감지 감정: {top3_str}

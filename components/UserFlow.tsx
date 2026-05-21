@@ -5,7 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
 import { userPersonaMessages, checkPersonaSwitchTrigger } from "@/lib/mockData";
 
-export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003", phq9Score = 0, phq9Answers = null, p4Answers = null }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string, phq9Score?: number, phq9Answers?: number[] | null, p4Answers?: string[] | null }) {
+export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003", phq9Score = 0, phq9Answers = null, p4Answers = null, onNavigateToMap }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string, phq9Score?: number, phq9Answers?: number[] | null, p4Answers?: string[] | null, onNavigateToMap?: () => void }) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(45);
@@ -208,12 +208,27 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               {currentPersona === 5 && "행동 활성화 (유머) 모드"}
             </p>
           </div>
-          <button 
-            onClick={() => onEndChat && onEndChat(sessionId)}
-            className="px-3 py-1.5 bg-white border border-[#EAE5D9] text-gray-800 text-xs font-bold rounded-lg shadow-sm hover:bg-[#F8F5F0] transition-colors shrink-0"
-          >
-            대화 종료 및 리포트 보기
-          </button>
+          <div className="flex gap-2 shrink-0">
+            {onNavigateToMap && (
+              <button 
+                type="button"
+                onClick={onNavigateToMap}
+                className={`px-3 py-1.5 font-bold text-xs rounded-lg shadow-sm transition-all flex items-center gap-1 ${
+                  currentPersona === 3 
+                    ? "bg-[#EF4444] hover:bg-[#DC2626] text-white border border-red-500/40" 
+                    : "bg-[#FAF8F5] hover:bg-[#F5EFE6] text-[#8C7862] hover:text-[#1E2D4E] border border-[#EAE5D9]"
+                }`}
+              >
+                📍 내 주변 센터 찾기
+              </button>
+            )}
+            <button 
+              onClick={() => onEndChat && onEndChat(sessionId)}
+              className="px-3 py-1.5 bg-white border border-[#EAE5D9] text-gray-800 text-xs font-bold rounded-lg shadow-sm hover:bg-[#F8F5F0] transition-colors shrink-0"
+            >
+              대화 종료 및 리포트 보기
+            </button>
+          </div>
         </div>
 
         {/* Alerts for Persona 4 and 5 */}

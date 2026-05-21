@@ -208,5 +208,12 @@
     "status": "active",
     "id": "0b62840f-cfec-4ec2-a95b-22cafe906ae9",
     "created_at": "2026-05-21T03:08:50.232485Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "initial_persona": 5,
+    "status": "active",
+    "id": "6e2a6df5-5528-4dc2-9808-19d3ab38eb72",
+    "created_at": "2026-05-21T15:01:25.584049Z"
   }
 ]
