@@ -19,5 +19,19 @@
     "status": "active",
     "id": "c7ceb89e-f20d-4c21-8db7-51df50c7d32b",
     "created_at": "2026-05-20T01:15:53.601216Z"
+  },
+  {
+    "user_id": "user-003",
+    "initial_persona": 1,
+    "status": "active",
+    "id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "created_at": "2026-05-20T01:24:00.201361Z"
+  },
+  {
+    "user_id": "user-003",
+    "initial_persona": 3,
+    "status": "active",
+    "id": "7850f930-513d-444a-a80c-1bd198c198bb",
+    "created_at": "2026-05-20T01:29:06.972534Z"
   }
 ]

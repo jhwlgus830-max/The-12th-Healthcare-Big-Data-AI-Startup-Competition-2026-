@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>우울빼미 - 밤에도 당신의 마음을 지켜보는 AI 심리 케어</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset & Base styling */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --navy: #0F172A;
+      --charcoal: #111827;
+      --orange: #F59E0B;
+      --yellow: #FDBA24;
+      --ivory: #F8F5F0;
+      --navy-text: #0F172A;
+      --slate-300: #CBD5E1;
+      --slate-400: #94A3B8;
+      --slate-600: #475569;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+      background-color: var(--navy);
+      color: #F8F5F0;
+      overflow-x: hidden;
+      transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s ease;
+      line-height: 1.6;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(245, 158, 11, 0.5);
+    }
+
+    /* Layout Containers */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Starry Background Canvas */
+    #stars-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Header Nav */
+    header {
+      width: 100%;
+      padding: 24px 0;
+      position: fixed;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: border-color 0.5s ease, background 0.5s ease;
+    }
+
+    header.scrolled {
+      border-color: rgba(15, 23, 42, 0.06);
+      background: rgba(248, 245, 240, 0.8);
+    }
+
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      background: #0d1220;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-group:hover .logo-img {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      transition: color 0.5s ease;
+    }
+
+    header.scrolled .brand-name {
+      color: var(--navy-text);
+    }
+
+    .nav-btn {
+      background: var(--orange);
+      color: #FFF;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+      background: #ea580c;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 140px;
+      padding-bottom: 80px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .glow-bg {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0) 70%);
+      top: 20%;
+      pointer-events: none;
+      filter: blur(40px);
+      animation: pulse 8s infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.15); opacity: 1; }
+    }
+
+    .crescent-moon-wrapper {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .moon-bg {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      box-shadow: -15px 15px 0 0 var(--yellow);
+      transform: rotate(-35deg);
+      opacity: 0.85;
+      filter: drop-shadow(0 0 10px rgba(253, 186, 36, 0.4));
+    }
+
+    .owl-logo-hero {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      background: #0e1628;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(245, 158, 11, 0.2);
+      animation: float 4s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+
+    .hero-title {
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #F8F5F0 60%, #FDBA24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .hero-sub {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--slate-400);
+      margin-bottom: 40px;
+      max-width: 600px;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .cta-container {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      margin-bottom: 80px;
+    }
+
+    .cta-btn {
+      background: linear-gradient(135deg, var(--orange) 0%, #f97316 100%);
+      color: #FFF;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 16px 48px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.35), 0 0 20px rgba(245, 158, 11, 0.1);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      transform: scale(1.03) translateY(-1px);
+      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), 0 0 25px rgba(245, 158, 11, 0.2);
+    }
+
+    /* Glassmorphism Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-cols: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 1000px;
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0) 100%);
+      transform: skewX(-25deg);
+      transition: 0.75s ease;
+      pointer-events: none;
+    }
+
+    .glass-card:hover::before {
+      left: 120%;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-8px);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.25), 0 0 15px rgba(245, 158, 11, 0.1);
+    }
+
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .glass-card:hover .card-icon {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #F8F5F0;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--slate-400);
+      line-height: 1.5;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Transition Section */
+    .transition-section {
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .transition-text {
+      font-size: 26px;
+      font-weight: 300;
+      max-width: 700px;
+      line-height: 1.8;
+      color: var(--slate-300);
+      transition: color 0.5s ease;
+    }
+
+    body.in-ivory .transition-text {
+      color: var(--slate-600);
+    }
+
+    body.in-ivory {
+      color: var(--navy-text);
+    }
+
+    /* Main Section (Ivory Mode) */
+    .main-section {
+      padding: 120px 0;
+      position: relative;
+      z-index: 10;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .main-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      margin-bottom: 60px;
+      text-align: left;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: 38px;
+      font-weight: 800;
+      color: inherit;
+      letter-spacing: -0.02em;
+    }
+
+    /* Main Grid Layout */
+    .main-grid {
+      display: grid;
+      grid-template-cols: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .col-left, .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Ivory Card UI */
+    .ivory-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(15, 23, 42, 0.04);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.01);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      color: var(--navy-text);
+    }
+
+    .ivory-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.05);
+    }
+
+    .card-header-ivory {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      padding-bottom: 12px;
+    }
+
+    .card-title-ivory {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--orange);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    /* Journal Input Module */
+    .journal-textarea {
+      width: 100%;
+      height: 100px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #F9FAFB;
+      border-radius: 12px;
+      padding: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--navy-text);
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .journal-textarea:focus {
+      border-color: var(--orange);
+      background: #FFF;
+    }
+
+    .journal-btn {
+      width: 100%;
+      background: var(--navy-text);
+      color: #FFF;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background 0.2s;
+    }
+
+    .journal-btn:hover {
+      background: #1e293b;
+    }
+
+    .journal-feedback {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(245, 158, 11, 0.05);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    /* AI Chat Module */
+    .chat-box {
+      height: 250px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+      margin-bottom: 16px;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .chat-bubble.bot {
+      align-self: flex-start;
+      background: #F3F4F6;
+      color: #1F2937;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: var(--navy-text);
+      color: #FFF;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #F9FAFB;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .chat-input:focus {
+      border-color: var(--orange);
+      background: #FFF;
+    }
+
+    .chat-send-btn {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 0 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .chat-send-btn:hover {
+      background: #ea580c;
+    }
+
+    /* PHQ-9 Slide Card */
+    .phq9-slider-row {
+      margin-bottom: 20px;
+    }
+
+    .phq9-question {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    .phq9-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .phq9-slider {
+      flex: 1;
+      accent-color: var(--orange);
+      cursor: pointer;
+    }
+
+    .phq9-score-display {
+      font-size: 13px;
+      font-weight: 700;
+      width: 45px;
+      text-align: right;
+    }
+
+    .phq9-total-card {
+      background: #F9FAFB;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .phq9-total-label {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .phq9-total-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    /* Emotion Report Graph */
+    .chart-container {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 20px 10px 10px 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+    }
+
+    .chart-bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 12%;
+    }
+
+    .chart-bar {
+      width: 100%;
+      background: linear-gradient(180deg, var(--orange) 0%, rgba(245, 158, 11, 0.4) 100%);
+      border-radius: 6px 6px 0 0;
+      height: 0px;
+      transition: height 1s ease-out;
+    }
+
+    .chart-day {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-600);
+    }
+
+    .chart-val {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--navy-text);
+      margin-bottom: -4px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.04);
+      padding: 48px 0;
+      background: #FFFFFF;
+      color: var(--slate-600);
+      font-size: 13px;
+      text-align: center;
+      transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s ease, border-color 0.5s ease;
+      z-index: 10;
+      position: relative;
+    }
+
+    body.in-ivory footer {
+      background: #F8F5F0;
+      border-top-color: rgba(15, 23, 42, 0.05);
+    }
+
+    footer p {
+      margin-bottom: 8px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .hero-title {
+        font-size: 42px;
+      }
+      .cards-grid {
+        grid-template-cols: 1fr;
+      }
+      .main-grid {
+        grid-template-cols: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Starry Sky for Hero -->
+  <canvas id="stars-canvas"></canvas>
+
+  <!-- Header -->
+  <header id="header">
+    <div class="container header-flex">
+      <a href="#" class="logo-group">
+        <img src="/owl-logo.png" alt="우울빼미" class="logo-img" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=200&auto=format&fit=crop'">
+        <span class="brand-name">우울빼미</span>
+      </a>
+      <button class="nav-btn" onclick="alert('Next.js 앱 통합을 통해 동작하는 버튼입니다.')">시작하기</button>
+    </div>
+  </header>
+
+  <!-- Hero Section (Night Mode) -->
+  <section class="hero container">
+    <div class="glow-bg"></div>
+    
+    <div class="crescent-moon-wrapper">
+      <div class="moon-bg"></div>
+      <img src="/owl-logo.png" alt="Owl Logo" class="owl-logo-hero" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=200&auto=format&fit=crop'">
+    </div>
+
+    <h1 class="hero-title">우울빼미</h1>
+    <p class="hero-sub">밤에도 당신의 마음을 지켜보는 AI 심리 케어 솔루션</p>
+    
+    <div class="cta-container">
+      <button class="cta-btn" onclick="alert('Next.js 앱으로 이동합니다.')">
+        시작하기 <span>→</span>
+      </button>
+    </div>
+
+    <!-- Glassmorphism Cards -->
+    <div class="cards-grid">
+      <div class="glass-card">
+        <span class="card-icon">🔍</span>
+        <h3 class="card-title">과학적 진단</h3>
+        <p class="card-desc">PHQ-9 자가 검진 도구를 기반으로 현재 우울 위험도를 정밀 측정합니다.</p>
+      </div>
+      <div class="glass-card">
+        <span class="card-icon">🤖</span>
+        <h3 class="card-title">맞춤 페르소나</h3>
+        <p class="card-desc">위험도 스펙트럼에 맞춰 밤하늘 아래 최적의 AI 상담사가 매칭됩니다.</p>
+      </div>
+      <div class="glass-card">
+        <span class="card-icon">🛡️</span>
+        <h3 class="card-title">안전 보장</h3>
+        <p class="card-desc">고위험 징후 감지 시 24시간 자동 비상 프로토콜 및 긴급 도움을 연계합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Transition Space -->
+  <section class="transition-section">
+    <div class="container">
+      <p class="transition-text">
+        "어둡고 불안하던 밤을 뒤로하고,<br>
+        이제 따뜻하게 정돈된 회복의 공간으로 걸어 들어갑니다."
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Section (Cream Ivory Mode) -->
+  <section class="main-section container" id="main-section">
+    <div class="section-header">
+      <div class="section-label">Emotional Space</div>
+      <h2 class="section-title">마음을 돌보는 차분한 공간</h2>
+    </div>
+
+    <div class="main-grid">
+      <!-- Left Column: Journal & Diagnostics -->
+      <div class="col-left">
+        <!-- Journal Card -->
+        <div class="ivory-card">
+          <div class="card-header-ivory">
+            <h3 class="card-title-ivory"><span>✍️</span> 감정 기록 일기</h3>
+            <span class="card-badge">회복 Routine</span>
+          </div>
+          <p style="font-size: 13px; color: var(--slate-600); margin-bottom: 12px;">오늘 당신의 마음에 고여 있는 어떤 감정이라도 좋습니다. 차분히 텍스트로 적어 정리해보세요.</p>
+          <textarea class="journal-textarea" id="journal-input" placeholder="여기에 오늘의 생각을 입력해보세요... (예: 오늘 회사에서 실수를 해서 마음이 너무 불안하고 밤잠이 안 와요)"></textarea>
+          <button class="journal-btn" onclick="submitJournal()">일기 작성 완료</button>
+          
+          <div class="journal-feedback" id="journal-feedback">
+            <strong>우울빼미의 따뜻한 한마디:</strong><br>
+            <span id="feedback-text"></span>
+          </div>
+        </div>
+
+        <!-- PHQ-9 Diagnostics Card -->
+        <div class="ivory-card">
+          <div class="card-header-ivory">
+            <h3 class="card-title-ivory"><span>📊</span> 실시간 우울 검사 시뮬레이터</h3>
+            <span class="card-badge">자가 진단</span>
+          </div>
+          <p style="font-size: 13px; color: var(--slate-600); margin-bottom: 16px;">지난 2주간 겪은 상태의 빈도를 슬라이더로 조절해보세요 (0점: 없음 ~ 3점: 거의 매일).</p>
+          
+          <div class="phq9-slider-row">
+            <div class="phq9-question">Q1. 기분이 가라앉거나 우울하거나 희망이 없다고 느꼈다.</div>
+            <div class="phq9-control">
+              <input type="range" min="0" max="3" value="1" class="phq9-slider" oninput="updatePHQ9()">
+              <span class="phq9-score-display">1점</span>
+            </div>
+          </div>
+
+          <div class="phq9-slider-row">
+            <div class="phq9-question">Q2. 평소 하던 일에 대한 흥미가 없어지거나 즐거움을 느끼지 못했다.</div>
+            <div class="phq9-control">
+              <input type="range" min="0" max="3" value="2" class="phq9-slider" oninput="updatePHQ9()">
+              <span class="phq9-score-display">2점</span>
+            </div>
+          </div>
+
+          <div class="phq9-slider-row">
+            <div class="phq9-question">Q3. 잠들기가 어렵거나 자주 깼다. (혹은 너무 많이 잤다)</div>
+            <div class="phq9-control">
+              <input type="range" min="0" max="3" value="2" class="phq9-slider" oninput="updatePHQ9()">
+              <span class="phq9-score-display">2점</span>
+            </div>
+          </div>
+
+          <div class="phq9-total-card">
+            <span class="phq9-total-label">PHQ-9 우울지수 예측 점수:</span>
+            <span class="phq9-total-value" id="phq9-total-val">5점</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Chat & Report -->
+      <div class="col-right">
+        <!-- Chat Card -->
+        <div class="ivory-card">
+          <div class="card-header-ivory">
+            <h3 class="card-title-ivory"><span>💬</span> 따뜻한 감정 동반자 AI 채팅</h3>
+            <span class="card-badge">AI 상담사</span>
+          </div>
+          
+          <div class="chat-box" id="chat-box">
+            <div class="chat-bubble bot">
+              안녕하세요, 우울빼미입니다. 밤잠을 설칠 만큼 마음이 무거운 오늘, 당신의 이야기를 가만히 들려주실 수 있나요?
+            </div>
+          </div>
+
+          <div class="chat-input-group">
+            <input type="text" class="chat-input" id="chat-input" placeholder="따뜻한 이야기를 건네보세요..." onkeypress="handleChatKey(event)">
+            <button class="chat-send-btn" onclick="sendChat()">전송</button>
+          </div>
+        </div>
+
+        <!-- Emotion Report Card -->
+        <div class="ivory-card">
+          <div class="card-header-ivory">
+            <h3 class="card-title-ivory"><span>📈</span> 감정 안정 추이 리포트</h3>
+            <span class="card-badge">Weekly Report</span>
+          </div>
+          <p style="font-size: 13px; color: var(--slate-600); margin-bottom: 12px;">지난 일주일간 당신이 기록했던 마음의 수면 아래 안정도 그래프입니다.</p>
+          
+          <div class="chart-container">
+            <div class="chart-bar-group">
+              <span class="chart-val">75%</span>
+              <div class="chart-bar" style="height: 75%"></div>
+              <span class="chart-day">월</span>
+            </div>
+            <div class="chart-bar-group">
+              <span class="chart-val">60%</span>
+              <div class="chart-bar" style="height: 60%"></div>
+              <span class="chart-day">화</span>
+            </div>
+            <div class="chart-bar-group">
+              <span class="chart-val">82%</span>
+              <div class="chart-bar" style="height: 82%"></div>
+              <span class="chart-day">수</span>
+            </div>
+            <div class="chart-bar-group">
+              <span class="chart-val">45%</span>
+              <div class="chart-bar" style="height: 45%"></div>
+              <span class="chart-day">목</span>
+            </div>
+            <div class="chart-bar-group">
+              <span class="chart-val">90%</span>
+              <div class="chart-bar" style="height: 90%"></div>
+              <span class="chart-day">금</span>
+            </div>
+            <div class="chart-bar-group">
+              <span class="chart-val">70%</span>
+              <div class="chart-bar" style="height: 70%"></div>
+              <span class="chart-day">토</span>
+            </div>
+            <div class="chart-bar-group">
+              <span class="chart-val">85%</span>
+              <div class="chart-bar" style="height: 85%"></div>
+              <span class="chart-day">일</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p style="font-weight: 700; margin-bottom: 12px;">🦉 우울빼미 AI 심리 케어 플랫폼</p>
+      <p>본 서비스는 의료 진단을 대체할 수 없으며, 예방 및 정서 안정을 위한 보조적 AI 툴입니다.</p>
+      <p style="font-size: 11px; opacity: 0.7; margin-top: 16px;">© 2026 우울빼미 (Mind-Safe). All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // 🌌 Canvas Stars Animation
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let stars = [];
+    const maxStars = 80;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Create stars
+    for (let i = 0; i < maxStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        speed: 0.02 + Math.random() * 0.03
+      });
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw stars only when canvas is visible (avoiding redundant render on light background)
+      const opacity = parseFloat(canvas.style.opacity || 1);
+      if (opacity > 0.05) {
+        for (let i = 0; i < maxStars; i++) {
+          let s = stars[i];
+          s.alpha += s.speed;
+          if (s.alpha > 1 || s.alpha < 0) {
+            s.speed = -s.speed;
+          }
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(248, 245, 240, ${s.alpha * opacity})`;
+          ctx.fill();
+        }
+      }
+      
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    // ☁️ Scroll Transition Logic
+    const mainSection = document.getElementById('main-section');
+    const header = document.getElementById('header');
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      
+      // Calculate interpolation percentage (complete transition by 80% of window height)
+      const scrollPct = Math.min(scrollY / (viewportHeight * 0.7), 1);
+      
+      // Navy: #0F172A (15, 23, 42) -> Ivory: #F8F5F0 (248, 245, 240)
+      const r = Math.round(15 + (248 - 15) * scrollPct);
+      const g = Math.round(23 + (245 - 23) * scrollPct);
+      const b = Math.round(42 + (240 - 42) * scrollPct);
+      
+      document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+      
+      // Handle canvas stars opacity (fade out as we scroll to light theme)
+      canvas.style.opacity = 1 - scrollPct;
+      
+      // Scroll state tags
+      if (scrollPct > 0.5) {
+        document.body.classList.add('in-ivory');
+        header.classList.add('scrolled');
+      } else {
+        document.body.classList.remove('in-ivory');
+        header.classList.remove('scrolled');
+      }
+
+      // Main section visibility fade-in
+      const triggerTop = mainSection.getBoundingClientRect().top;
+      if (triggerTop < viewportHeight * 0.85) {
+        mainSection.classList.add('visible');
+      }
+    });
+
+    // ✍️ Journal Interactive Logic
+    function submitJournal() {
+      const input = document.getElementById('journal-input');
+      const feedback = document.getElementById('journal-feedback');
+      const feedbackText = document.getElementById('feedback-text');
+      
+      if (!input.value.trim()) {
+        alert('일기 내용을 작성해주세요.');
+        return;
+      }
+
+      feedback.style.display = 'block';
+      feedbackText.innerText = `오늘 당신의 기록 속에서 불안의 조각들을 읽어보았어요. 실수란 성장의 순간에 피할 수 없는 흔적일 뿐이랍니다. 당신의 잘못이 아니니 너무 자책하지 말아요. 우울빼미가 오늘 밤만큼은 고요히 날개를 펴고 곁을 지키며 포근한 잠을 응원할게요.`;
+      
+      // Scroll down to show feedback
+      feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // 💬 Chat Interaction Logic
+    function handleChatKey(event) {
+      if (event.key === 'Enter') {
+        sendChat();
+      }
+    }
+
+    function sendChat() {
+      const chatInput = document.getElementById('chat-input');
+      const chatBox = document.getElementById('chat-box');
+      const text = chatInput.value.trim();
+
+      if (!text) return;
+
+      // Add user bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.innerText = text;
+      chatBox.appendChild(userBubble);
+      
+      chatInput.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Generate supportive response based on user keywords
+      setTimeout(() => {
+        const botBubble = document.createElement('div');
+        botBubble.className = 'chat-bubble bot';
+        
+        let response = `소중한 속마음을 털어놓아 주어 감사해요. 그 일이 당신에게 무척이나 큰 짐이 되었겠어요. 오늘 밤은 꼬인 일들을 잠시 잊고, 깊은 호흡에 마음을 실어보는 건 어떨까요?`;
+        
+        if (text.includes('우울') || text.includes('슬퍼')) {
+          response = `당신의 우울함에 가만히 날개를 드리워 따뜻하게 안아주고 싶어요. 그 마음에 머물되, 잠시 온기와 쉼을 얹어 갈 수 있도록 제가 곁에 있을게요.`;
+        } else if (text.includes('불안') || text.includes('잠')) {
+          response = `두 눈을 감아도 불안이 파도처럼 밀려온다면, 지금 이 방의 차분한 공기만 느껴보세요. 당신은 안전하며, 우울빼미가 든든하게 지켜보고 있으니 걱정 내려두세요.`;
+        }
+
+        botBubble.innerText = response;
+        chatBox.appendChild(botBubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 800);
+    }
+
+    // 📊 PHQ-9 Realtime update Logic
+    function updatePHQ9() {
+      const sliders = document.querySelectorAll('.phq9-slider');
+      let total = 0;
+
+      sliders.forEach((slider) => {
+        const val = parseInt(slider.value);
+        total += val;
+        // Update display text beside slider
+        slider.nextElementSibling.innerText = `${val}점`;
+      });
+
+      document.getElementById('phq9-total-val').innerText = `${total}점`;
+    }
+  </script>
+</body>
+</html>

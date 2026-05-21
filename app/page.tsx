@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import LandingPage from "../components/LandingPage";
 import EmotionReport from "../components/EmotionReport";
 import UserFlow from "../components/UserFlow";
 import CounselorPortal from "../components/CounselorPortal";
@@ -9,6 +10,7 @@ import CounselorDashboard from "../components/CounselorDashboard";
 import CounselorReport from "../components/CounselorReport";
 import CounselorGuide from "../components/CounselorGuide";
 import CounselorSettings from "../components/CounselorSettings";
+import OwlLogo from "../components/OwlLogo";
 import { phq9ResultConfig } from "@/lib/mockData";
 
 
@@ -140,11 +142,16 @@ export default function Home() {
       return;
     }
 
+    // Unified role determination based on email
+    const isCounselorEmail = email.trim() === "counselor@uulppae.com" || email.trim() === "counselor@mallang.com";
+    const activeRole = isCounselorEmail ? "counselor" : "user";
+    setRole(activeRole);
+
     try {
-      if (role === "counselor") {
+      if (activeRole === "counselor") {
         setLoggedInUser({
           userId: "counselor-001",
-          nickname: "상담사 지우",
+          nickname: "상담사 김상담",
           email: email
         });
         setStep("counselor_dashboard");
@@ -168,10 +175,27 @@ export default function Home() {
       const data = await res.json();
       setLoggedInUser({ userId: data.user_id, nickname: data.nickname, email: data.email });
       setProfile(prev => ({ ...prev, nickname: data.nickname }));
-      localStorage.setItem("mallang_user", JSON.stringify({ userId: data.user_id, nickname: data.nickname, email: data.email }));
+      localStorage.setItem("uulppae_user", JSON.stringify({ userId: data.user_id, nickname: data.nickname, email: data.email }));
       setStep("consent");
     } catch (err: any) {
-      setAuthError(err.message);
+      console.warn("Backend connection failed. Using mock offline fallback for demo...", err);
+      // Fallback to local authentication for demo robustness
+      if (isSignUp) {
+        setLoggedInUser({
+          userId: "user-" + Math.random().toString(36).substring(2, 7),
+          nickname: nickname,
+          email: email
+        });
+        setProfile(prev => ({ ...prev, nickname: nickname }));
+      } else {
+        setLoggedInUser({
+          userId: "user-001",
+          nickname: email.split("@")[0] || "우울이",
+          email: email
+        });
+        setProfile(prev => ({ ...prev, nickname: email.split("@")[0] || "우울이" }));
+      }
+      setStep("consent");
     }
   };
 
@@ -192,155 +216,100 @@ export default function Home() {
   const isUserSelection = !isHighRisk && totalScore >= 5 && totalScore <= 9;
   const isLowRisk = !isHighRisk && totalScore >= 0 && totalScore <= 4;
 
+  if (step === "onboarding") {
+    return <LandingPage onStart={() => setStep("login")} />;
+  }
+
+  const isCounselor = step.startsWith("counselor_");
+
   return (
-    <div className="min-h-screen bg-[#F7F9FC] flex flex-col items-center justify-center p-4 font-sans text-gray-800">
-      {/* Onboarding */}
-      {step === "onboarding" && (
-        <div className="max-w-4xl w-full flex flex-col items-center gap-8 animate-fade-in">
-          {/* Central Main Card */}
-          <div className="bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center max-w-lg w-full transform hover:scale-[1.02] transition-transform duration-300">
-            <span className="text-7xl mb-4 animate-bounce-slow">🫧</span>
-            <h1 className="text-4xl font-bold text-gray-900 mb-1">말랑해도 돼</h1>
-            <p className="text-[#6096C8] font-bold text-sm tracking-widest mb-6">MIND-SAFE</p>
-            <p className="text-gray-600 whitespace-pre-line leading-relaxed">
-              {"임상 지식 기반 AI 정신건강 솔루션\n당신의 마음 곁에 항상 함께할게요 💙"}
-            </p>
-          </div>
-
-          {/* Bottom Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl">
-            <div className="bg-white rounded-2xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow flex flex-col items-center text-center border border-gray-50">
-              <span className="text-3xl mb-3">🔍</span>
-              <h3 className="font-bold text-gray-900 mb-1">과학적 진단</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">PHQ-9 기반 정확한 우울 위험도 측정</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow flex flex-col items-center text-center border border-gray-50">
-              <span className="text-3xl mb-3">🤖</span>
-              <h3 className="font-bold text-gray-900 mb-1">맞춤 페르소나</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">위험도에 따라 AI 상담사가 자동 연결</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow flex flex-col items-center text-center border border-gray-50">
-              <span className="text-3xl mb-3">🛡️</span>
-              <h3 className="font-bold text-gray-900 mb-1">안전 보장</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">고위험 감지 시 즉시 전문가 연결</p>
-            </div>
-          </div>
-
-          {/* Bottom Buttons */}
-          <div className="flex flex-col items-center gap-4 mt-2">
-            <button
-              onClick={() => setStep("select")}
-              className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white font-bold py-3.5 px-12 rounded-full shadow-[0_10px_20px_-5px_rgba(139,123,173,0.3)] hover:shadow-[0_12px_25px_-5px_rgba(139,123,173,0.4)] transform hover:translate-y-[-1px] transition-all duration-200 flex items-center gap-2 text-lg"
-            >
-              시작하기 →
-            </button>
-            <button className="text-sm text-gray-500 hover:text-gray-700 underline-offset-4 hover:underline transition-colors">
-              이미 계정이 있으신가요? 로그인
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Select Role */}
-      {step === "select" && (
-        <div className="max-w-md w-full bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center animate-fade-in">
-          <span className="text-5xl mb-4">🚪</span>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">로그인 유형을 선택해주세요</h2>
-          <p className="text-sm text-gray-500 mb-8">당신에게 맞는 포털로 안내해 드릴게요</p>
-          
-          <div className="flex flex-col gap-4 w-full">
-            <button
-              onClick={() => {
-                setRole("user");
-                setStep("login");
-              }}
-              className="bg-[#F7F9FC] hover:bg-[#EBF1F9] text-gray-800 font-bold py-4 px-6 rounded-2xl border border-gray-100 transition-colors flex items-center justify-between group"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">👤</span>
-                <span>개인 사용자</span>
-              </div>
-              <span className="text-xl text-gray-400 group-hover:text-[#6096C8] transition-colors">→</span>
-            </button>
-            <button
-              onClick={() => {
-                setRole("counselor");
-                setStep("login");
-              }}
-              className="bg-[#F7F9FC] hover:bg-[#EBF1F9] text-gray-800 font-bold py-4 px-6 rounded-2xl border border-gray-100 transition-colors flex items-center justify-between group"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🩺</span>
-                <span>상담사 포털</span>
-              </div>
-              <span className="text-xl text-gray-400 group-hover:text-[#8B7BAD] transition-colors">→</span>
-            </button>
-          </div>
-          
-          <button
-            onClick={() => setStep("onboarding")}
-            className="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-          >
-            ← 이전으로 돌아가기
-          </button>
-        </div>
-      )}
+    <div className={`min-h-screen bg-[#F8F5F0] font-sans text-gray-800 ${
+      isCounselor ? "flex" : "flex flex-col items-center justify-center p-4"
+    }`}>
 
       {/* Login */}
       {step === "login" && (
-        <div className="max-w-md w-full bg-white rounded-3xl p-10 shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col items-center text-center animate-fade-in">
-          <span className="text-5xl mb-4">{role === "user" ? "💙" : "💜"}</span>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {role === "user" ? "사용자 로그인" : "상담사 로그인"}
-          </h2>
-          <p className="text-sm text-gray-500 mb-8">
-            {role === "user" ? "마음의 이야기를 들려주세요" : "전문가용 관리 화면입니다"}
-          </p>
+        <div className="max-w-md w-full bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-10 shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col items-center text-center animate-fade-in">
+          <div className="mb-4">
+            <OwlLogo size={56} variant="ivory" />
+          </div>
+          <h2 className="text-2xl font-black text-gray-900 mb-2">우울빼미 시작하기</h2>
+          <p className="text-sm text-gray-500 mb-8">안정적인 심리 분석과 맞춤 케어를 지원합니다</p>
           
           <div className="flex flex-col gap-4 w-full">
+            {isSignUp && (
+              <div className="text-left w-full">
+                <label className="text-xs font-bold text-[#8C7862] ml-1">닉네임</label>
+                <input
+                  type="text"
+                  placeholder="사용하실 닉네임을 입력해 주세요"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
+                />
+              </div>
+            )}
             <div className="text-left w-full">
-              <label className="text-xs font-bold text-gray-500 ml-1">이메일</label>
+              <label className="text-xs font-bold text-[#8C7862] ml-1">이메일 주소</label>
               <input
                 type="text"
-                placeholder="example@mallang.com"
-                className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
+                placeholder="example@uulppae.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
               />
             </div>
             <div className="text-left w-full">
-              <label className="text-xs font-bold text-gray-500 ml-1">비밀번호</label>
+              <label className="text-xs font-bold text-[#8C7862] ml-1">비밀번호</label>
               <input
                 type="password"
                 placeholder="••••••••"
-                className="bg-[#F7F9FC] border border-gray-100 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#6096C8] transition-all w-full mt-1"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
               />
             </div>
+
+            {authError && (
+              <p className="text-red-500 text-xs mt-1 font-semibold">{authError}</p>
+            )}
+
+            <button
+              onClick={handleAuth}
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold py-3.5 rounded-xl mt-4 shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px] transition-all duration-200"
+            >
+              {isSignUp ? "회원가입" : "로그인"}
+            </button>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-2 w-full">
             <button
               onClick={() => {
-                if (role === "user") {
-                  setStep("consent");
-                } else {
-                  setStep("counselor_dashboard");
-                }
+                setIsSignUp(!isSignUp);
+                setAuthError("");
               }}
-              className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white font-bold py-3.5 rounded-xl mt-4 shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all duration-200"
+              className="text-xs text-[#8C7862] hover:underline transition-all"
             >
-              로그인
+              {isSignUp ? "이미 계정이 있으신가요? 로그인하기" : "아직 계정이 없으신가요? 회원가입하기"}
+            </button>
+            <button
+              onClick={() => setStep("onboarding")}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors mt-2"
+            >
+              ← 처음으로 돌아가기
             </button>
           </div>
           
-          <button
-            onClick={() => setStep("select")}
-            className="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-          >
-            ← 이전으로 돌아가기
-          </button>
+          <div className="mt-8 border-t border-[#EAE5D9] pt-4 w-full text-[11px] text-gray-400 leading-relaxed">
+            💡 상담사는 <span className="font-semibold text-gray-500">counselor@uulppae.com</span> 계정으로 로그인해 주세요.
+          </div>
         </div>
       )}
 
       {/* Consent */}
       {step === "consent" && (
-        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
+        <div className="max-w-2xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in text-left">
+          <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white text-center border-b border-[#EAE5D9]">
             <h2 className="text-xl font-bold flex items-center justify-center gap-2">
               📋 서비스 이용 안내
             </h2>
@@ -348,9 +317,9 @@ export default function Home() {
           </div>
 
           <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
-            <div className="bg-[#FFFBF0] border-l-4 border-orange-400 p-4 rounded-r-xl">
+            <div className="bg-[#FFF8F0] border border-orange-100 border-l-4 border-l-[#F59E0B] p-4 rounded-r-xl">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-orange-500 font-bold">⚠️</span>
+                <span className="text-[#F59E0B] font-bold">⚠️</span>
                 <h3 className="font-bold text-gray-900 text-sm">본 서비스는 의료 진단을 대체하지 않습니다</h3>
               </div>
               <p className="text-xs text-gray-600 leading-relaxed">
@@ -359,14 +328,14 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={agreements.privacy}
                       onChange={(e) => handleCheck("privacy", e.target.checked)}
-                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                      className="w-5 h-5 accent-[#F59E0B] rounded focus:ring-[#F59E0B]"
                     />
                     <div>
                       <p className="font-bold text-sm text-gray-900">개인정보 수집 및 이용 동의 (필수)</p>
@@ -375,26 +344,26 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => setShowPrivacyDetail(!showPrivacyDetail)}
-                    className="text-xs text-[#6096C8] hover:underline"
+                    className="text-xs text-[#8C7862] hover:text-[#1E2D4E] hover:underline"
                   >
                     {showPrivacyDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showPrivacyDetail && (
-                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg animate-fade-in">
+                  <div className="mt-4 text-xs text-gray-600 bg-white border border-[#EAE5D9] p-3 rounded-lg animate-fade-in">
                     <table className="w-full border-collapse">
                       <tbody>
-                        <tr className="border-b border-gray-200">
-                          <td className="font-bold p-2 w-24 align-top">일반 정보</td>
-                          <td className="p-2">닉네임, 이메일, 생년월일 (목적: 서비스 이용 및 맞춤화)</td>
+                        <tr className="border-b border-[#EAE5D9]">
+                          <td className="font-bold p-2 w-24 align-top text-gray-700">일반 정보</td>
+                          <td className="p-2 text-gray-600">닉네임, 이메일, 생년월일 (목적: 서비스 이용 및 맞춤화)</td>
                         </tr>
-                        <tr className="border-b border-gray-200">
+                        <tr className="border-b border-[#EAE5D9]">
                           <td className="font-bold p-2 text-orange-600 align-top">민감 정보 (중요)</td>
-                          <td className="p-2">PHQ-9/P4 결과, 자살방지 서약서, 챗봇 대화 내용, 감정 리포트 (목적: 우울 위험도 측정 및 고위험군 선별, AI 상담 제공)</td>
+                          <td className="p-2 text-gray-600">PHQ-9/P4 결과, 자살방지 서약서, 챗봇 대화 내용, 감정 리포트 (목적: 우울 위험도 측정 및 고위험군 선별, AI 상담 제공)</td>
                         </tr>
                         <tr>
-                          <td className="font-bold p-2 align-top">보유 기간</td>
-                          <td className="p-2">서비스 탈퇴 시 즉시 파기</td>
+                          <td className="font-bold p-2 align-top text-gray-700">보유 기간</td>
+                          <td className="p-2 text-gray-600">서비스 탈퇴 시 즉시 파기</td>
                         </tr>
                       </tbody>
                     </table>
@@ -402,14 +371,14 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={agreements.terms}
                       onChange={(e) => handleCheck("terms", e.target.checked)}
-                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                      className="w-5 h-5 accent-[#F59E0B] rounded focus:ring-[#F59E0B]"
                     />
                     <div>
                       <p className="font-bold text-sm text-gray-900">서비스 이용약관 동의 (필수)</p>
@@ -418,20 +387,20 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => setShowTermsDetail(!showTermsDetail)}
-                    className="text-xs text-[#6096C8] hover:underline"
+                    className="text-xs text-[#8C7862] hover:text-[#1E2D4E] hover:underline"
                   >
-                                        {showTermsDetail ? "닫기 ∧" : "내용 보기 ∨"}
+                    {showTermsDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showTermsDetail && (
-                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg leading-relaxed animate-fade-in">
+                  <div className="mt-4 text-xs text-gray-600 bg-white border border-[#EAE5D9] p-3 rounded-lg leading-relaxed animate-fade-in">
                     <table className="w-full border-collapse">
                       <tbody>
-                        <tr className="border-b border-gray-200">
+                        <tr className="border-b border-[#EAE5D9]">
                           <td className="font-bold p-2 w-24 align-top text-gray-800">제1조 (목적)</td>
-                          <td className="p-2 text-gray-700">본 약관은 '말랑해도 돼'가 제공하는 AI 기반 정서적 지원 및 예방형 심리케어 서비스의 이용 조건을 규정합니다.</td>
+                          <td className="p-2 text-gray-700">본 약관은 '우울빼미'가 제공하는 AI 기반 정서적 지원 및 예방형 심리케어 서비스의 이용 조건을 규정합니다.</td>
                         </tr>
-                        <tr className="border-b border-gray-200">
+                        <tr className="border-b border-[#EAE5D9]">
                           <td className="font-bold p-2 w-24 align-top text-gray-800">제2조 (한계)</td>
                           <td className="p-2 text-gray-700">본 서비스의 AI 챗봇 대화 및 분석 결과는 의학적 진단이나 전문 치료를 대체할 수 없으며, 예방 및 보조 도구로만 활용됩니다.</td>
                         </tr>
@@ -445,14 +414,14 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={agreements.safety}
                       onChange={(e) => handleCheck("safety", e.target.checked)}
-                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                      className="w-5 h-5 accent-[#F59E0B] rounded focus:ring-[#F59E0B]"
                     />
                     <div>
                       <p className="font-bold text-sm text-gray-900">안전 안내 확인 (필수)</p>
@@ -461,26 +430,26 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => setShowSafetyDetail(!showSafetyDetail)}
-                    className="text-xs text-[#6096C8] hover:underline"
+                    className="text-xs text-[#8C7862] hover:text-[#1E2D4E] hover:underline"
                   >
                                         {showSafetyDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showSafetyDetail && (
-                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg leading-relaxed animate-fade-in">
+                  <div className="mt-4 text-xs text-gray-600 bg-white border border-[#EAE5D9] p-3 rounded-lg leading-relaxed animate-fade-in">
                     사용자의 답변에서 자해 및 타해 위험이 감지될 경우, 사용자의 안전을 위해 등록된 비상 연락처 또는 유관 기관(1393 등)에 정보가 제공될 수 있음에 동의합니다.
                   </div>
                 )}
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={agreements.counselorShare}
                       onChange={(e) => handleCheck("counselorShare", e.target.checked)}
-                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                      className="w-5 h-5 accent-[#F59E0B] rounded focus:ring-[#F59E0B]"
                     />
                     <div>
                       <p className="font-bold text-sm text-gray-900">상담사 공유 동의 (필수)</p>
@@ -489,26 +458,26 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => setShowCounselorDetail(!showCounselorDetail)}
-                    className="text-xs text-[#6096C8] hover:underline"
+                    className="text-xs text-[#8C7862] hover:text-[#1E2D4E] hover:underline"
                   >
                                         {showCounselorDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
                 </div>
                 {showCounselorDetail && (
-                  <div className="mt-4 text-xs text-gray-600 bg-[#F7F9FC] p-3 rounded-lg animate-fade-in">
+                  <div className="mt-4 text-xs text-gray-600 bg-white border border-[#EAE5D9] p-3 rounded-lg animate-fade-in">
                     <table className="w-full border-collapse">
                       <tbody>
-                        <tr className="border-b border-gray-200">
-                          <td className="font-bold p-2 w-24 align-top">공유 목적</td>
-                          <td className="p-2">내담자 위험도 실시간 모니터링, 상담 전 리포트 생성, 맞춤형 개입 가이드 적용</td>
+                        <tr className="border-b border-[#EAE5D9]">
+                          <td className="font-bold p-2 w-24 align-top text-gray-700">공유 목적</td>
+                          <td className="p-2 text-gray-600">내담자 위험도 실시간 모니터링, 상담 전 리포트 생성, 맞춤형 개입 가이드 적용</td>
                         </tr>
-                        <tr className="border-b border-gray-200">
-                          <td className="font-bold p-2 align-top">공유 항목</td>
-                          <td className="p-2">PHQ-9점수, P4 결과, 자살방지 서약서 서명 및 내용, 챗봇 대화 로그 내 위험표현 및 인지 왜곡 빈도</td>
+                        <tr className="border-b border-[#EAE5D9]">
+                          <td className="font-bold p-2 align-top text-gray-700">공유 항목</td>
+                          <td className="p-2 text-gray-600">PHQ-9점수, P4 결과, 자살방지 서약서 서명 및 내용, 챗봇 대화 로그 내 위험표현 및 인지 왜곡 빈도</td>
                         </tr>
                         <tr>
-                          <td className="font-bold p-2 align-top">보유 기간</td>
-                          <td className="p-2">서비스 탈퇴 시 또는 담당 상담사 배정 종료 시 즉시 파기</td>
+                          <td className="font-bold p-2 align-top text-gray-700">보유 기간</td>
+                          <td className="p-2 text-gray-600">서비스 탈퇴 시 또는 담당 상담사 배정 종료 시 즉시 파기</td>
                         </tr>
                       </tbody>
                     </table>
@@ -516,14 +485,14 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={agreements.ageVerify}
                       onChange={(e) => handleCheck("ageVerify", e.target.checked)}
-                      className="w-5 h-5 accent-[#6096C8] rounded focus:ring-[#6096C8]"
+                      className="w-5 h-5 accent-[#F59E0B] rounded focus:ring-[#F59E0B]"
                     />
                     <div>
                       <p className="font-bold text-sm text-gray-900">만 14세 이상 이용가 및 청소년 정책 확인 (필수)</p>
@@ -532,7 +501,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => setShowAgeDetail(!showAgeDetail)}
-                    className="text-xs text-[#6096C8] hover:underline"
+                    className="text-xs text-[#8C7862] hover:text-[#1E2D4E] hover:underline"
                   >
                                         {showAgeDetail ? "닫기 ∧" : "내용 보기 ∨"}
                   </button>
@@ -593,9 +562,9 @@ export default function Home() {
 
       {/* Profile Input */}
       {step === "profile" && (
-        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+        <div className="max-w-2xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in text-left">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+          <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white relative border-b border-[#EAE5D9]">
             <div className="text-center">
               <h2 className="text-xl font-bold flex items-center justify-center gap-2">
                 👤 기본 정보 입력
@@ -607,28 +576,28 @@ export default function Home() {
 
           <div className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[70vh]">
             {/* Card 1: Nickname */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-2">닉네임 (앱에서 불릴 이름)</label>
               <input
                 type="text"
-                placeholder="예: 말랑이"
+                placeholder="예: 빼미"
                 value={profile.nickname}
                 onChange={(e) => handleProfileChange("nickname", e.target.value)}
-                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full"
+                className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-gray-800"
               />
             </div>
 
             {/* Card 2: Age Group */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-2">연령대</label>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                 {ageGroups.map((age) => (
                   <button
                     key={age}
                     onClick={() => handleProfileChange("ageGroup", age)}
-                    className={`py-2 text-xs font-medium rounded-lg transition-colors ${profile.ageGroup === age
-                      ? "bg-[#6096C8] text-white"
-                      : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                    className={`py-2 text-xs font-medium rounded-lg border transition-all ${profile.ageGroup === age
+                      ? "bg-[#1E2D4E] text-white border-[#1E2D4E] shadow-sm"
+                      : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
                       }`}
                   >
                     {age}
@@ -638,16 +607,16 @@ export default function Home() {
             </div>
 
             {/* Card 3: Gender */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-2">성별</label>
               <div className="grid grid-cols-3 gap-2">
                 {genders.map((gender) => (
                   <button
                     key={gender}
                     onClick={() => handleProfileChange("gender", gender)}
-                    className={`py-2 text-xs font-medium rounded-lg transition-colors ${profile.gender === gender
-                      ? "bg-[#6096C8] text-white"
-                      : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                    className={`py-2 text-xs font-medium rounded-lg border transition-all ${profile.gender === gender
+                      ? "bg-[#1E2D4E] text-white border-[#1E2D4E] shadow-sm"
+                      : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
                       }`}
                   >
                     {gender}
@@ -657,12 +626,12 @@ export default function Home() {
             </div>
 
             {/* Card 4: Occupation */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-2">직업</label>
               <select
                 value={profile.occupation}
                 onChange={(e) => handleProfileChange("occupation", e.target.value)}
-                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm text-gray-600"
+                className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-sm text-gray-700"
               >
                 <option value="" disabled>선택해주세요</option>
                 {occupations.map((occ) => (
@@ -672,12 +641,12 @@ export default function Home() {
             </div>
 
             {/* Card 5: Region */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-2">거주 지역 (공공서비스 연계용)</label>
               <select
                 value={profile.region}
                 onChange={(e) => handleProfileChange("region", e.target.value)}
-                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm text-gray-600"
+                className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-sm text-gray-700"
               >
                 <option value="" disabled>선택해주세요</option>
                 {regions.map((reg) => (
@@ -687,7 +656,7 @@ export default function Home() {
             </div>
 
             {/* Card 6: Contact */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-1">비상연락처 (선택)</label>
               <p className="text-xs text-gray-500 mb-2">위기 상황 시 알림을 보낼 연락처예요</p>
               <input
@@ -695,7 +664,7 @@ export default function Home() {
                 placeholder="예: 010-1234-5678"
                 value={profile.contact}
                 onChange={(e) => handleProfileChange("contact", e.target.value)}
-                className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full"
+                className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-gray-800"
               />
             </div>
 
@@ -708,8 +677,8 @@ export default function Home() {
               }}
               disabled={!isProfileValid}
               className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${isProfileValid
-                ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
-                : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                ? "bg-[#F59E0B] hover:bg-[#D97706] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px]"
+                : "bg-gray-300 text-white cursor-not-allowed"
                 }`}
             >
               다음: PHQ-9 자가진단 →
@@ -717,7 +686,7 @@ export default function Home() {
 
             <button
               onClick={() => setStep("consent")}
-              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+              className="mt-6 text-sm text-[#8C7862] hover:text-[#1E2D4E] transition-colors self-center hover:underline"
             >
               ← 이전으로 돌아가기
             </button>
@@ -727,9 +696,9 @@ export default function Home() {
 
       {/* PHQ-9 Survey */}
       {step === "phq9" && (
-        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+        <div className="max-w-2xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in text-left">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+          <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white relative border-b border-[#EAE5D9]">
             <div className="text-center">
               <h2 className="text-xl font-bold flex items-center justify-center gap-2">
                 📋 PHQ-9 우울 자가진단
@@ -740,20 +709,20 @@ export default function Home() {
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full bg-gray-100 h-2">
+          <div className="w-full bg-[#F0ECE6] h-2">
             <div 
-              className="bg-[#6096C8] h-full transition-all duration-300" 
+              className="bg-[#F59E0B] h-full transition-all duration-300" 
               style={{ width: `${((currentQuestionIndex + 1) / 9) * 100}%` }}
             ></div>
           </div>
-          <div className="text-right text-xs text-gray-500 px-6 mt-2">
+          <div className="text-right text-xs text-[#8C7862] px-6 mt-2">
             {currentQuestionIndex + 1} / 9 완료
           </div>
 
           <div className="p-6 flex flex-col gap-6">
             {/* Question Card */}
-            <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm flex flex-col items-center text-center gap-4">
-              <div className="w-10 h-10 bg-[#6096C8] text-white rounded-full flex items-center justify-center font-bold">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-6 shadow-[0_2px_8px_rgba(139,123,93,0.02)] flex flex-col items-center text-center gap-4">
+              <div className="w-10 h-10 bg-[#1E2D4E] text-white rounded-full flex items-center justify-center font-bold shadow-sm">
                 Q{currentQuestionIndex + 1}
               </div>
               <p className="text-lg font-bold text-gray-900 leading-relaxed">
@@ -773,14 +742,14 @@ export default function Home() {
                       newAnswers[currentQuestionIndex] = option.score;
                       setPhq9Answers(newAnswers);
                     }}
-                    className={`p-4 rounded-xl text-left font-bold text-sm transition-all flex items-center justify-between ${
+                    className={`p-4 rounded-xl text-left font-bold text-sm border transition-all flex items-center justify-between ${
                       isSelected
-                        ? "bg-[#6096C8] text-white shadow-md"
-                        : "bg-white border border-[#E5EEF7] text-gray-600 hover:bg-[#F7F9FC]"
+                        ? "bg-[#1E2D4E] border-[#1E2D4E] text-white shadow-sm"
+                        : "bg-white border-[#EAE5D9] text-gray-600 hover:bg-[#F8F5F0]"
                     }`}
                   >
                     <span>{option.label} · {option.score}점</span>
-                    {isSelected && <span>✓</span>}
+                    {isSelected && <span className="text-[#F59E0B]">✓</span>}
                   </button>
                 );
               })}
@@ -796,7 +765,7 @@ export default function Home() {
                     setStep("profile");
                   }
                 }}
-                className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors"
+                className="flex-1 bg-white border border-[#EAE5D9] text-gray-700 font-bold py-3.5 rounded-xl hover:bg-[#F8F5F0] transition-colors"
               >
                 ← 이전
               </button>
@@ -811,8 +780,8 @@ export default function Home() {
                 disabled={phq9Answers[currentQuestionIndex] === null}
                 className={`flex-1 font-bold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 ${
                   phq9Answers[currentQuestionIndex] !== null
-                    ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
-                    : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                    ? "bg-[#F59E0B] hover:bg-[#D97706] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px]"
+                    : "bg-gray-300 text-white cursor-not-allowed"
                 }`}
               >
                 {currentQuestionIndex === 8 ? "다음: P4 Screener →" : "다음 →"}
@@ -824,9 +793,9 @@ export default function Home() {
 
       {/* P4 Screener */}
       {step === "p4" && (
-        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+        <div className="max-w-2xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in text-left">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+          <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white relative border-b border-[#EAE5D9]">
             <div className="text-center">
               <h2 className="text-xl font-bold flex items-center justify-center gap-2">
                 🔍 P4 심층 스크리닝
@@ -838,25 +807,25 @@ export default function Home() {
 
           <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
             {/* Notice Box */}
-            <div className="bg-[#EEF4FF] border-l-4 border-[#6096C8] p-4 rounded-r-xl">
+            <div className="bg-[#FFF8F0] border border-orange-100 border-l-4 border-l-[#F59E0B] p-4 rounded-r-xl">
               <p className="text-sm text-gray-700 leading-relaxed">
                 아래 질문들은 더 정확한 맞춤 케어를 위한 질문이에요.<br />
-                솔직하게 답해주실수록 더 잘 도와드릴 수 있어요 💙
+                솔직하게 답해주실수록 더 잘 도와드릴 수 있어요 🦉
               </p>
             </div>
 
             {/* Card 1 */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <p className="text-sm font-bold text-gray-900 mb-3">1. 이전에 당신을 위험에 빠뜨리는 행동을 한 적이 있습니까?</p>
               <div className="grid grid-cols-2 gap-3">
                 {["없음", "있음"].map((opt) => (
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q1: opt })}
-                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
+                    className={`py-2.5 text-sm font-bold rounded-lg border transition-all ${
                       p4Answers.q1 === opt
-                        ? "bg-[#6096C8] text-white"
-                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                        ? "bg-[#1E2D4E] border-[#1E2D4E] text-white shadow-sm"
+                        : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
                     }`}
                   >
                     {opt}
@@ -866,17 +835,17 @@ export default function Home() {
             </div>
 
             {/* Card 2 */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <p className="text-sm font-bold text-gray-900 mb-3">2. 당신 자신을 정말 해칠 방법에 대해 지금도 생각을 하고 있습니까?</p>
               <div className="grid grid-cols-2 gap-3">
                 {["없음", "있음"].map((opt) => (
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q2: opt })}
-                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
+                    className={`py-2.5 text-sm font-bold rounded-lg border transition-all ${
                       p4Answers.q2 === opt
-                        ? "bg-[#6096C8] text-white"
-                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                        ? "bg-[#1E2D4E] border-[#1E2D4E] text-white shadow-sm"
+                        : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
                     }`}
                   >
                     {opt}
@@ -890,24 +859,24 @@ export default function Home() {
                     placeholder="여기에 적어주세요"
                     value={p4Answers.q2_text}
                     onChange={(e) => setP4Answers({ ...p4Answers, q2_text: e.target.value })}
-                    className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm h-20"
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-sm h-20 text-gray-800"
                   />
                 </div>
               )}
             </div>
 
             {/* Card 3 */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <p className="text-sm font-bold text-gray-900 mb-3">3. 생각하는 것과 생각을 행동에 옮기는 것은 큰 차이가 있습니다. 앞으로 한 달 내에는 어느 때라도 당신 자신을 해치거나 당신의 삶을 끝내겠다는 그 생각을 행동으로 옮길 것 같습니까?</p>
               <div className="grid grid-cols-3 gap-2">
                 {["전혀 아니다", "약간 그렇다", "매우 그렇다"].map((opt) => (
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q3: opt })}
-                    className={`py-2.5 text-xs font-bold rounded-lg transition-colors ${
+                    className={`py-2.5 text-xs font-bold rounded-lg border transition-all ${
                       p4Answers.q3 === opt
-                        ? "bg-[#6096C8] text-white"
-                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                        ? "bg-[#1E2D4E] border-[#1E2D4E] text-white shadow-sm"
+                        : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
                     }`}
                   >
                     {opt}
@@ -917,17 +886,17 @@ export default function Home() {
             </div>
 
             {/* Card 4 */}
-            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <p className="text-sm font-bold text-gray-900 mb-3">4. 당신 자신을 해치려는 당신의 행동을 멈추게 하거나 하지 못하게 막는 것이 있습니까?</p>
               <div className="grid grid-cols-2 gap-3">
                 {["없음", "있음"].map((opt) => (
                   <button
                     key={opt}
                     onClick={() => setP4Answers({ ...p4Answers, q4: opt })}
-                    className={`py-2.5 text-sm font-bold rounded-lg transition-colors ${
+                    className={`py-2.5 text-sm font-bold rounded-lg border transition-all ${
                       p4Answers.q4 === opt
-                        ? "bg-[#6096C8] text-white"
-                        : "bg-[#F7F9FC] text-gray-600 hover:bg-[#EBF1F9]"
+                        ? "bg-[#1E2D4E] border-[#1E2D4E] text-white shadow-sm"
+                        : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
                     }`}
                   >
                     {opt}
@@ -941,7 +910,7 @@ export default function Home() {
                     placeholder="여기에 적어주세요"
                     value={p4Answers.q4_text}
                     onChange={(e) => setP4Answers({ ...p4Answers, q4_text: e.target.value })}
-                    className="bg-[#F7F9FC] border border-gray-100 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8B7BAD] transition-all w-full text-sm h-20"
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-sm h-20 text-gray-800"
                   />
                 </div>
               )}
@@ -957,8 +926,8 @@ export default function Home() {
               disabled={!isP4Valid}
               className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${
                 isP4Valid
-                  ? "bg-[#6096C8] hover:bg-[#5085B7] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
-                  : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                  ? "bg-[#F59E0B] hover:bg-[#D97706] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px]"
+                  : "bg-gray-300 text-white cursor-not-allowed"
               }`}
             >
               다음: 서약서 작성 →
@@ -966,7 +935,7 @@ export default function Home() {
 
             <button
               onClick={() => setStep("phq9")}
-              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+              className="mt-6 text-sm text-[#8C7862] hover:text-[#1E2D4E] transition-colors self-center hover:underline"
             >
               ← 이전으로 돌아가기
             </button>
@@ -976,9 +945,9 @@ export default function Home() {
 
       {/* Pledge Screen */}
       {step === "pledge" && (
-        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in">
+        <div className="max-w-2xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in text-left">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white relative">
+          <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white relative border-b border-[#EAE5D9]">
             <div className="text-center">
               <h2 className="text-xl font-bold flex items-center justify-center gap-2">
                 생명존중(자살방지) 안전 서약서
@@ -990,54 +959,54 @@ export default function Home() {
 
           <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
             {/* Main Pledge Card */}
-            <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm flex flex-col items-center gap-4">
-              <span className="text-5xl">💙</span>
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-6 shadow-[0_2px_8px_rgba(139,123,93,0.02)] flex flex-col items-center gap-4">
+              <span className="text-5xl">🧡</span>
               <h3 className="text-lg font-bold text-gray-900">나는 나 자신과 약속합니다</h3>
               
-              <div className="flex flex-col gap-3 text-sm text-gray-700 w-full">
+              <div className="flex flex-col gap-4 text-sm text-gray-700 w-full">
                 <div className="flex gap-2">
-                  <span className="text-[#6096C8]">✓</span>
-                  <p>나는 절대로 자살하지 않을 것이며, 자해나 자살을 시도하지도 않을 것을 서약합니다. 나는 자살하고 싶은 생각이 들면 반드시 (가족, 친구, 상담자, 성직자)에게 먼저 말할 것입니다. 만일 이 사람들을 만날 수 없으면 전화를 하거나 주위 사람에게 도움을 청하겠습니다.</p>
+                  <span className="text-[#F59E0B] font-bold">✓</span>
+                  <p className="leading-relaxed">나는 절대로 자살하지 않을 것이며, 자해나 자살을 시도하지도 않을 것을 서약합니다. 나는 자살하고 싶은 생각이 들면 반드시 (가족, 친구, 상담자, 성직자)에게 먼저 말할 것입니다. 만일 이 사람들을 만날 수 없으면 전화를 하거나 주위 사람에게 도움을 청하겠습니다.</p>
                 </div>
-                <div className="flex gap-2">
-                  <span className="text-[#6096C8]">✓</span>
-                  <p>나는 충분한 휴식과 수면을 취하고 잘 먹을 것을 서약합니다.</p>
+                <div className="flex gap-2 border-t border-[#EAE5D9]/50 pt-3">
+                  <span className="text-[#F59E0B] font-bold">✓</span>
+                  <p className="leading-relaxed">나는 충분한 휴식과 수면을 취하고 잘 먹을 것을 서약합니다.</p>
                 </div>
-                <div className="flex gap-2">
-                  <span className="text-[#6096C8]">✓</span>
-                  <p>나는 자살 할 수 있는 모든 도구를 없앨 것을 서약합니다.</p>
+                <div className="flex gap-2 border-t border-[#EAE5D9]/50 pt-3">
+                  <span className="text-[#F59E0B] font-bold">✓</span>
+                  <p className="leading-relaxed">나는 자살 할 수 있는 모든 도구를 없앨 것을 서약합니다.</p>
                 </div>
-                <div className="flex gap-2">
-                  <span className="text-[#6096C8]">✓</span>
-                  <p className="whitespace-pre-line">{"나는 조금이라도 기분이 이상하면 반드시\n\n📞자살예방상담전화 109\n📞한국생명의전화 1588-9191\n\n로 전화를 걸거나 어떠한 수단을 써서라도 알리겠습니다. 이 사실을 알리기 전에는 절대로 아무런 행동을 하지 않을 것을 서약합니다."}</p>
+                <div className="flex gap-2 border-t border-[#EAE5D9]/50 pt-3">
+                  <span className="text-[#F59E0B] font-bold">✓</span>
+                  <p className="whitespace-pre-line leading-relaxed">{"나는 조금이라도 기분이 이상하면 반드시\n\n📞자살예방상담전화 109\n📞한국생명의전화 1588-9191\n\n로 전화를 걸거나 어떠한 수단을 써서라도 알리겠습니다. 이 사실을 알리기 전에는 절대로 아무런 행동을 하지 않을 것을 서약합니다."}</p>
                 </div>
               </div>
             </div>
 
             {/* Signature Area */}
             <div className="flex flex-col gap-4">
-              <div className="text-center text-sm font-bold text-gray-600">
+              <div className="text-center text-sm font-bold text-[#8C7862]">
                 {formattedDate}
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 {/* Client Signature */}
-                <div className="bg-[#F7F9FC] border border-dashed border-gray-300 rounded-xl p-4 flex flex-col gap-2">
+                <div className="bg-white border border-dashed border-[#EAE5D9] rounded-xl p-4 flex flex-col gap-2 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                   <label className="text-xs font-bold text-gray-500">내담자 서명</label>
                   <input
                     type="text"
                     placeholder="닉네임 또는 성명"
                     value={signature}
                     onChange={(e) => setSignature(e.target.value)}
-                    className="bg-transparent border-b border-gray-300 focus:outline-none focus:border-[#8B7BAD] transition-all py-1 text-center font-serif italic text-lg text-gray-800"
+                    className="bg-transparent border-b border-[#EAE5D9] focus:outline-none focus:border-[#8C7862] transition-all py-1 text-center font-serif italic text-lg text-gray-800"
                   />
                 </div>
                 
                 {/* Counselor Signature */}
-                <div className="bg-[#F7F9FC] border border-dashed border-gray-300 rounded-xl p-4 flex flex-col gap-2 items-center justify-center relative overflow-hidden">
+                <div className="bg-white border border-dashed border-[#EAE5D9] rounded-xl p-4 flex flex-col gap-2 items-center justify-center relative overflow-hidden shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                   <label className="text-xs font-bold text-gray-500 absolute top-4 left-4">상담자 서명</label>
                   <div className="text-sm font-bold text-gray-400 mt-4">
-                    말랑해도 돼 서비스 운영팀
+                    우울빼미 서비스 운영팀
                   </div>
                   {/* Mock Seal */}
                   <div className="absolute right-4 bottom-4 w-10 h-10 border-2 border-red-400 rounded-full flex items-center justify-center text-red-400 font-bold text-xs transform rotate-12 opacity-80">
@@ -1057,16 +1026,16 @@ export default function Home() {
               disabled={signature.trim() === ""}
               className={`font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 w-full flex items-center justify-center gap-2 ${
                 signature.trim() !== ""
-                  ? "bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] text-white shadow-md hover:shadow-lg transform hover:translate-y-[-1px]"
-                  : "bg-[#D1D5DB] text-white cursor-not-allowed"
+                  ? "bg-[#F59E0B] hover:bg-[#D97706] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px]"
+                  : "bg-gray-300 text-white cursor-not-allowed"
               }`}
             >
-              서약하고 시작하기 💙
+              서약하고 시작하기 🦉
             </button>
 
             <button
               onClick={() => setStep("p4")}
-              className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors self-center"
+              className="mt-6 text-sm text-[#8C7862] hover:text-[#1E2D4E] transition-colors self-center hover:underline"
             >
               ← 이전으로 돌아가기
             </button>
@@ -1075,12 +1044,13 @@ export default function Home() {
       )}
 
       {/* Result Screen */}
+      {/* Result Screen */}
       {step === "result" && (
-        <div className={`max-w-3xl w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in ${
-          isHighRisk ? "bg-[#1A2744] text-white" : "bg-white text-gray-800"
+        <div className={`max-w-3xl w-full rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(139,123,93,0.06)] border flex flex-col animate-fade-in ${
+          isHighRisk ? "bg-[#1E2D4E] text-white border-red-900/30" : "bg-[#FAF8F5] text-gray-800 border-[#EAE5D9]"
         }`}>
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
+          <div className={`bg-gradient-to-r ${isHighRisk ? "from-red-950 to-[#1E2D4E]" : "from-[#8C7862] to-[#A69584]"} p-6 text-white text-center border-b ${isHighRisk ? "border-red-900/30" : "border-[#EAE5D9]"}`}>
             <h2 className="text-xl font-bold flex items-center justify-center gap-2">
               당신의 마음 검사 결과입니다
             </h2>
@@ -1088,17 +1058,17 @@ export default function Home() {
 
           <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[75vh]">
             {/* Score Selector for Testing */}
-            <div className={`p-3 rounded-xl flex flex-wrap gap-2 text-xs justify-center items-center shadow-inner ${isHighRisk ? "bg-[#2A3B5C]" : "bg-gray-50"}`}>
+            <div className={`p-3 rounded-xl flex flex-wrap gap-2 text-xs justify-center items-center shadow-inner ${isHighRisk ? "bg-[#111A2E]" : "bg-white border border-[#EAE5D9]"}`}>
               <span className="font-bold mr-1">🧪 시나리오 테스트용 점수 강제 세팅:</span>
-              <button onClick={() => { setPhq9Answers(Array(9).fill(0)); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🟢 0~4점 (저위험 또치)</button>
-              <button onClick={() => { setPhq9Answers([1,2,1,2,0,0,1,0,0]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🟡 5~9점 (자율 선택)</button>
-              <button onClick={() => { setPhq9Answers([2,2,2,2,2,2,0,0,2]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🔵 10~19점 (지우 상담)</button>
-              <button onClick={() => { setPhq9Answers(Array(9).fill(3)); setP4Answers({ q1: "있음", q2: "있음", q2_text: "위기", q3: "매우 그렇다", q4: "없음", q4_text: "없음" }); }} className="px-2.5 py-1 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-gray-100 hover:scale-[1.05] transition-all font-semibold">🔴 P4 1+ 또는 PHQ 20+ (고위험 클로)</button>
+              <button onClick={() => { setPhq9Answers(Array(9).fill(0)); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟢 0~4점 (저위험 또치)</button>
+              <button onClick={() => { setPhq9Answers([1,2,1,2,0,0,1,0,0]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟡 5~9점 (자율 선택)</button>
+              <button onClick={() => { setPhq9Answers([2,2,2,2,2,2,0,0,2]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔵 10~19점 (지우 상담)</button>
+              <button onClick={() => { setPhq9Answers(Array(9).fill(3)); setP4Answers({ q1: "있음", q2: "있음", q2_text: "위기", q3: "매우 그렇다", q4: "없음", q4_text: "없음" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔴 P4 1+ 또는 PHQ 20+ (고위험 클로)</button>
             </div>
 
             {/* 1. 고위험군 (High Risk - Cloe) */}
             {isHighRisk && (
-              <div className="bg-[#2A3B5C] border border-gray-700 rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-lg">
+              <div className="bg-[#111A2E]/50 border border-red-900/30 rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-lg">
                 <span className="bg-[#EF4444] text-white px-4 py-1.5 rounded-full text-xs font-black animate-pulse shadow-md">
                   🚨 고위험 · 즉각 위기 개입 필요
                 </span>
@@ -1117,17 +1087,17 @@ export default function Home() {
                     <span>📞 1393 자살예방 상담전화 (24시간)</span>
                     <span className="font-extrabold">지금 연결 →</span>
                   </a>
-                  <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
+                  <a href="tel:1577-0199" className="bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
                     <span>📞 1577-0199 정신건강 위기상담전화</span>
                     <span className="font-extrabold">지금 연결 →</span>
                   </a>
-                  <a href="tel:119" className="bg-[#4B5563] hover:bg-[#374151] text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
+                  <a href="tel:119" className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-between shadow-md hover:scale-[1.01]">
                     <span>📞 119 안전신고센터 및 긴급구조</span>
                     <span className="font-extrabold">지금 연결 →</span>
                   </a>
                 </div>
 
-                <div className="bg-[#1A2744] border border-gray-700 rounded-xl p-4 w-full text-left mt-2">
+                <div className="bg-red-950/20 border border-red-900/30 rounded-xl p-4 w-full text-left mt-2">
                   <h4 className="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">🛡️ 어시스턴트 클로 위기 개입 프로토콜</h4>
                   <ul className="text-xs text-gray-200 space-y-1.5 list-disc list-inside">
                     <li>심리적 응급처치(Psychological First Aid) 대화 진행</li>
@@ -1139,7 +1109,7 @@ export default function Home() {
 
                 <button
                   onClick={() => { setInitialPersona(3); setStep("chat"); }}
-                  className="font-bold py-4 px-8 rounded-xl transition-all duration-300 w-full mt-4 shadow-lg bg-white text-[#1A2744] hover:bg-gray-100 hover:scale-[1.01]"
+                  className="font-bold py-4 px-8 rounded-xl transition-all duration-300 w-full mt-4 shadow-lg bg-white text-[#1E2D4E] hover:bg-[#FAF8F5] hover:scale-[1.01]"
                 >
                   클로와 안전 가이드 대화 시작하기 🤍
                 </button>
@@ -1148,8 +1118,8 @@ export default function Home() {
 
             {/* 2. 중등도 위험군 (Moderate Risk - Jiwoo) */}
             {isModerateRisk && (
-              <div className="bg-[#EEF4FF] border border-[#DBEAFE] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-md">
-                <span className="bg-[#DBEAFE] text-[#1D4ED8] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
+                <span className="bg-[#E0F2FE] text-[#0369A1] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
                   🔵 중등도 위험 · 전문 심리 상담 모드
                 </span>
                 <div>
@@ -1161,7 +1131,7 @@ export default function Home() {
                 </div>
                 <img src="/상담사 지우.png" alt="상담사 지우" className="w-32 h-32 object-contain my-1" />
 
-                <div className="bg-white rounded-xl p-4 w-full text-left text-xs text-gray-500 flex gap-2">
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-4 w-full text-left text-xs text-gray-600 flex gap-2">
                   <span>💡</span>
                   <p>
                     성찰과 치유를 목적으로 하는 CBT-ACT(인지행동치료/수용전념치료) 기반의 대화를 진행합니다.<br />
@@ -1171,7 +1141,7 @@ export default function Home() {
 
                 <button
                   onClick={() => { setInitialPersona(2); setStep("chat"); }}
-                  className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-md bg-[#6096C8] hover:bg-[#5085B7] text-white hover:scale-[1.01]"
+                  className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-sm bg-[#F59E0B] hover:bg-[#D97706] text-white hover:scale-[1.01]"
                 >
                   지우와 심층 심리상담 시작하기 →
                 </button>
@@ -1180,13 +1150,13 @@ export default function Home() {
 
             {/* 3. 정상 ~ 경도 위험군 (User Selection - 통합 노드) */}
             {isUserSelection && (
-              <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-6 border border-gray-100 shadow-sm">
-                <span className="bg-[#FFF3C4] text-[#D97706] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-6 flex flex-col items-center text-center gap-6 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
+                <span className="bg-[#FEF3C7] text-[#B45309] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
                   🟡 정상 ~ 경도 위험 · 자율 선택 케어
                 </span>
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-gray-600 mt-2">
                     경미한 우울이나 일시적인 정서적 무거움이 관찰되는 단계입니다.<br />
                     오늘의 기분과 고민 영역에 맞는 챗봇을 직접 선택하여 대화를 시작해보세요.
                   </p>
@@ -1194,7 +1164,7 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-2">
                   {/* Card A: Tochi */}
-                  <div className="bg-[#FFFDF5] border-2 border-[#FEF3C7] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-sm hover:shadow-md hover:scale-[1.03] transition-all duration-300">
+                  <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
                     <span className="text-4xl">🦔</span>
                     <div>
                       <h4 className="font-bold text-gray-900 text-sm">고슴도치 또치</h4>
@@ -1205,14 +1175,14 @@ export default function Home() {
                     </div>
                     <button
                       onClick={() => { setInitialPersona(1); setStep("chat"); }}
-                      className="w-full bg-[#D97706] hover:bg-[#B75A00] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
+                      className="w-full bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
                       또치 선택
                     </button>
                   </div>
 
                   {/* Card B: Mint Mentor */}
-                  <div className="bg-[#ECFDF5] border-2 border-[#D1FAE5] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-sm hover:shadow-md hover:scale-[1.03] transition-all duration-300">
+                  <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
                     <span className="text-4xl">🌿</span>
                     <div>
                       <h4 className="font-bold text-gray-900 text-sm">토닥 민트 선생님</h4>
@@ -1223,14 +1193,14 @@ export default function Home() {
                     </div>
                     <button
                       onClick={() => { setInitialPersona(4); setStep("chat"); }}
-                      className="w-full bg-[#10B981] hover:bg-[#047857] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
+                      className="w-full bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
                       민트 선생님 선택
                     </button>
                   </div>
 
                   {/* Card C: Gardener Hyunsu */}
-                  <div className="bg-[#FDF4FF] border-2 border-[#FAE8FF] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-sm hover:shadow-md hover:scale-[1.03] transition-all duration-300">
+                  <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
                     <span className="text-4xl">🏡</span>
                     <div>
                       <h4 className="font-bold text-gray-900 text-sm">마음치유 가드너 현수</h4>
@@ -1241,7 +1211,7 @@ export default function Home() {
                     </div>
                     <button
                       onClick={() => { setInitialPersona(5); setStep("chat"); }}
-                      className="w-full bg-[#D946EF] hover:bg-[#A21CAF] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
+                      className="w-full bg-[#D946EF] hover:bg-[#C084FC] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
                       가드너 현수 선택
                     </button>
@@ -1252,8 +1222,8 @@ export default function Home() {
 
             {/* 4. 최소 우울 (Low Risk - Tochi) */}
             {isLowRisk && (
-              <div className="bg-[#FFFBF0] border border-[#FEF3C7] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-md">
-                <span className="bg-[#FFF3C4] text-[#D97706] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
+                <span className="bg-[#D1FAE5] text-[#065F46] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
                   🟢 저위험 · 안정적인 정서 상태
                 </span>
                 <div>
@@ -1267,7 +1237,7 @@ export default function Home() {
 
                 <button
                   onClick={() => { setInitialPersona(1); setStep("chat"); }}
-                  className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-md bg-[#FFF3C4] hover:bg-[#FDE68A] text-[#D97706] hover:scale-[1.01]"
+                  className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-sm bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white hover:scale-[1.01]"
                 >
                   또치와 대화 시작하기 →
                 </button>
@@ -1276,7 +1246,7 @@ export default function Home() {
 
             <button
               onClick={() => setStep("pledge")}
-              className={`mt-4 text-xs transition-colors self-center font-semibold ${isHighRisk ? "text-gray-400 hover:text-white" : "text-gray-400 hover:text-gray-700"}`}
+              className={`mt-4 text-xs transition-colors self-center font-semibold ${isHighRisk ? "text-gray-400 hover:text-white" : "text-[#8C7862] hover:text-[#1E2D4E] hover:underline"}`}
             >
               ← 이전으로 돌아가기
             </button>
@@ -1300,8 +1270,8 @@ export default function Home() {
 
       {/* Emotional Journal Screen */}
       {step === "journal" && (
-        <div className="max-w-2xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in border border-gray-100">
-          <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white text-center">
+        <div className="max-w-2xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in text-left">
+          <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white text-center border-b border-[#EAE5D9]">
             <h2 className="text-xl font-bold flex items-center justify-center gap-2">
               ✏️ 오늘의 마음 일기 작성
             </h2>
@@ -1309,7 +1279,7 @@ export default function Home() {
           </div>
 
           <div className="p-6 flex flex-col gap-5">
-            <div className="bg-[#F7F9FC] rounded-2xl p-5 border border-gray-100">
+            <div className="bg-white rounded-2xl p-5 border border-[#EAE5D9] shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <h4 className="font-bold text-gray-800 text-sm flex items-center gap-1">
                 🌱 일기를 쓰며 생각을 정리해 볼까요?
               </h4>
@@ -1337,14 +1307,14 @@ export default function Home() {
                 value={diaryText}
                 onChange={(e) => setDiaryText(e.target.value)}
                 placeholder="여기에 오늘 하루의 마음과 대화 소감을 솔직하게 채워주세요... (예: 오늘 또치와 이야기 나누며 마음이 한결 편안해졌어요. 걱정이 가라앉는 기분이에요.)"
-                className="w-full h-44 p-4 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#6096C8] focus:border-transparent text-sm resize-none leading-relaxed transition-all shadow-inner text-gray-800"
+                className="w-full h-44 p-4 border border-[#EAE5D9] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#8C7862] text-sm resize-none leading-relaxed transition-all shadow-inner text-gray-800 bg-white"
               />
             </div>
 
             <div className="flex gap-3 mt-2">
               <button
                 onClick={() => setStep("chat")}
-                className="flex-1 bg-white border border-gray-200 text-gray-600 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors text-sm"
+                className="flex-1 bg-white border border-[#EAE5D9] text-[#8C7862] hover:text-[#1E2D4E] hover:bg-[#F8F5F0] font-bold py-3.5 rounded-xl transition-all text-sm"
               >
                 ← 대화로 돌아가기
               </button>
@@ -1368,7 +1338,7 @@ export default function Home() {
                 className={`flex-1 font-bold py-3.5 rounded-xl transition-all text-sm shadow-md text-white ${
                   diaryText.trim().length === 0
                     ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-[#6096C8] hover:bg-[#5085B7]"
+                    : "bg-[#F59E0B] hover:bg-[#D97706] shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px]"
                 }`}
               >
                 일기 제출 및 리포트 확인 →
@@ -1398,91 +1368,99 @@ export default function Home() {
 
       {/* Counselor Portal */}
       {(step === "counselor_dashboard" || step === "counselor_clients" || step === "counselor_report" || step === "counselor_guide" || step === "counselor_settings") && (
-        <div className="flex min-h-screen w-full bg-[#F7F9FC]">
+        <div className="flex min-h-screen w-full bg-[#F8F5F0]">
           {/* Sidebar */}
-          <div className="w-[240px] bg-[#1E2D4E] text-white flex flex-col justify-between p-4 fixed h-screen top-0 left-0">
-            {/* Top: Logo & Menu */}
-            <div>
-              <div className="flex items-center gap-2 mb-8 p-2">
-                <span className="text-2xl">🫧</span>
-                <div>
-                  <h1 className="font-bold text-lg">말랑해도 돼</h1>
-                  <p className="text-xs text-gray-400">상담사 포털</p>
-                </div>
+          <aside className="w-64 bg-[#FAF8F5] border-r border-[#EAE5D9] flex flex-col fixed h-full z-30 shadow-[0_4px_20px_rgba(139,123,93,0.02)]">
+            {/* Sidebar Brand Header */}
+            <div className="p-6 border-b border-[#EAE5D9] flex items-center gap-3 select-none">
+              <OwlLogo size={36} variant="ivory" />
+              <div className="text-left">
+                <span className="font-extrabold text-base text-[#1E2D4E] tracking-tight block">우울빼미</span>
+                <span className="text-[10px] bg-[#1E2D4E] text-[#FAF8F5] px-2 py-0.5 rounded-full font-bold">상담사 포털</span>
               </div>
-
-              {/* Menu */}
-              <nav className="flex flex-col gap-1">
-                <button 
-                  onClick={() => setStep("counselor_dashboard")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_dashboard" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
-                >
-                  <span className="text-base">📊</span> 대시보드
-                </button>
-                <button 
-                  onClick={() => setStep("counselor_clients")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_clients" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
-                >
-                  <span className="text-base">👥</span> 내담자 목록
-                </button>
-                <button 
-                  onClick={() => setStep("counselor_report")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_report" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
-                >
-                  <span className="text-base">📋</span> 리포트
-                </button>
-                <button 
-                  onClick={() => setStep("counselor_guide")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_guide" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
-                >
-                  <span className="text-base">🧭</span> 개입 가이드
-                </button>
-                <button 
-                  onClick={() => setStep("counselor_settings")} 
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors text-sm font-medium ${
-                    step === "counselor_settings" ? "bg-[#2D4A7A] text-white" : "text-gray-400 hover:text-white hover:bg-[#2D4A7A]/50"
-                  }`}
-                >
-                  <span className="text-base">⚙️</span> 설정
-                </button>
-              </nav>
             </div>
 
-            {/* Bottom: Hotline & Logout */}
-            <div className="flex flex-col gap-3">
-              <a 
-                href="tel:1393" 
-                className="bg-[#EF4444] hover:bg-[#DC2626] text-white p-3 rounded-xl flex flex-col items-center text-center transition-colors shadow-lg shadow-red-900/20"
-              >
-                <span className="font-bold flex items-center gap-1 text-sm">🚨 긴급 핫라인</span>
-                <span className="text-[10px] opacity-90 mt-0.5">1393 · 1577-0199 · 119</span>
-              </a>
+            {/* Sidebar Navigation */}
+            <nav className="flex-1 p-4 flex flex-col gap-1 overflow-y-auto">
+              {[
+                { id: "counselor_dashboard", label: "대시보드", icon: "📊" },
+                { id: "counselor_clients", label: "내담자 목록", icon: "👥" },
+                { id: "counselor_report", label: "리포트", icon: "📋" },
+                { id: "counselor_guide", label: "개입 가이드", icon: "🛡️" },
+                { id: "counselor_settings", label: "설정", icon: "⚙️" }
+              ].map((item) => {
+                const isActive = step === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setStep(item.id as any)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-left ${
+                      isActive
+                        ? "bg-[#1E2D4E] text-[#FAF8F5] shadow-md"
+                        : "text-[#8C7862] hover:text-[#1E2D4E] hover:bg-[#FAF8F5]/50"
+                    }`}
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Sidebar Footer with Logout & User Profile */}
+            <div className="p-4 border-t border-[#EAE5D9] bg-[#FAF8F5]">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-[#1E2D4E] rounded-full flex items-center justify-center text-[#FAF8F5] font-bold text-xs">
+                  지우
+                </div>
+                <div className="text-[11px] text-left">
+                  <p className="font-bold text-gray-800">김상담 상담사</p>
+                  <p className="text-gray-400">위기센터 전담</p>
+                </div>
+              </div>
               <button 
                 onClick={() => setStep("onboarding")}
-                className="text-xs text-gray-400 hover:text-white mt-1 p-2 text-center transition-colors hover:underline"
+                className="w-full bg-[#FAF8F5] border border-[#EAE5D9] hover:bg-[#F5EFE6] text-xs font-bold py-2 rounded-xl text-red-500 hover:text-red-600 transition-colors flex items-center justify-center gap-1"
               >
                 로그아웃
               </button>
             </div>
-          </div>
+          </aside>
 
-          {/* Content Area */}
-          <div className="flex-1 ml-[240px] p-8">
-            <div className="max-w-6xl mx-auto">
-              {step === "counselor_dashboard" && <CounselorDashboard />}
-              {step === "counselor_clients" && <CounselorPortal />}
-              {step === "counselor_report" && <CounselorReport />}
-              {step === "counselor_guide" && <CounselorGuide />}
-              {step === "counselor_settings" && <CounselorSettings />}
-            </div>
+          {/* Main Layout Area */}
+          <div className="flex-1 pl-64 flex flex-col min-h-screen">
+            {/* Top Navigation Bar */}
+            <header className="h-16 bg-[#FAF8F5] border-b border-[#EAE5D9] px-8 flex justify-between items-center sticky top-0 z-20 shadow-[0_2px_15px_rgba(139,123,93,0.02)]">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-[#8C7862]">상담사 포털</span>
+                <span className="text-xs text-[#EAE5D9] font-light">/</span>
+                <span className="text-sm font-black text-[#1E2D4E]">
+                  {step === "counselor_dashboard" && "대시보드"}
+                  {step === "counselor_clients" && "내담자 목록"}
+                  {step === "counselor_report" && "리포트"}
+                  {step === "counselor_guide" && "개입 가이드"}
+                  {step === "counselor_settings" && "설정"}
+                </span>
+              </div>
+              
+              <div className="text-xs text-[#8C7862] font-semibold">
+                접속일: {formattedDate}
+              </div>
+            </header>
+
+            {/* Page transition header strip */}
+            <div className="bg-gradient-to-r from-[#1E2D4E] to-[#2E3C56] h-1.5 w-full shrink-0"></div>
+
+            {/* Content Area */}
+            <main className="flex-1 p-6 md:p-8">
+              <div className="max-w-7xl mx-auto">
+                {step === "counselor_dashboard" && <CounselorDashboard />}
+                {step === "counselor_clients" && <CounselorPortal />}
+                {step === "counselor_report" && <CounselorReport />}
+                {step === "counselor_guide" && <CounselorGuide />}
+                {step === "counselor_settings" && <CounselorSettings />}
+              </div>
+            </main>
           </div>
         </div>
       )}

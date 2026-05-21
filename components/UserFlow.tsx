@@ -143,24 +143,24 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
   // 페르소나별 스타일 셋업
   const getBannerStyle = () => {
     switch (currentPersona) {
-      case 1: return "bg-[#FFFBF0] text-gray-800";
-      case 2: return "bg-[#EEF4FF] text-gray-800";
-      case 3: return "bg-[#1A2744] text-white";     // 클로 (고위험 대응)
-      case 4: return "bg-[#F0F4FF] text-gray-800"; // 멘토 (소크라테스)
-      case 5: return "bg-[#FFF5E6] text-gray-800"; // 철수 (유머)
+      case 1: return "bg-[#F4ECE1] text-[#3E3A35] border-b border-[#EAE5D9]";
+      case 2: return "bg-[#E5ECE7] text-[#2C3E35] border-b border-[#C5D3C7]";
+      case 3: return "bg-[#1A2744] text-white border-b border-gray-800";     // 클로 (고위험 대응)
+      case 4: return "bg-[#EBE7E0] text-[#3D3A35] border-b border-[#DCD6CC]"; // 멘토 (소크라테스)
+      case 5: return "bg-[#F5ECE8] text-[#4A3835] border-b border-[#EADAD5]"; // 철수 (유머)
     }
   };
 
   const getBubbleStyle = (role: string) => {
     if (role === "user") {
-      return "bg-[#6096C8] text-white rounded-tr-sm";
+      return "bg-[#1E2D4E] text-[#F8F5F0] rounded-tr-sm";
     }
     switch (currentPersona) {
-      case 1: return "bg-[#FFF9E6] text-gray-800 rounded-tl-sm";
-      case 2: return "bg-[#F0F6FF] text-gray-800 rounded-tl-sm";
+      case 1: return "bg-[#F5EFE6] text-[#3E3A35] rounded-tl-sm border border-[#EAE5D9]/40";
+      case 2: return "bg-[#E3EAE5] text-[#2C3E35] rounded-tl-sm border border-[#C5D3C7]/40";
       case 3: return "bg-[#2A3B5C] text-white rounded-tl-sm border border-gray-700"; // 클로
-      case 4: return "bg-[#EEF2FF] text-gray-800 rounded-tl-sm"; // 멘토
-      case 5: return "bg-[#FFF8F0] text-gray-800 rounded-tl-sm"; // 철수
+      case 4: return "bg-[#EAE6DF] text-[#3E3A35] rounded-tl-sm border border-[#DCD6CC]/40"; // 멘토
+      case 5: return "bg-[#F3EBE7] text-[#4A3835] rounded-tl-sm border border-[#EADAD5]/40"; // 철수
     }
   };
 
@@ -174,21 +174,21 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
   return (
     <div className="w-full max-w-4xl mx-auto flex justify-center">
       {/* Chat Area */}
-      <div className={`w-full rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden transition-colors duration-300 relative ${
-        currentPersona === 3 ? "bg-[#1A2744]" : "bg-white"
+      <div className={`w-full rounded-3xl shadow-[0_12px_40px_rgba(139,123,93,0.06)] border border-[#EAE5D9] flex flex-col overflow-hidden transition-colors duration-300 relative ${
+        currentPersona === 3 ? "bg-[#1A2744] border-gray-800" : "bg-[#FAF8F5]"
       }`}>
         {/* Test Panel */}
-        <div className="bg-gray-100 p-2 flex gap-2 text-xs justify-center items-center overflow-x-auto">
-          <span className="font-bold shrink-0">테스트용 페르소나:</span>
-          <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded shadow ${currentPersona === 1 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>1. 또치 (경증)</button>
-          <button onClick={() => handlePersonaChange(2)} className={`px-2 py-1 rounded shadow ${currentPersona === 2 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>2. 지우 (중등도)</button>
-          <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded shadow ${currentPersona === 3 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>3. 클로 (고위험)</button>
-          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded shadow ${currentPersona === 4 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>4. 멘토 (CBT)</button>
-          <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded shadow ${currentPersona === 5 ? "bg-[#6096C8] text-white" : "bg-white text-gray-800"}`}>5. 철수 (행동)</button>
+        <div className="bg-white border-b border-[#EAE5D9] p-2 flex gap-2 text-xs justify-center items-center overflow-x-auto">
+          <span className="font-bold text-[#8C7862] shrink-0">테스트용 페르소나:</span>
+          <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 1 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>1. 또치 (경증)</button>
+          <button onClick={() => handlePersonaChange(2)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 2 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>2. 지우 (중등도)</button>
+          <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 3 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>3. 클로 (고위험)</button>
+          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 4 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>4. 멘토 (CBT)</button>
+          <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 5 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>5. 철수 (행동)</button>
         </div>
 
         {/* Banner */}
-        <div className={`p-4 border-b border-gray-100 flex justify-between items-center ${getBannerStyle()}`}>
+        <div className={`p-4 border-b border-[#EAE5D9] flex justify-between items-center ${getBannerStyle()}`}>
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-bold flex items-center gap-2">
               {currentPersona === 1 && "🦔 고슴도치 또치와 대화 중"}
@@ -207,7 +207,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
           </div>
           <button 
             onClick={() => onEndChat && onEndChat(sessionId)}
-            className="px-3 py-1.5 bg-white text-gray-800 text-xs font-bold rounded-lg shadow-sm hover:bg-gray-50 transition-colors shrink-0"
+            className="px-3 py-1.5 bg-white border border-[#EAE5D9] text-gray-800 text-xs font-bold rounded-lg shadow-sm hover:bg-[#F8F5F0] transition-colors shrink-0"
           >
             대화 종료 및 리포트 보기
           </button>
@@ -215,13 +215,13 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
 
         {/* Alerts for Persona 4 and 5 */}
         {currentPersona === 4 && (
-          <div className="bg-[#FEF3C7] text-[#D97706] p-3 text-sm font-bold flex items-center gap-2">
+          <div className="bg-[#FFF8F0] border-b border-[#EAE5D9] text-[#B45309] p-3 text-sm font-bold flex items-center gap-2">
             <span>💡</span>
             <span>대화 중 인지적 왜곡 패턴이 감지되어 멘토 선생님이 함께해요</span>
           </div>
         )}
         {currentPersona === 5 && (
-          <div className="bg-[#DCFCE7] text-[#15803D] p-3 text-sm font-bold flex items-center gap-2">
+          <div className="bg-[#F0FDF4] border-b border-[#EAE5D9] text-[#166534] p-3 text-sm font-bold flex items-center gap-2">
             <span>🌱</span>
             <span>무기력 패턴이 감지되어 철수가 에너지를 불어넣어 드릴게요!</span>
           </div>
@@ -234,7 +234,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               <span>📞 1393 자살예방상담(24시간)</span>
               <span>→</span>
             </a>
-            <a href="tel:1577-0199" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-2.5 px-4 rounded-lg text-sm flex items-center justify-between shadow-md">
+            <a href="tel:1577-0199" className="bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white font-bold py-2.5 px-4 rounded-lg text-sm flex items-center justify-between shadow-md">
               <span>📞 1577-0199 정신건강위기상담</span>
               <span>→</span>
             </a>
@@ -247,18 +247,18 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
         
         {/* Chat Messages */}
         <div className={`flex-1 p-6 overflow-y-auto min-h-[400px] max-h-[600px] flex flex-col gap-4 ${
-          currentPersona === 3 ? "bg-[#1A2744]" : "bg-white"
+          currentPersona === 3 ? "bg-[#1A2744]" : "bg-[#FAF8F5]"
         }`}>
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "assistant" && (
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 shrink-0 ${
-                  currentPersona === 3 ? "bg-[#2A3B5C] text-white" : "bg-blue-100 text-blue-600"
+                  currentPersona === 3 ? "bg-[#2A3B5C] text-white" : "bg-[#EAE5D9] text-[#3E3A35]"
                 }`}>
                   {msg.icon || "💙"}
                 </div>
               )}
-              <div className={`px-4 py-3 rounded-2xl max-w-[75%] ${getBubbleStyle(msg.role)}`}>
+              <div className={`px-4 py-3 rounded-2xl max-w-[75%] shadow-[0_2px_8px_rgba(139,123,93,0.01)] ${getBubbleStyle(msg.role)}`}>
                 {msg.content}
               </div>
             </div>
@@ -266,12 +266,12 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
         </div>
 
         {/* Chat Input */}
-        <div className={`p-4 border-t border-gray-100 ${
-          currentPersona === 3 ? "bg-[#1A2744] border-gray-700" : "bg-white"
+        <div className={`p-4 border-t border-[#EAE5D9] ${
+          currentPersona === 3 ? "bg-[#1A2744] border-gray-700" : "bg-[#FAF8F5]"
         }`}>
           <form onSubmit={handleSend} className="flex gap-2">
             <button type="button" onClick={() => setMessages([userPersonaMessages[currentPersona][0]])} className={`p-3 rounded-xl transition-colors ${
-              currentPersona === 3 ? "text-gray-400 hover:text-gray-200 bg-[#2A3B5C]" : "text-gray-400 hover:text-gray-600 bg-gray-100"
+              currentPersona === 3 ? "text-gray-400 hover:text-gray-200 bg-[#2A3B5C]" : "text-gray-400 hover:text-gray-600 bg-white border border-[#EAE5D9] hover:bg-[#F8F5F0]"
             }`}>
               <RotateCcw size={20} />
             </button>
@@ -283,15 +283,15 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               className={`flex-1 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all ${
                 currentPersona === 3 
                   ? "bg-[#2A3B5C] border-gray-600 text-white focus:ring-white/50 focus:border-white" 
-                  : "bg-gray-50 border border-gray-200 text-gray-800 focus:ring-[#8B7BAD]/50 focus:border-[#8B7BAD]"
+                  : "bg-white border border-[#EAE5D9] text-gray-800 focus:ring-[#8C7862]/30 focus:border-[#8C7862]"
               }`}
             />
-            <button type="submit" className="px-6 py-3 bg-gradient-to-r from-[#6096C8] to-[#8B7BAD] text-white font-bold rounded-xl hover:shadow-md transition-all flex items-center gap-2 shrink-0">
+            <button type="submit" className="px-6 py-3 bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold rounded-xl shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transition-all flex items-center gap-2 shrink-0">
               전송 <Send size={18} />
             </button>
           </form>
           <p className={`text-xs text-center mt-3 flex items-center justify-center gap-1 ${
-            currentPersona === 3 ? "text-gray-500" : "text-gray-400"
+            currentPersona === 3 ? "text-gray-500" : "text-[#8C7862]"
           }`}>
             <Info size={14} /> 실제 분석을 위해서는 백엔드 API 연동이 필요합니다.
           </p>

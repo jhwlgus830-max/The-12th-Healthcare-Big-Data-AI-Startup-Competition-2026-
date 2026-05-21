@@ -350,9 +350,9 @@ export default function EmotionReport({
   const tabs = ["대화턴", "1일", "7일", "14일", "30일"];
 
   return (
-    <div className="max-w-7xl w-full bg-white rounded-3xl overflow-hidden shadow-[0_20px_50px_-20px_rgba(96,150,200,0.15)] flex flex-col animate-fade-in max-h-[90vh]">
+    <div className="max-w-7xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in max-h-[90vh]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#5B82B5] to-[#8B7BAD] p-6 text-white shrink-0">
+      <div className="bg-gradient-to-r from-[#1E2D4E] to-[#2E3C56] p-6 text-white shrink-0 border-b border-[#EAE5D9]/20">
         <div className="text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-2">
             📊 나의 감정 리포트
@@ -364,19 +364,19 @@ export default function EmotionReport({
       <div className="p-6 flex flex-col gap-6 flex-1 overflow-hidden">
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
-          <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
+          <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
             <p className="text-xs text-gray-500 font-medium mb-1">총 대화 턴</p>
             <p className="text-2xl font-bold text-gray-800">{displaySummary.totalTurns}회</p>
           </div>
-          <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
+          <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
             <p className="text-xs text-gray-500 font-medium mb-1">평균 위험도</p>
             <p className="text-2xl font-bold text-[#D97706]">{displaySummary.avgRisk}</p>
           </div>
-          <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
+          <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
             <p className="text-xs text-gray-500 font-medium mb-1">주요 감정</p>
             <p className="text-2xl font-bold text-gray-800">{displaySummary.mainEmotion}</p>
           </div>
-          <div className="bg-[#F7F9FC] p-4 rounded-xl text-center border border-gray-100">
+          <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
             <p className="text-xs text-gray-500 font-medium mb-1">위험 등급</p>
             <p className={`text-xl font-bold ${badgeColor}`}>{actualSeverity}</p>
           </div>
@@ -389,7 +389,7 @@ export default function EmotionReport({
             {/* Left Column (4/12): Score, Donut, MIND, Word Cloud */}
             <div className="lg:col-span-4 flex flex-col gap-6">
               {/* Score Card */}
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex flex-col items-center">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col items-center">
                 <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
                   📊 우울 위험 점수
                 </h3>
@@ -403,7 +403,7 @@ export default function EmotionReport({
               </div>
 
               {/* Donut Chart */}
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                 <h3 className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                   💭 감정 분포
                 </h3>
@@ -438,13 +438,13 @@ export default function EmotionReport({
               </div>
 
               {/* MIND Framework */}
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                 <h3 className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                   🧠 MIND 프레임워크
                 </h3>
                 <div className="flex flex-col gap-2">
                   {displayMindData.map((item) => (
-                    <div key={item.key} className={`border-l-4 ${item.color} bg-[#F7F9FC] p-2 rounded-r-lg flex flex-col`}>
+                    <div key={item.key} className={`border-l-4 ${item.color} bg-[#FAF8F5] p-2 rounded-r-lg border-y border-r border-[#EAE5D9]/50 flex flex-col`}>
                       <p className="text-xs font-bold text-gray-500">{item.key}. {item.title}</p>
                       <p className="text-xs font-bold text-gray-800">{item.desc}</p>
                     </div>
@@ -453,11 +453,11 @@ export default function EmotionReport({
               </div>
 
               {/* Word Cloud */}
-              <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                 <h3 className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                   ☁️ 자주 쓴 단어
                 </h3>
-                <div className="bg-[#F7F9FC] rounded-xl p-3 h-32 relative overflow-hidden">
+                <div className="bg-[#FAF8F5] border border-[#EAE5D9]/60 rounded-xl p-3 h-32 relative overflow-hidden">
                   {displayWordCloud.map((item, i) => (
                     <span key={i} className={`absolute ${item.size} font-bold ${item.color} ${item.pos}`}>
                       {item.text}
@@ -469,7 +469,7 @@ export default function EmotionReport({
 
             {/* Right Column (8/12): New Big Chart */}
             <div className="lg:col-span-8 flex flex-col gap-6">
-              <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
+              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                 <div className="flex flex-col gap-4">
                   {/* Title and Subtitle */}
                   <div>
@@ -489,7 +489,7 @@ export default function EmotionReport({
                         onClick={() => setCurrentTab(tab)}
                         className={`px-4 py-2 font-medium transition-colors ${
                           currentTab === tab
-                            ? "border-b-2 border-[#6096C8] text-[#6096C8]"
+                            ? "border-b-2 border-[#1E2D4E] text-[#1E2D4E]"
                             : "text-gray-500 hover:text-gray-700"
                         }`}
                       >
@@ -555,11 +555,11 @@ export default function EmotionReport({
         <div className="flex flex-col sm:flex-row gap-3 mt-2 shrink-0">
           <button 
             onClick={onContinueChat}
-            className="flex-1 bg-[#6096C8] hover:bg-[#5085B7] text-white font-bold py-3.5 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center justify-center gap-2"
+            className="flex-1 bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold py-3.5 rounded-xl shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px] transition-all flex items-center justify-center gap-2"
           >
             대화 계속하기 <ArrowRight size={18} />
           </button>
-          <button className="flex-1 bg-white border-2 border-gray-200 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+          <button className="flex-1 bg-[#FDFCFB] border border-[#EAE5D9] text-[#3E3A35] font-bold py-3.5 rounded-xl hover:bg-[#FAF8F5] transition-colors flex items-center justify-center gap-2">
             <Calendar size={18} /> 다음 재평가 예약
           </button>
         </div>

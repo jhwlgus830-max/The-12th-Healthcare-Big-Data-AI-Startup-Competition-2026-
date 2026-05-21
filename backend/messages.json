@@ -86,5 +86,115 @@
     "is_high_risk": false,
     "id": "8c60c229-2c7a-48fa-afe6-03c2ce9c2d4d",
     "created_at": "2026-05-20T01:16:33.637391Z"
+  },
+  {
+    "session_id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "role": "user",
+    "content": "너무 먹어서 문제야 평소보다 더 많이 먹어",
+    "icon": "👤",
+    "emotion": "{\"primary\": \"식욕증가\", \"detected\": [\"식욕증가\"], \"probabilities\": {\"식욕증가\": 99.2, \"식욕저하\": 0.2, \"피로\": 0.1}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "1634ecb9-e53e-4d11-b026-2f89e07162f6",
+    "created_at": "2026-05-20T01:24:02.639822Z"
+  },
+  {
+    "session_id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "role": "assistant",
+    "content": "그런 기분이 드는구나, 정말 힘들겠다. 식욕이 갑자기 늘어나면 여러 가지 이유가 있을 수 있어. 혹시 스트레스나 감정적인 이유가 있는 건 아닐까? 나랑 좀 더 이야기해볼래?",
+    "icon": "🦔",
+    "emotion": "{\"primary\": \"식욕증가\", \"detected\": [\"식욕증가\"], \"probabilities\": {\"식욕증가\": 99.2, \"식욕저하\": 0.2, \"피로\": 0.1}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "9ea5268d-1a04-423f-bd7e-b26e82e058b0",
+    "created_at": "2026-05-20T01:24:02.642034Z"
+  },
+  {
+    "session_id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "role": "user",
+    "content": "헐 맞아 스트레스 존나 받아",
+    "icon": "👤",
+    "emotion": "{\"primary\": \"일상\", \"detected\": [\"일상\"], \"probabilities\": {\"일상\": 99.7, \"외로움\": 0.0, \"불면\": 0.0}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "b87129b1-c12c-4fed-8430-92675ac1831f",
+    "created_at": "2026-05-20T01:24:14.958894Z"
+  },
+  {
+    "session_id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "role": "assistant",
+    "content": "스트레스가 많이 쌓였구나, 정말 힘들겠다. 그런 감정이 들 때는 어떻게든 해소하고 싶어지지. 혹시 스트레스를 풀기 위해 하는 방법이 있을까? 같이 이야기해보면 좋을 것 같아!",
+    "icon": "🦔",
+    "emotion": "{\"primary\": \"일상\", \"detected\": [\"일상\"], \"probabilities\": {\"일상\": 99.7, \"외로움\": 0.0, \"불면\": 0.0}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "dc11ad8f-d03c-475e-a83e-8875ee882591",
+    "created_at": "2026-05-20T01:24:14.960740Z"
+  },
+  {
+    "session_id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "role": "user",
+    "content": "방법? 걍 운동? 좀 하는 것 가타.",
+    "icon": "👤",
+    "emotion": "{\"primary\": \"일상\", \"detected\": [\"일상\"], \"probabilities\": {\"일상\": 99.5, \"초조함\": 0.1, \"자살충동\": 0.0}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "74ae458c-2565-4d05-a606-be8d59deb769",
+    "created_at": "2026-05-20T01:24:34.451899Z"
+  },
+  {
+    "session_id": "69d1433b-8e21-41e7-b0bf-c209b71e2fa6",
+    "role": "assistant",
+    "content": "운동이 좋다고 느끼는구나! 운동은 스트레스 해소에도 정말 효과적이니까. 하지만 가끔은 마음이 힘들 때 운동하기도 어렵잖아. 다른 방법도 찾아보면 좋을 것 같은데, 어떤 것들이 있을까? 나랑 함께 고민해보자!",
+    "icon": "🦔",
+    "emotion": "{\"primary\": \"일상\", \"detected\": [\"일상\"], \"probabilities\": {\"일상\": 99.5, \"초조함\": 0.1, \"자살충동\": 0.0}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "014c94ca-5264-4966-93ae-dadb9b45dfa4",
+    "created_at": "2026-05-20T01:24:34.454593Z"
+  },
+  {
+    "session_id": "7850f930-513d-444a-a80c-1bd198c198bb",
+    "role": "user",
+    "content": "하 힘들다",
+    "icon": "👤",
+    "emotion": "{\"primary\": \"무기력\", \"detected\": [\"무기력\", \"일상\"], \"probabilities\": {\"무기력\": 59.1, \"일상\": 31.8, \"외로움\": 3.0}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "7f354b11-34c6-4db0-9def-fe2e8bf37631",
+    "created_at": "2026-05-20T01:29:08.718242Z"
+  },
+  {
+    "session_id": "7850f930-513d-444a-a80c-1bd198c198bb",
+    "role": "assistant",
+    "content": "아, 힘든 기분이구나. 정말 마음이 안 좋을 것 같아. 그런 기분 느낄 땐 그냥 누군가에게 이야기하는 것도 도움이 될 수 있어. 혹시 어떤 일 때문에 힘든지 좀 더 말해줄 수 있어?",
+    "icon": "🦔",
+    "emotion": "{\"primary\": \"무기력\", \"detected\": [\"무기력\", \"일상\"], \"probabilities\": {\"무기력\": 59.1, \"일상\": 31.8, \"외로움\": 3.0}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "d152935a-410b-4402-b393-2131b824faa5",
+    "created_at": "2026-05-20T01:29:08.720996Z"
+  },
+  {
+    "session_id": "7850f930-513d-444a-a80c-1bd198c198bb",
+    "role": "user",
+    "content": "힘들다",
+    "icon": "👤",
+    "emotion": "{\"primary\": \"무기력\", \"detected\": [\"무기력\"], \"probabilities\": {\"무기력\": 96.8, \"외로움\": 0.8, \"슬픔\": 0.6}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "6e2cd355-17bf-4d54-94c6-83513f9fb58f",
+    "created_at": "2026-05-20T01:29:16.544281Z"
+  },
+  {
+    "session_id": "7850f930-513d-444a-a80c-1bd198c198bb",
+    "role": "assistant",
+    "content": "정말 힘들구나. 그런 기분이 계속되면 정말 힘들지. 네 마음이 어떤지 조금이라도 나눠줄 수 있을까? 함께 이야기하면 조금 더 나아질 수도 있을 거야.",
+    "icon": "🦔",
+    "emotion": "{\"primary\": \"무기력\", \"detected\": [\"무기력\"], \"probabilities\": {\"무기력\": 96.8, \"외로움\": 0.8, \"슬픔\": 0.6}}",
+    "risk_score": 0.0,
+    "is_high_risk": false,
+    "id": "1902d30c-3065-4e86-bf33-6d5f5c531c96",
+    "created_at": "2026-05-20T01:29:16.547514Z"
   }
 ]

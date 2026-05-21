@@ -919,7 +919,7 @@ export const mockUsers: UserProfile[] = [
 export const mockCounselor: CounselorProfile = {
   id: "counselor-001",
   name: "김상담",
-  email: "counselor@mallang.com",
+  email: "counselor@uulppae.com",
   employeeId: "EMP-2025-01",
   institution: "서울정신건강위기센터",
   assignedClientIds: ["user-001", "user-002", "user-003", "user-004", "user-005"],
@@ -988,7 +988,7 @@ export const mockKnowledgeBase: KnowledgeBaseDoc[] = [
   
   // 6. 안전대응문구 DB
   { id: "KB-014", category: "안전대응문구", title: "자살 직접 행동 의도 감지 시의 표준 템플릿", content: "사용자가 수단이나 직접 의도(자살, 수면제 과다 등)를 표명했을 시, AI는 자유로운 정서 공감 생성을 엄격히 축소하고: '지금 매우 고통스럽고 위험한 상태에 계십니다. 서연님/민준님의 생명을 지키기 위해, 지금 즉시 이 화면의 1393 핫라인 혹은 119로 긴급 연결을 해주세요. 혼자 계시지 마시고 즉시 비상연락망에 연락해 도움을 요청하셔야 합니다.' 라는 안전 규격 문구만을 반복 노출합니다.", tags: ["고위험", "가드레일", "템플릿"], riskLevelTarget: ["high", "severe"], source: "안전대응문구_2024" },
-  { id: "KB-015", category: "안전대응문구", title: "간접 우울 징후 증가 시의 기관 연계 추천 문구", content: "'무기력과 부정적 키워드가 지속되는 것으로 보여요. 말랑해도 돼 AI보다 전문 심리상담사 김상담님과의 대면상담을 통해 마음을 조금 더 건강하고 세밀하게 살펴나가는 정서적 안전 연결을 진심으로 권장합니다.'", tags: ["중등도", "기관연계"], riskLevelTarget: ["moderate", "severe"], source: "안전대응문구_2024" }
+  { id: "KB-015", category: "안전대응문구", title: "간접 우울 징후 증가 시의 기관 연계 추천 문구", content: "'무기력과 부정적 키워드가 지속되는 것으로 보여요. 우울빼미 AI보다 전문 심리상담사 김상담님과의 대면상담을 통해 마음을 조금 더 건강하고 세밀하게 살펴나가는 정서적 안전 연결을 진심으로 권장합니다.'", tags: ["중등도", "기관연계"], riskLevelTarget: ["moderate", "severe"], source: "안전대응문구_2024" }
 ];
 
 
