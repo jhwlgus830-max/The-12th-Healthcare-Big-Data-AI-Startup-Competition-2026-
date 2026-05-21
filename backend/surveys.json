@@ -238,5 +238,122 @@
     "contact": "010-4180-6449",
     "id": "24e68063-4163-4f5c-b45c-529488c09d65",
     "created_at": "2026-05-20T07:36:03.042878Z"
+  },
+  {
+    "user_id": "anonymous_user",
+    "phq9_score": 11,
+    "phq9_answers": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      1,
+      2,
+      1,
+      1
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "중증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "학생",
+    "region": "제주",
+    "id": "400bc35f-1757-4ab5-baa3-3ecdb07f9878",
+    "created_at": "2026-05-20T16:33:18.819823Z"
+  },
+  {
+    "user_id": "user-1d5976e5",
+    "phq9_score": 22,
+    "phq9_answers": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2
+    ],
+    "p4_answers": [
+      "있음",
+      "있음",
+      "매우 그렇다",
+      "없음"
+    ],
+    "is_p4_high_risk": true,
+    "severity": "고위험",
+    "gender": "남성",
+    "age_group": "20대",
+    "occupation": "대학생",
+    "region": "서울",
+    "contact": "010-1234-5678",
+    "id": "589473b5-dbed-4c8a-a2eb-d17eeeffb1c0",
+    "created_at": "2026-05-21T02:47:08.711264Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "phq9_score": 10,
+    "phq9_answers": [
+      3,
+      2,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "중증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "제주",
+    "id": "bce51cf8-c1fb-4550-8b54-ed623a09e815",
+    "created_at": "2026-05-21T02:52:06.953045Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "phq9_score": 1,
+    "phq9_answers": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "경증",
+    "gender": "여성",
+    "age_group": "30대",
+    "occupation": "무직/구직중",
+    "region": "제주",
+    "id": "29a5d15a-85f0-47f0-8f08-0a9b2af1ed91",
+    "created_at": "2026-05-21T02:58:25.969085Z"
   }
 ]

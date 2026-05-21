@@ -206,22 +206,29 @@ async def send_chat(request: ChatSendRequest):
     if phq9_score >= 20 or is_p4_high_risk or is_realtime_high_risk:
         persona_id = 3
         routed_persona_name = "🤖 AI 어시스턴트 클로"
-    elif phq9_score >= 10:
-        persona_id = 2
-        routed_persona_name = "🧑‍⚕️ 상담사 지우"
-    elif phq9_score >= 5:
-        # 5~9점 경도: 사용자가 1(또치), 4(멘토), 5(철수) 중 하나를 선택할 수 있게 함
-        if request.initial_persona in [1, 4, 5]:
+    else:
+        # 비위기 상황일 때는 사용자가 프론트엔드에서 수동 선택한 페르소나(initial_persona)를 최우선으로 일관되게 보장!
+        if request.initial_persona in [1, 2, 3, 4, 5]:
             persona_id = request.initial_persona
-            rev_persona_map = {1: "🦔 고슴도치 또치", 4: "🧑‍⚕️ 멘토 선생님", 5: "😄 개그맨 철수"}
+            rev_persona_map = {
+                1: "🦔 고슴도치 또치",
+                2: "🧑‍⚕️ 상담사 지우",
+                3: "🤖 AI 어시스턴트 클로",
+                4: "🧑‍⚕️ 멘토 선생님",
+                5: "😄 개그맨 철수"
+            }
             routed_persona_name = rev_persona_map[persona_id]
         else:
-            persona_id = 1
-            routed_persona_name = "🦔 고슴도치 또치"
-    else:
-        # 0~4점 경도: 또치 배정
-        persona_id = 1
-        routed_persona_name = "🦔 고슴도치 또치"
+            # 수동 선택이 없거나 유효하지 않은 경우에만 설문 점수 기반 동적 라우팅 수행
+            if phq9_score >= 10:
+                persona_id = 2
+                routed_persona_name = "🧑‍⚕️ 상담사 지우"
+            elif phq9_score >= 5:
+                persona_id = 1
+                routed_persona_name = "🦔 고슴도치 또치"
+            else:
+                persona_id = 1
+                routed_persona_name = "🦔 고슴도치 또치"
         
     is_high_risk_flag = (persona_id == 3)  # 클로 배정 시 고위험 플래그 True
         
