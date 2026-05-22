@@ -932,8 +932,17 @@ async def get_counselor_clients():
                 phq9 = latest_survey.get("phq9_score", 0)
                 p4_ans = latest_survey.get("p4_answers", [])
                 p4 = compute_p4_score(p4_ans)
-                sev = latest_survey.get("severity", "경증")
-                risk = "High" if sev == "고위험" else ("Medium" if sev == "중증" else "Low")
+                
+                # 4단계 위험 분류
+                if p4 > 0:
+                    risk = "Crisis"
+                elif phq9 >= 20:
+                    risk = "High"
+                elif phq9 >= 10:
+                    risk = "Medium"
+                else:
+                    risk = "Low"
+                    
                 gender = latest_survey.get("gender", "선택 안함")
                 if gender == "남성":
                     gender = "남"

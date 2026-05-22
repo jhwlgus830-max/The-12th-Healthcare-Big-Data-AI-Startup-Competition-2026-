@@ -103,7 +103,7 @@ function getCoordsFromAddress(geocoder: any, address: string, cache: Record<stri
 }
 
 
-export default function InteractiveMap({ userRegion, onBack }: { userRegion: string; onBack: () => void }) {
+export default function InteractiveMap({ userRegion, onBack, showBackBtn = true }: { userRegion: string; onBack?: () => void; showBackBtn?: boolean }) {
   const [selectedRegion, setSelectedRegion] = useState(userRegion || "서울");
   const [resources, setResources] = useState<Resource[]>([]);
   const [subRegions, setSubRegions] = useState<string[]>([]);
@@ -464,12 +464,14 @@ export default function InteractiveMap({ userRegion, onBack }: { userRegion: str
             <p className="text-xs opacity-90 mt-1">사용자의 거주지를 중심으로 인근의 우수한 지자체 복지센터 및 병원 정보를 보여줍니다.</p>
           </div>
         </div>
-        <button
-          onClick={onBack}
-          className="px-4 py-2 bg-[#FAF8F5] hover:bg-[#F5EFE6] text-[#8C7862] hover:text-[#1E2D4E] font-bold text-xs rounded-xl transition-all border border-[#EAE5D9] shadow-sm flex items-center gap-1"
-        >
-          ← 이전으로 돌아가기
-        </button>
+        {showBackBtn && onBack && (
+          <button
+            onClick={onBack}
+            className="px-4 py-2 bg-[#FAF8F5] hover:bg-[#F5EFE6] text-[#8C7862] hover:text-[#1E2D4E] font-bold text-xs rounded-xl transition-all border border-[#EAE5D9] shadow-sm flex items-center gap-1"
+          >
+            ← 이전으로 돌아가기
+          </button>
+        )}
       </div>
 
       <div className="p-6 flex flex-col md:flex-row gap-6 h-[550px]">

@@ -9,6 +9,7 @@ import CounselorPortal from "../components/CounselorPortal";
 import CounselorDashboard from "../components/CounselorDashboard";
 import CounselorReport from "../components/CounselorReport";
 import CounselorGuide from "../components/CounselorGuide";
+import CounselorCrisisDashboard from "../components/CounselorCrisisDashboard";
 import CounselorSettings from "../components/CounselorSettings";
 import OwlLogo from "../components/OwlLogo";
 import InteractiveMap from "../components/InteractiveMap";
@@ -18,8 +19,8 @@ import { Heart, UserCheck, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
-  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "map">("onboarding");
-  const [prevStep, setPrevStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "map">("onboarding");
+  const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "counselor_crisis" | "map">("onboarding");
+  const [prevStep, setPrevStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "counselor_crisis" | "map">("onboarding");
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
   const [initialPersona, setInitialPersona] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [diaryText, setDiaryText] = useState("");
@@ -1999,7 +2000,7 @@ export default function Home() {
       )}
 
       {/* Counselor Portal */}
-      {(step === "counselor_dashboard" || step === "counselor_clients" || step === "counselor_report" || step === "counselor_guide" || step === "counselor_settings") && (
+      {(step === "counselor_dashboard" || step === "counselor_clients" || step === "counselor_report" || step === "counselor_guide" || step === "counselor_settings" || step === "counselor_crisis") && (
         <div className="flex min-h-screen w-full bg-[#F8F5F0]">
           {/* Sidebar */}
           <aside className="w-64 bg-[#FAF8F5] border-r border-[#EAE5D9] flex flex-col fixed h-full z-30 shadow-[0_4px_20px_rgba(139,123,93,0.02)]">
@@ -2017,6 +2018,7 @@ export default function Home() {
               {[
                 { id: "counselor_dashboard", label: "대시보드", icon: "📊" },
                 { id: "counselor_clients", label: "내담자 목록", icon: "👥" },
+                { id: "counselor_crisis", label: "자살/자해 위험군", icon: "🚨" },
                 { id: "counselor_report", label: "리포트", icon: "📋" },
                 { id: "counselor_guide", label: "개입 가이드", icon: "🛡️" },
                 { id: "counselor_settings", label: "설정", icon: "⚙️" }
@@ -2069,6 +2071,7 @@ export default function Home() {
                 <span className="text-sm font-black text-[#1E2D4E]">
                   {step === "counselor_dashboard" && "대시보드"}
                   {step === "counselor_clients" && "내담자 목록"}
+                  {step === "counselor_crisis" && "자살/자해 위험군"}
                   {step === "counselor_report" && "리포트"}
                   {step === "counselor_guide" && "개입 가이드"}
                   {step === "counselor_settings" && "설정"}
@@ -2101,6 +2104,9 @@ export default function Home() {
                       setStep("counselor_report"); 
                     }} 
                   />
+                )}
+                {step === "counselor_crisis" && (
+                  <CounselorCrisisDashboard />
                 )}
                 {step === "counselor_report" && (
                   <CounselorReport 
@@ -2188,6 +2194,7 @@ export default function Home() {
                 {[
                   { label: "상담사 대시보드", val: "counselor_dashboard" },
                   { label: "내담자 관리", val: "counselor_clients" },
+                  { label: "자살/자해 위험군", val: "counselor_crisis" },
                   { label: "감정 분석 리포트", val: "counselor_report" },
                   { label: "임상 가이드라인", val: "counselor_guide" },
                   { label: "전문가 포털 설정", val: "counselor_settings" }

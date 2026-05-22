@@ -354,7 +354,7 @@ export default function EmotionReport({
   return (
     <div className="max-w-7xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in max-h-[90vh]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#1E2D4E] to-[#2E3C56] p-6 text-white shrink-0 border-b border-[#EAE5D9]/20">
+      <div className="bg-gradient-to-r from-[#8C7862] to-[#A69584] p-6 text-white shrink-0 border-b border-[#EAE5D9]/20">
         <div className="text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-2">
             📊 나의 감정 리포트
