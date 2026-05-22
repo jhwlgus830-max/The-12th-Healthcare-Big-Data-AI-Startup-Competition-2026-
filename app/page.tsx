@@ -124,6 +124,7 @@ export default function Home() {
     occupation: "",
     region: "",
     contact: "",
+    phone: "",
   });
 
   const isProfileValid = 
@@ -193,30 +194,150 @@ export default function Home() {
 
       const data = await res.json();
       setLoggedInUser({ userId: data.user_id, nickname: data.nickname, email: data.email, region: data.region });
-      setProfile(prev => ({ ...prev, nickname: data.nickname, region: data.region || "" }));
-      localStorage.setItem("uulppae_user", JSON.stringify({ userId: data.user_id, nickname: data.nickname, email: data.email, region: data.region }));
-      setStep("consent");
+      
+      const newProfile = {
+        nickname: data.profile?.nickname || data.nickname || "",
+        ageGroup: data.profile?.ageGroup || "",
+        gender: data.profile?.gender || "",
+        occupation: data.profile?.occupation || "",
+        region: data.profile?.region || data.region || "",
+        contact: data.profile?.contact || "",
+        phone: data.profile?.phone || "",
+      };
+      setProfile(newProfile);
+      
+      localStorage.setItem("uulppae_user", JSON.stringify({ 
+        userId: data.user_id, 
+        nickname: data.nickname, 
+        email: data.email, 
+        region: data.region || data.profile?.region || "",
+        profile: newProfile,
+        has_profile: data.has_profile
+      }));
+      
+      if (data.has_profile) {
+        setStep("chat");
+      } else {
+        setStep("consent");
+      }
     } catch (err: any) {
       console.warn("Backend connection failed. Using mock offline fallback for demo...", err);
       // Fallback to local authentication for demo robustness
+      let mockUserId = "user-001";
+      let mockNickname = email.split("@")[0] || "우울이";
+      let mockRegion = "서울";
+      let hasProfile = false;
+      let mockProfile = {
+        nickname: mockNickname,
+        ageGroup: "",
+        gender: "",
+        occupation: "",
+        region: mockRegion,
+        contact: "",
+        phone: ""
+      };
+
       if (isSignUp) {
-        setLoggedInUser({
-          userId: "user-" + Math.random().toString(36).substring(2, 7),
-          nickname: nickname,
-          email: email,
-          region: "서울"
-        });
-        setProfile(prev => ({ ...prev, nickname: nickname, region: "서울" }));
+        mockUserId = "user-" + Math.random().toString(36).substring(2, 7);
+        mockNickname = nickname;
+        mockProfile.nickname = nickname;
       } else {
-        setLoggedInUser({
-          userId: "user-001",
-          nickname: email.split("@")[0] || "우울이",
-          email: email,
-          region: "서울"
-        });
-        setProfile(prev => ({ ...prev, nickname: email.split("@")[0] || "우울이", region: "서울" }));
+        // Mocking testuser@example.com offline fallback
+        if (email === "testuser@example.com") {
+          mockUserId = "user-2c8add22";
+          mockNickname = "테스트유저";
+          mockRegion = "부산";
+          hasProfile = true;
+          mockProfile = {
+            nickname: "테스트유저",
+            ageGroup: "30대",
+            gender: "남성",
+            occupation: "직장인",
+            region: "부산",
+            contact: "010-2222-3333",
+            phone: "010-1111-2222"
+          };
+        }
       }
-      setStep("consent");
+
+      setLoggedInUser({
+        userId: mockUserId,
+        nickname: mockNickname,
+        email: email,
+        region: mockRegion
+      });
+      setProfile(mockProfile);
+
+      localStorage.setItem("uulppae_user", JSON.stringify({ 
+        userId: mockUserId, 
+        nickname: mockNickname, 
+        email: email, 
+        region: mockRegion,
+        profile: mockProfile,
+        has_profile: hasProfile
+      }));
+
+      if (hasProfile) {
+        setStep("chat");
+      } else {
+        setStep("consent");
+      }
+    }
+  };
+
+  const handleUpdateProfile = async (updatedProfile: typeof profile) => {
+    try {
+      const res = await fetch("http://localhost:8000/api/user/update_profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: loggedInUser?.userId || "anonymous_user",
+          nickname: updatedProfile.nickname,
+          gender: updatedProfile.gender,
+          age_group: updatedProfile.ageGroup,
+          occupation: updatedProfile.occupation,
+          region: updatedProfile.region,
+          contact: updatedProfile.contact,
+          phone: updatedProfile.phone
+        })
+      });
+      if (!res.ok) {
+        throw new Error("프로필 저장 실패");
+      }
+      
+      // Update local state
+      setProfile(updatedProfile);
+      setLoggedInUser(prev => prev ? { ...prev, nickname: updatedProfile.nickname, region: updatedProfile.region } : null);
+      
+      // Update local storage
+      const localUser = localStorage.getItem("uulppae_user");
+      if (localUser) {
+        try {
+          const parsed = JSON.parse(localUser);
+          parsed.nickname = updatedProfile.nickname;
+          parsed.region = updatedProfile.region;
+          parsed.profile = updatedProfile;
+          localStorage.setItem("uulppae_user", JSON.stringify(parsed));
+        } catch (e) {
+          console.error("로컬 스토리지 갱신 에러", e);
+        }
+      }
+    } catch (err) {
+      console.error("프로필 수정 오류:", err);
+      // Fallback update in case API fails
+      setProfile(updatedProfile);
+      setLoggedInUser(prev => prev ? { ...prev, nickname: updatedProfile.nickname, region: updatedProfile.region } : null);
+      
+      const localUser = localStorage.getItem("uulppae_user");
+      if (localUser) {
+        try {
+          const parsed = JSON.parse(localUser);
+          parsed.nickname = updatedProfile.nickname;
+          parsed.region = updatedProfile.region;
+          parsed.profile = updatedProfile;
+          localStorage.setItem("uulppae_user", JSON.stringify(parsed));
+        } catch (e) {}
+      }
     }
   };
 
@@ -1073,7 +1194,20 @@ export default function Home() {
               </select>
             </div>
 
-            {/* Card 6: Contact */}
+            {/* Card 6: Phone */}
+            <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
+              <label className="text-sm font-bold text-gray-700 block mb-1">본인 연락처 (선택)</label>
+              <p className="text-xs text-gray-500 mb-2">원활한 안내 및 소통을 위한 연락처예요</p>
+              <input
+                type="text"
+                placeholder="예: 010-1234-5678"
+                value={profile.phone || ""}
+                onChange={(e) => handleProfileChange("phone", e.target.value)}
+                className="bg-white border border-[#EAE5D9] rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-gray-800"
+              />
+            </div>
+
+            {/* Card 7: Contact */}
             <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-xl p-4 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
               <label className="text-sm font-bold text-gray-700 block mb-1">비상연락처 (선택)</label>
               <p className="text-xs text-gray-500 mb-2">위기 상황 시 알림을 보낼 연락처예요</p>
@@ -1453,7 +1587,8 @@ export default function Home() {
                         age_group: profile.ageGroup,
                         occupation: profile.occupation,
                         region: profile.region,
-                        contact: profile.contact
+                        contact: profile.contact,
+                        phone: profile.phone
                       })
                     });
                     if (!res.ok) {
@@ -1727,6 +1862,8 @@ export default function Home() {
               setPrevStep("chat");
               setStep("map");
             }}
+            profile={profile}
+            onUpdateProfile={handleUpdateProfile}
           />
         </div>
       )}

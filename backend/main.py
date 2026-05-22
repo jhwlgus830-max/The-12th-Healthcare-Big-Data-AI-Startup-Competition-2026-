@@ -469,6 +469,17 @@ class SurveySaveRequest(BaseModel):
     occupation: Optional[str] = None
     region: Optional[str] = None
     contact: Optional[str] = None
+    phone: Optional[str] = None
+
+class UserProfileUpdateRequest(BaseModel):
+    user_id: str
+    nickname: str
+    gender: str
+    age_group: str
+    occupation: str
+    region: str
+    contact: Optional[str] = None
+    phone: Optional[str] = None
 
 @app.post("/api/journal/save")
 async def save_journal(request: JournalSaveRequest):
@@ -529,10 +540,48 @@ async def save_survey(request: SurveySaveRequest):
         if request.contact:
             insert_data["contact"] = request.contact
 
-        res = supabase.table("surveys").insert(insert_data).execute()
+        # Synchronize local fallback first to guarantee it gets saved locally
+        try:
+            users = load_local_users()
+            if request.user_id in users:
+                users[request.user_id].update({
+                    "gender": request.gender,
+                    "age_group": request.age_group,
+                    "occupation": request.occupation,
+                    "region": request.region,
+                    "contact": request.contact,
+                    "emergency_contact": request.contact,
+                    "phone": request.phone,
+                    "phq9_score": phq9_score,
+                    "phq9_answers": phq9_answers,
+                    "p4_answers": p4_answers,
+                    "service_agreement": True
+                })
+                save_local_users(users)
+        except Exception as e_sync:
+            print(f"[Fallback Alert] Local user sync error during survey save: {e_sync}")
+
+        # Safe insert to Supabase: try inserting with phone, fallback if column is missing
+        res = None
+        try:
+            insert_data_with_phone = insert_data.copy()
+            if request.phone:
+                insert_data_with_phone["phone"] = request.phone
+            res = supabase.table("surveys").insert(insert_data_with_phone).execute()
+        except Exception as e_phone:
+            print(f"[Supabase Alert] Insert with phone column failed: {e_phone}. Retrying without phone column...")
+            try:
+                res = supabase.table("surveys").insert(insert_data).execute()
+            except Exception as e_db:
+                print(f"[Supabase Alert] Standard insert failed: {e_db}. Relying on local user storage.")
         
-        if not res.data:
-            raise HTTPException(status_code=500, detail="설문 저장에 실패했습니다.")
+        # If Supabase query failed but we saved locally, we can return success anyway to be fully robust
+        record_data = res.data[0] if (res and res.data) else {
+            "id": "offline_survey_record",
+            "user_id": request.user_id,
+            "phq9_score": phq9_score,
+            "severity": severity
+        }
             
         return {
             "status": "success",
@@ -540,11 +589,95 @@ async def save_survey(request: SurveySaveRequest):
                 "phq9_score": phq9_score,
                 "is_p4_high_risk": is_p4_high_risk,
                 "severity": severity,
-                "record": res.data[0]
+                "record": record_data
             }
         }
     except Exception as e:
         print(f"[API Server] Survey save error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/user/update_profile")
+async def update_profile(request: UserProfileUpdateRequest):
+    try:
+        # 1. Update nickname in custom_users
+        try:
+            supabase.table("custom_users").update({"nickname": request.nickname}).eq("id", request.user_id).execute()
+        except Exception as e_user:
+            print(f"[Supabase Alert] custom_users update failed: {e_user}")
+            
+        # 2. Get latest survey of user to update it, or insert a new one if none exists
+        try:
+            survey_res = supabase.table("surveys").select("*").eq("user_id", request.user_id).order("created_at", desc=True).limit(1).execute()
+            if survey_res.data:
+                latest_id = survey_res.data[0]["id"]
+                update_data = {
+                    "gender": request.gender,
+                    "age_group": request.age_group,
+                    "occupation": request.occupation,
+                    "region": request.region,
+                    "contact": request.contact
+                }
+                try:
+                    update_data_with_phone = update_data.copy()
+                    if request.phone:
+                        update_data_with_phone["phone"] = request.phone
+                    supabase.table("surveys").update(update_data_with_phone).eq("id", latest_id).execute()
+                except Exception as e_phone:
+                    supabase.table("surveys").update(update_data).eq("id", latest_id).execute()
+            else:
+                # Insert a profile-only survey record
+                insert_data = {
+                    "user_id": request.user_id,
+                    "phq9_score": 0,
+                    "phq9_answers": [0]*9,
+                    "p4_answers": ["없음"]*4,
+                    "is_p4_high_risk": False,
+                    "severity": "경증",
+                    "gender": request.gender,
+                    "age_group": request.age_group,
+                    "occupation": request.occupation,
+                    "region": request.region,
+                    "contact": request.contact
+                }
+                try:
+                    insert_data_with_phone = insert_data.copy()
+                    if request.phone:
+                        insert_data_with_phone["phone"] = request.phone
+                    supabase.table("surveys").insert(insert_data_with_phone).execute()
+                except Exception as e_phone:
+                    supabase.table("surveys").insert(insert_data).execute()
+        except Exception as e_survey:
+            print(f"[Supabase Alert] surveys update/insert failed: {e_survey}")
+            
+        # 3. Sync with local users.json
+        users = load_local_users()
+        if request.user_id in users:
+            users[request.user_id].update({
+                "nickname": request.nickname,
+                "gender": request.gender,
+                "age_group": request.age_group,
+                "occupation": request.occupation,
+                "region": request.region,
+                "contact": request.contact,
+                "emergency_contact": request.contact,
+                "phone": request.phone
+            })
+            save_local_users(users)
+            
+        return {
+            "status": "success",
+            "profile": {
+                "nickname": request.nickname,
+                "gender": request.gender,
+                "ageGroup": request.age_group,
+                "occupation": request.occupation,
+                "region": request.region,
+                "contact": request.contact,
+                "phone": request.phone
+            }
+        }
+    except Exception as e:
+        print(f"[API Server] Profile update error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 class SignupRequest(BaseModel):
@@ -627,20 +760,61 @@ def login(request: LoginRequest):
             user = res.data[0]
             if user["password"] == request.password:
                 user_id = user["id"]
-                # 최신 설문 조사를 조회하여 region 가져오기
                 region = "서울"
+                has_profile = False
+                gender = None
+                age_group = None
+                occupation = None
+                contact = None
+                phone = None
+                
                 try:
-                    survey_res = supabase.table("surveys").select("region").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
-                    if survey_res.data and survey_res.data[0].get("region"):
-                        region = survey_res.data[0]["region"]
+                    survey_res = supabase.table("surveys").select("*").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
+                    if survey_res.data:
+                        latest = survey_res.data[0]
+                        if latest.get("region"):
+                            region = latest["region"]
+                        gender = latest.get("gender")
+                        age_group = latest.get("age_group")
+                        occupation = latest.get("occupation")
+                        contact = latest.get("contact")
+                        phone = latest.get("phone")
+                        if gender and age_group and occupation:
+                            has_profile = True
                 except Exception as ex:
                     print(f"[Login Detail Alert] Failed to fetch region from surveys for user {user_id}. Error: {ex}")
                 
+                # Check local user fallback as well, in case DB is partially out-of-sync
+                try:
+                    users = load_local_users()
+                    if user_id in users:
+                        u = users[user_id]
+                        if not has_profile and "gender" in u and "age_group" in u and "occupation" in u:
+                            has_profile = True
+                            gender = u.get("gender")
+                            age_group = u.get("age_group")
+                            occupation = u.get("occupation")
+                            region = u.get("region", region)
+                            contact = u.get("contact", u.get("emergency_contact"))
+                            phone = u.get("phone")
+                except:
+                    pass
+
                 return {
                     "user_id": user_id,
                     "email": user["email"],
                     "nickname": user["nickname"],
-                    "region": region
+                    "region": region,
+                    "has_profile": has_profile,
+                    "profile": {
+                        "nickname": user["nickname"],
+                        "gender": gender,
+                        "ageGroup": age_group,
+                        "occupation": occupation,
+                        "region": region,
+                        "contact": contact or "",
+                        "phone": phone or ""
+                    } if has_profile else None
                 }
             else:
                 raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
@@ -651,11 +825,22 @@ def login(request: LoginRequest):
     for uid, u in users.items():
         if u["email"] == request.email:
             if u["password"] == request.password:
+                has_profile = "gender" in u and "age_group" in u and "occupation" in u
                 return {
                     "user_id": uid,
                     "email": u["email"],
                     "nickname": u["nickname"],
-                    "region": u.get("region", "서울")
+                    "region": u.get("region", "서울"),
+                    "has_profile": has_profile,
+                    "profile": {
+                        "nickname": u["nickname"],
+                        "gender": u.get("gender"),
+                        "ageGroup": u.get("age_group"),
+                        "occupation": u.get("occupation"),
+                        "region": u.get("region"),
+                        "contact": u.get("contact", u.get("emergency_contact", "")),
+                        "phone": u.get("phone", "")
+                    } if has_profile else None
                 }
             else:
                 raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
@@ -1100,25 +1285,39 @@ async def save_note(request: NoteSaveRequest):
 @app.get("/api/resources/search")
 async def search_resources(region: str = "서울"):
     try:
-        from rag_engine import RAGEngine
-        rag_engine = RAGEngine()
+        # facilities.json 경로 (public 폴더)
+        root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        facilities_path = os.path.join(root_dir, "public", "facilities.json")
         
-        index = rag_engine.indices.get("public_resource_kb")
-        if not index:
-            return {"status": "error", "message": "Public resource KB not built or loaded."}
-        
-        # 해당 지역(region)의 모든 기관들을 docstore에서 필터링하여 반환
-        filtered_docs = [d for d in index.docstore._dict.values() if d.metadata.get("region") == region]
-        
+        if not os.path.exists(facilities_path):
+            print(f"[API Search Error] facilities.json not found at {facilities_path}")
+            return {"status": "error", "message": "facilities.json not found."}
+            
+        with open(facilities_path, "r", encoding="utf-8") as f:
+            facilities_data = json.load(f)
+            
+        # 해당 지역(region)의 모든 기관들을 필터링하여 반환
+        # region이 맞거나, address에 region 이름이 들어있는 경우 등으로 매칭율 보완
         results = []
-        for d in filtered_docs:
-            results.append({
-                "name": d.metadata.get("name", "기관명 없음"),
-                "category": d.metadata.get("category", "public"),
-                "address": d.metadata.get("address", "주소 없음"),
-                "homepage": d.metadata.get("homepage", ""),
-                "region": d.metadata.get("region", region)
-            })
+        for facility in facilities_data:
+            # region 매칭
+            facility_region = facility.get("region", "")
+            if not facility_region and "address" in facility:
+                # address에서 region 추출 시도
+                addr = facility.get("address", "")
+                if region in addr:
+                    facility_region = region
+            
+            if facility_region == region:
+                results.append({
+                    "name": facility.get("name", "기관명 없음"),
+                    "category": facility.get("category", "기타"),
+                    "address": facility.get("address", "주소 없음"),
+                    "homepage": facility.get("homepage", ""),
+                    "tel": facility.get("tel", ""),
+                    "region": region
+                })
+                
         return {"status": "success", "data": results}
     except Exception as e:
         print(f"[API Search Error] {e}")

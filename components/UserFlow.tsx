@@ -1,11 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Send, RotateCcw, AlertTriangle, Info } from "lucide-react";
 import { userPersonaMessages, checkPersonaSwitchTrigger } from "@/lib/mockData";
 
-export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user-003", phq9Score = 0, phq9Answers = null, p4Answers = null, onNavigateToMap }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string, phq9Score?: number, phq9Answers?: number[] | null, p4Answers?: string[] | null, onNavigateToMap?: () => void }) {
+interface UserProfile {
+  nickname: string;
+  ageGroup: string;
+  gender: string;
+  occupation: string;
+  region: string;
+  contact: string;
+  phone: string;
+}
+
+export default function UserFlow({ 
+  initialPersona = 1, 
+  onEndChat, 
+  userId = "user-003", 
+  phq9Score = 0, 
+  phq9Answers = null, 
+  p4Answers = null, 
+  onNavigateToMap,
+  profile,
+  onUpdateProfile 
+}: { 
+  initialPersona?: 1 | 2 | 3 | 4 | 5, 
+  onEndChat?: (sessionId: string | null) => void, 
+  userId?: string, 
+  phq9Score?: number, 
+  phq9Answers?: number[] | null, 
+  p4Answers?: string[] | null, 
+  onNavigateToMap?: () => void,
+  profile?: UserProfile,
+  onUpdateProfile?: (updated: UserProfile) => Promise<void>
+}) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(45);
@@ -13,6 +43,97 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
   const [showWarningPopup, setShowWarningPopup] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Local Profile Sync for Offline Mode
+  const [localProfile, setLocalProfile] = useState<UserProfile>(
+    profile || {
+      nickname: "임시 사용자",
+      ageGroup: "30대",
+      gender: "남성",
+      occupation: "직장인",
+      region: "서울",
+      contact: "",
+      phone: ""
+    }
+  );
+
+  useEffect(() => {
+    if (profile) {
+      setLocalProfile(profile);
+    }
+  }, [profile]);
+
+  // My Page modal states
+  const [showMyPage, setShowMyPage] = useState(false);
+  const [editNickname, setEditNickname] = useState("");
+  const [editAgeGroup, setEditAgeGroup] = useState("");
+  const [editGender, setEditGender] = useState("");
+  const [editOccupation, setEditOccupation] = useState("");
+  const [editRegion, setEditRegion] = useState("");
+  const [editContact, setEditContact] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+
+  const ageGroups = ["10대", "20대", "30대", "40대", "50대", "60대 이상"];
+  const genders = ["남성", "여성", "선택 안함"];
+  const occupations = ["학생", "직장인", "자영업자", "주부", "무직/구직중", "기타"];
+  const regions = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "세종"];
+
+  const handleOpenMyPage = () => {
+    setEditNickname(localProfile.nickname);
+    setEditAgeGroup(localProfile.ageGroup);
+    setEditGender(localProfile.gender);
+    setEditOccupation(localProfile.occupation);
+    setEditRegion(localProfile.region);
+    setEditContact(localProfile.contact || "");
+    setEditPhone(localProfile.phone || "");
+    setSaveMessage("");
+    setShowMyPage(true);
+  };
+
+  const isEditProfileValid = 
+    editNickname.trim() !== "" &&
+    editAgeGroup !== "" &&
+    editGender !== "" &&
+    editOccupation !== "" &&
+    editRegion !== "";
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isEditProfileValid || isSaving) return;
+
+    setIsSaving(true);
+    setSaveMessage("");
+
+    const updated: UserProfile = {
+      nickname: editNickname.trim(),
+      ageGroup: editAgeGroup,
+      gender: editGender,
+      occupation: editOccupation,
+      region: editRegion,
+      contact: editContact.trim(),
+      phone: editPhone.trim()
+    };
+
+    try {
+      if (onUpdateProfile) {
+        await onUpdateProfile(updated);
+      } else {
+        setLocalProfile(updated);
+      }
+      setSaveMessage("✨ 정보가 성공적으로 수정되었습니다! ✓");
+      setTimeout(() => {
+        setSaveMessage("");
+        setShowMyPage(false);
+      }, 1500);
+    } catch (error) {
+      console.error("Profile save error:", error);
+      setSaveMessage("❌ 저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
   
   const scoreHistory = [
     { turn: 1, score: 20 },
@@ -208,7 +329,7 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               {currentPersona === 5 && "행동 활성화 (유머) 모드"}
             </p>
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex gap-2 shrink-0 items-center">
             {onNavigateToMap && (
               <button 
                 type="button"
@@ -223,8 +344,23 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
               </button>
             )}
             <button 
+              type="button"
+              onClick={handleOpenMyPage}
+              className={`px-3 py-1.5 font-bold text-xs rounded-lg shadow-sm transition-all flex items-center gap-1 ${
+                currentPersona === 3
+                  ? "bg-[#2A3B5C] border border-gray-700 text-white hover:bg-[#3B4D6E]"
+                  : "bg-white border border-[#EAE5D9] text-gray-800 hover:bg-[#F8F5F0]"
+              }`}
+            >
+              👤 마이페이지
+            </button>
+            <button 
               onClick={() => onEndChat && onEndChat(sessionId)}
-              className="px-3 py-1.5 bg-white border border-[#EAE5D9] text-gray-800 text-xs font-bold rounded-lg shadow-sm hover:bg-[#F8F5F0] transition-colors shrink-0"
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm transition-colors shrink-0 ${
+                currentPersona === 3
+                  ? "bg-[#EF4444] text-white hover:bg-[#DC2626]"
+                  : "bg-white border border-[#EAE5D9] text-gray-800 hover:bg-[#F8F5F0]"
+              }`}
             >
               대화 종료 및 리포트 보기
             </button>
@@ -333,6 +469,185 @@ export default function UserFlow({ initialPersona = 1, onEndChat, userId = "user
                 <div className="h-full bg-red-500 rounded-full animate-pulse" style={{ width: "100%" }}></div>
               </div>
               <span className="text-[10px] text-gray-400 font-medium">잠시 후 대화창이 붉은 위기대응 모드로 전환됩니다...</span>
+            </div>
+          </div>
+        )}
+
+        {/* My Page (Profile Edit) Modal */}
+        {showMyPage && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl text-left transform scale-100 transition-all duration-300 max-h-[90vh] overflow-y-auto">
+              
+              {/* Modal Header */}
+              <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#EAE5D9]">
+                <div className="flex items-center gap-2">
+                  <span className="w-9 h-9 bg-[#1E2D4E]/10 text-[#1E2D4E] rounded-xl flex items-center justify-center text-lg">
+                    👤
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 leading-tight">마이페이지</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">내 인적사항 정보를 확인하고 수정할 수 있습니다.</p>
+                  </div>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setShowMyPage(false)} 
+                  className="text-gray-400 hover:text-gray-600 font-bold text-lg p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Modal Content - Edit Form */}
+              <form onSubmit={handleSaveProfile} className="space-y-4">
+                
+                {/* 1. Nickname */}
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                  <label className="text-xs font-bold text-gray-700 block mb-1.5">닉네임 <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="예: 빼미"
+                    value={editNickname}
+                    onChange={(e) => setEditNickname(e.target.value)}
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-sm text-gray-800"
+                    required
+                  />
+                </div>
+
+                {/* 2. Age Group */}
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                  <label className="text-xs font-bold text-gray-700 block mb-1.5">연령대 <span className="text-red-500">*</span></label>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                    {ageGroups.map((age) => (
+                      <button
+                        type="button"
+                        key={age}
+                        onClick={() => setEditAgeGroup(age)}
+                        className={`py-1.5 text-[11px] font-medium rounded-lg border transition-all ${
+                          editAgeGroup === age
+                            ? "bg-[#1E2D4E] text-white border-[#1E2D4E] shadow-sm font-bold"
+                            : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
+                        }`}
+                      >
+                        {age}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. Gender */}
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                  <label className="text-xs font-bold text-gray-700 block mb-1.5">성별 <span className="text-red-500">*</span></label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {genders.map((gender) => (
+                      <button
+                        type="button"
+                        key={gender}
+                        onClick={() => setEditGender(gender)}
+                        className={`py-1.5 text-[11px] font-medium rounded-lg border transition-all ${
+                          editGender === gender
+                            ? "bg-[#1E2D4E] text-white border-[#1E2D4E] shadow-sm font-bold"
+                            : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
+                        }`}
+                      >
+                        {gender}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. Occupation & Region in a grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Occupation */}
+                  <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                    <label className="text-xs font-bold text-gray-700 block mb-1.5">직업 <span className="text-red-500">*</span></label>
+                    <select
+                      value={editOccupation}
+                      onChange={(e) => setEditOccupation(e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-700"
+                      required
+                    >
+                      <option value="" disabled>선택해주세요</option>
+                      {occupations.map((occ) => (
+                        <option key={occ} value={occ}>{occ}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Region */}
+                  <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                    <label className="text-xs font-bold text-gray-700 block mb-1.5">거주 지역 <span className="text-red-500">*</span></label>
+                    <select
+                      value={editRegion}
+                      onChange={(e) => setEditRegion(e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-700"
+                      required
+                    >
+                      <option value="" disabled>선택해주세요</option>
+                      {regions.map((reg) => (
+                        <option key={reg} value={reg}>{reg}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* 5. User Phone & Emergency Contact */}
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)] space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 block mb-1">본인 연락처 <span className="text-gray-400 font-normal">(선택)</span></label>
+                    <input
+                      type="text"
+                      placeholder="예: 010-1234-5678"
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-800"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 block mb-1">비상연락처 <span className="text-gray-400 font-normal">(선택)</span></label>
+                    <input
+                      type="text"
+                      placeholder="예: 010-1234-5678"
+                      value={editContact}
+                      onChange={(e) => setEditContact(e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-800"
+                    />
+                  </div>
+                </div>
+
+                {/* Message display */}
+                {saveMessage && (
+                  <div className={`p-2.5 rounded-lg text-xs font-bold text-center ${
+                    saveMessage.startsWith("❌") ? "bg-red-50 text-red-600 border border-red-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                  }`}>
+                    {saveMessage}
+                  </div>
+                )}
+
+                {/* Modal Footer Buttons */}
+                <div className="flex gap-2 pt-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowMyPage(false)}
+                    className="px-4 py-2 border border-[#EAE5D9] text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-100 transition-colors"
+                    disabled={isSaving}
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isEditProfileValid || isSaving}
+                    className={`px-5 py-2 text-xs font-bold rounded-lg shadow-sm transition-all text-white ${
+                      isEditProfileValid && !isSaving
+                        ? "bg-[#1E2D4E] hover:bg-[#152037]"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    {isSaving ? "저장 중..." : "수정 완료"}
+                  </button>
+                </div>
+
+              </form>
             </div>
           </div>
         )}
