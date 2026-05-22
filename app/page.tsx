@@ -13,6 +13,7 @@ import CounselorSettings from "../components/CounselorSettings";
 import OwlLogo from "../components/OwlLogo";
 import InteractiveMap from "../components/InteractiveMap";
 import { phq9ResultConfig } from "@/lib/mockData";
+import { Heart, UserCheck, ArrowRight } from "lucide-react";
 
 
 export default function Home() {
@@ -34,6 +35,12 @@ export default function Home() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<{ userId: string; nickname: string; email: string; region?: string } | null>(null);
   const [authError, setAuthError] = useState("");
+  const [counselorOrg, setCounselorOrg] = useState("");
+  const [isCounselorSignUp, setIsCounselorSignUp] = useState(false);
+  const [showOtpScreen, setShowOtpScreen] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  const [showTwoFactorInfo, setShowTwoFactorInfo] = useState(false);
+  const [showCounselorSuccess, setShowCounselorSuccess] = useState(false);
 
   // Consent states
   const [agreements, setAgreements] = useState({
@@ -138,26 +145,35 @@ export default function Home() {
   const today = new Date();
   const formattedDate = `${today.getFullYear()}년 ${String(today.getMonth() + 1).padStart(2, "0")}월 ${String(today.getDate()).padStart(2, "0")}일`;
 
+  const handleCounselorSignUp = () => {
+    setAuthError("");
+    if (!email || !password || !nickname || !counselorOrg) {
+      setAuthError("모든 필드를 입력해주세요.");
+      return;
+    }
+    setShowCounselorSuccess(true);
+  };
+
   const handleAuth = async () => {
     setAuthError("");
+    if (role === "counselor" && isCounselorSignUp) {
+      handleCounselorSignUp();
+      return;
+    }
+
     if (!email || !password || (isSignUp && !nickname)) {
       setAuthError("모든 필드를 입력해주세요.");
       return;
     }
 
-    // Unified role determination based on email
+    // Unified role determination based on email or current selected role
     const isCounselorEmail = email.trim() === "counselor@uulppae.com" || email.trim() === "counselor@mallang.com";
-    const activeRole = isCounselorEmail ? "counselor" : "user";
+    const activeRole = role || (isCounselorEmail ? "counselor" : "user");
     setRole(activeRole);
 
     try {
       if (activeRole === "counselor") {
-        setLoggedInUser({
-          userId: "counselor-001",
-          nickname: "상담사 김상담",
-          email: email
-        });
-        setStep("counselor_dashboard");
+        setShowOtpScreen(true);
         return;
       }
 
@@ -222,7 +238,7 @@ export default function Home() {
   const isLowRisk = !isHighRisk && totalScore >= 0 && totalScore <= 4;
 
   if (step === "onboarding") {
-    return <LandingPage onStart={() => setStep("login")} />;
+    return <LandingPage onStart={() => setStep("select")} />;
   }
 
   const isCounselor = step.startsWith("counselor_");
@@ -232,84 +248,481 @@ export default function Home() {
       isCounselor ? "flex" : "flex flex-col items-center justify-center p-4"
     }`}>
 
-      {/* Login */}
-      {step === "login" && (
-        <div className="max-w-md w-full bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-10 shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col items-center text-center animate-fade-in">
-          <div className="mb-4">
-            <OwlLogo size={56} variant="ivory" />
+      {/* Role Selection Screen */}
+      {step === "select" && (
+        <div className="max-w-2xl w-full bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-10 shadow-[0_16px_48px_rgba(139,123,93,0.08)] flex flex-col items-center animate-fade-in">
+          <div className="mb-6">
+            <OwlLogo size={64} variant="ivory" />
           </div>
-          <h2 className="text-2xl font-black text-gray-900 mb-2">우울빼미 시작하기</h2>
-          <p className="text-sm text-gray-500 mb-8">안정적인 심리 분석과 맞춤 케어를 지원합니다</p>
           
-          <div className="flex flex-col gap-4 w-full">
-            {isSignUp && (
-              <div className="text-left w-full">
-                <label className="text-xs font-bold text-[#8C7862] ml-1">닉네임</label>
-                <input
-                  type="text"
-                  placeholder="사용하실 닉네임을 입력해 주세요"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
-                  className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
-                />
-              </div>
-            )}
-            <div className="text-left w-full">
-              <label className="text-xs font-bold text-[#8C7862] ml-1">이메일 주소</label>
-              <input
-                type="text"
-                placeholder="example@uulppae.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
-              />
-            </div>
-            <div className="text-left w-full">
-              <label className="text-xs font-bold text-[#8C7862] ml-1">비밀번호</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
-              />
-            </div>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">우울빼미 시작하기</h2>
+          <p className="text-sm text-gray-500 mb-10 max-w-md text-center leading-relaxed">
+            밤낮으로 마음의 고요를 지켜주는 우울빼미입니다.<br />귀하의 역할에 맞는 서비스 경로를 선택해 주세요.
+          </p>
 
-            {authError && (
-              <p className="text-red-500 text-xs mt-1 font-semibold">{authError}</p>
-            )}
-
-            <button
-              onClick={handleAuth}
-              className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold py-3.5 rounded-xl mt-4 shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px] transition-all duration-200"
-            >
-              {isSignUp ? "회원가입" : "로그인"}
-            </button>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-2 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-8">
+            {/* 개인 사용자 카드 */}
             <button
               onClick={() => {
-                setIsSignUp(!isSignUp);
+                setRole("user");
+                setIsSignUp(false);
                 setAuthError("");
+                setEmail("");
+                setPassword("");
+                setIsCounselorSignUp(false);
+                setShowCounselorSuccess(false);
+                setShowOtpScreen(false);
+                setStep("login");
               }}
-              className="text-xs text-[#8C7862] hover:underline transition-all"
+              className="group text-left p-6 bg-white border border-[#EAE5D9] hover:border-[#F59E0B] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between h-60 transform hover:-translate-y-1"
             >
-              {isSignUp ? "이미 계정이 있으신가요? 로그인하기" : "아직 계정이 없으신가요? 회원가입하기"}
+              <div>
+                <div className="w-12 h-12 bg-[#F59E0B]/10 rounded-xl flex items-center justify-center text-[#F59E0B] mb-4 group-hover:scale-110 transition-transform">
+                  <Heart className="w-6 h-6 fill-[#F59E0B]/20" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#F59E0B] transition-colors">개인 사용자</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  AI 동반자와의 야간 상담, 정기 자가검진, 데일리 일기 작성 및 개인용 감정 분석 리포트를 이용합니다.
+                </p>
+              </div>
+              <div className="flex items-center gap-1 text-xs font-bold text-[#F59E0B] mt-4">
+                사용자 로그인 <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
+
+            {/* 전문 상담사 카드 */}
             <button
-              onClick={() => setStep("onboarding")}
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors mt-2"
+              onClick={() => {
+                setRole("counselor");
+                setIsSignUp(false);
+                setAuthError("");
+                setEmail("");
+                setPassword("");
+                setIsCounselorSignUp(false);
+                setShowCounselorSuccess(false);
+                setShowOtpScreen(false);
+                setCounselorOrg("");
+                setStep("login");
+              }}
+              className="group text-left p-6 bg-white border border-[#EAE5D9] hover:border-[#1E2D4E] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between h-60 transform hover:-translate-y-1"
             >
-              ← 처음으로 돌아가기
+              <div>
+                <div className="w-12 h-12 bg-[#1E2D4E]/10 rounded-xl flex items-center justify-center text-[#1E2D4E] mb-4 group-hover:scale-110 transition-transform">
+                  <UserCheck className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#1E2D4E] transition-colors">전문 상담사</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  내담자 목록 및 건강 점수 실시간 모니터링, RAG 연계 상담 가이드라인, 상담 세션 정보 및 노트를 기록/관리합니다.
+                </p>
+              </div>
+              <div className="flex items-center gap-1 text-xs font-bold text-[#1E2D4E] mt-4">
+                상담사 포털 입장 <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
           </div>
-          
-          <div className="mt-8 border-t border-[#EAE5D9] pt-4 w-full text-[11px] text-gray-400 leading-relaxed">
-            💡 상담사는 <span className="font-semibold text-gray-500">counselor@uulppae.com</span> 계정으로 로그인해 주세요.
+
+          <button
+            onClick={() => setStep("onboarding")}
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1"
+          >
+            ← 메인 소개 화면으로 돌아가기
+          </button>
+        </div>
+      )}
+
+      {/* Login */}
+      {step === "login" && (
+        <div className="max-w-md w-full flex flex-col items-center gap-4 animate-fade-in">
+          {showOtpScreen ? (
+            <div className="w-full bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-10 shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col items-center text-center">
+              <div className="mb-4">
+                <span className="w-12 h-12 bg-[#1E2D4E]/10 text-[#1E2D4E] rounded-2xl flex items-center justify-center text-2xl">
+                  🔒
+                </span>
+              </div>
+              
+              <h2 className="text-2xl font-black text-gray-900 mb-2">2단계 추가 보안 인증</h2>
+              <p className="text-xs text-gray-500 mb-6 leading-relaxed">
+                안전한 상담 환경과 내담자 개인정보 보호를 위해<br />
+                등록된 모바일 OTP 인증코드를 입력해주세요.
+              </p>
+
+              <div className="flex flex-col gap-4 w-full">
+                <div className="text-left w-full">
+                  <label className="text-xs font-bold text-[#8C7862] ml-1">6자리 OTP 인증코드</label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    placeholder="0 0 0 0 0 0"
+                    value={twoFactorCode}
+                    onChange={(e) => setTwoFactorCode(e.target.value.replace(/[^0-9]/g, ""))}
+                    className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800 text-center tracking-[1em] text-lg font-bold placeholder:text-gray-300"
+                  />
+                </div>
+
+                {authError && (
+                  <p className="text-red-500 text-xs mt-1 font-semibold text-center">{authError}</p>
+                )}
+
+                <button
+                  onClick={() => {
+                    if (twoFactorCode.length !== 6) {
+                      setAuthError("6자리 인증코드를 정확히 입력해주세요.");
+                      return;
+                    }
+                    setLoggedInUser({
+                      userId: "counselor-001",
+                      nickname: nickname || "상담사 김상담",
+                      email: email || "counselor@uulppae.com"
+                    });
+                    setStep("counselor_dashboard");
+                    setShowOtpScreen(false);
+                    setAuthError("");
+                    setTwoFactorCode("");
+                  }}
+                  className="font-bold py-3.5 rounded-xl mt-2 transition-all duration-200 bg-[#1E2D4E] hover:bg-[#152037] text-white shadow-[0_4px_12px_rgba(30,45,78,0.2)] hover:shadow-[0_6px_16px_rgba(30,45,78,0.3)] text-center w-full"
+                >
+                  인증 완료 및 포털 입장
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowOtpScreen(false);
+                    setAuthError("");
+                    setTwoFactorCode("");
+                  }}
+                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors text-center mt-2"
+                >
+                  ← 로그인 화면으로 돌아가기
+                </button>
+
+                {/* OTP Quick Prefill Panel */}
+                <div className="mt-4 text-left w-full bg-[#1E2D4E]/5 border border-[#1E2D4E]/10 rounded-2xl p-4">
+                  <p className="text-[11px] font-bold text-[#1E2D4E] mb-2 flex items-center gap-1">
+                    🔑 데모용 OTP 자동 입력 단축키
+                  </p>
+                  <button
+                    onClick={() => {
+                      setTwoFactorCode("123456");
+                      setAuthError("");
+                    }}
+                    className="w-full text-[11px] bg-white border border-[#EAE5D9] hover:border-[#1E2D4E] rounded-lg py-1.5 px-3 font-semibold text-gray-700 hover:text-[#1E2D4E] shadow-sm transition-all text-center"
+                  >
+                    원클릭 자동 완성 (123456)
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : showCounselorSuccess ? (
+            <div className="w-full bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-10 shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col items-center text-center">
+              <div className="mb-4">
+                <span className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl">
+                  🎉
+                </span>
+              </div>
+              
+              <h2 className="text-2xl font-black text-gray-900 mb-2">상담사 계정 신청 완료</h2>
+              <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+                우울빼미 전문 상담사 계정 신청이<br />정상적으로 접수되었습니다.
+              </p>
+
+              <div className="bg-white border border-[#EAE5D9] rounded-2xl p-4 w-full text-left text-xs text-gray-600 mb-6 space-y-2">
+                <p>• <strong>상담사 성명:</strong> {nickname}</p>
+                <p>• <strong>이메일 계정:</strong> {email}</p>
+                <p>• <strong>소속 기관:</strong> {counselorOrg}</p>
+                <div className="bg-[#FAF8F5] border border-[#EAE5D9] p-3 rounded-lg text-gray-500 leading-normal mt-2">
+                  개인정보보호 및 의료정보 다중 검증 절차에 의해, 제출하신 전문 라이선스/소속 검증서류 심사는 영업일 기준 최대 24시간이 소요됩니다. 심사 승인 즉시 메일이 발송됩니다.
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowCounselorSuccess(false);
+                  setIsCounselorSignUp(false);
+                  setShowOtpScreen(true);
+                }}
+                className="w-full bg-[#1E2D4E] hover:bg-[#152037] text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md text-xs"
+              >
+                임시 승인 계정으로 즉시 로그인하기 (데모 체험) →
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Main Credentials Card */}
+              <div className="w-full bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-10 shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col items-center text-center">
+                <div className="mb-4">
+                  <OwlLogo size={56} variant="ivory" />
+                </div>
+                
+                <h2 className="text-2xl font-black text-gray-900 mb-2">
+                  {role === "counselor" 
+                    ? isCounselorSignUp ? "상담사 계정 신청" : "전문 상담사 로그인"
+                    : isSignUp ? "우울빼미 회원가입" : "개인 사용자 로그인"}
+                </h2>
+                <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+                  {role === "counselor" 
+                    ? isCounselorSignUp ? "우울빼미 전문 상담사 포털 계정 개설 신청 단계입니다" : "내담자의 마음 상태를 세밀하게 살피고 돕습니다" 
+                    : "안정적인 심리 분석과 맞춤 케어를 지원합니다"}
+                </p>
+                
+                <div className="flex flex-col gap-4 w-full">
+                  {/* 1. 개인 사용자 회원가입 시 닉네임 입력 */}
+                  {isSignUp && role !== "counselor" && (
+                    <div className="text-left w-full">
+                      <label className="text-xs font-bold text-[#8C7862] ml-1">닉네임</label>
+                      <input
+                        type="text"
+                        placeholder="사용하실 닉네임을 입력해 주세요"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
+                      />
+                    </div>
+                  )}
+
+                  {/* 2. 상담사 계정 신청 시 이름 입력 */}
+                  {role === "counselor" && isCounselorSignUp && (
+                    <div className="text-left w-full">
+                      <label className="text-xs font-bold text-[#8C7862] ml-1">상담사 성명</label>
+                      <input
+                        type="text"
+                        placeholder="홍길동"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="text-left w-full">
+                    <label className="text-xs font-bold text-[#8C7862] ml-1">이메일 주소</label>
+                    <input
+                      type="text"
+                      placeholder={role === "counselor" ? "counselor@uulppae.com" : "example@uulppae.com"}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
+                    />
+                  </div>
+
+                  {/* 3. 상담사 계정 신청 시 소속 기관 입력 */}
+                  {role === "counselor" && isCounselorSignUp && (
+                    <div className="text-left w-full">
+                      <label className="text-xs font-bold text-[#8C7862] ml-1">소속 기관 / 센터명</label>
+                      <input
+                        type="text"
+                        placeholder="예: 서울정신건강복지센터"
+                        value={counselorOrg}
+                        onChange={(e) => setCounselorOrg(e.target.value)}
+                        className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="text-left w-full">
+                    <label className="text-xs font-bold text-[#8C7862] ml-1">비밀번호</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#1E2D4E] transition-all w-full mt-1 text-gray-800"
+                    />
+                  </div>
+
+                  {authError && (
+                    <p className="text-red-500 text-xs mt-1 font-semibold">{authError}</p>
+                  )}
+
+                  {/* 4. 상담사 로그인 폼일 때 로그인 버튼 위에 2단계 인증 버튼과 안내 배치 */}
+                  {role === "counselor" && !isCounselorSignUp && (
+                    <div className="flex flex-col gap-2 mt-2 w-full text-left">
+                      <div className="bg-[#1E2D4E]/5 border border-[#1E2D4E]/10 rounded-xl p-3 text-xs flex flex-col gap-1 shadow-inner">
+                        <div className="flex items-center gap-1.5 font-bold text-[#1E2D4E]">
+                          <span>🔒</span>
+                          <span>보안 안내: 로그인 후 2단계 인증 필수</span>
+                        </div>
+                        <p className="text-gray-500 leading-normal text-[11px]">
+                          안전한 환경 및 내담자 민감 정보 보호를 위해, 로그인 성공 후 추가 모바일 OTP 보안 코드(6자리) 인증이 법적으로 의무 적용됩니다.
+                        </p>
+                      </div>
+                      
+                      <button
+                        type="button"
+                        onClick={() => setShowTwoFactorInfo(true)}
+                        className="text-[11px] font-bold text-[#1E2D4E] hover:underline flex items-center justify-center gap-1 bg-[#1E2D4E]/10 hover:bg-[#1E2D4E]/15 py-2.5 rounded-xl transition-all border border-[#1E2D4E]/20 mt-1 shadow-sm"
+                      >
+                        🛡️ 2단계 인증(2FA) 보안 및 규정 안내 확인
+                      </button>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleAuth}
+                    className={`font-bold py-3.5 rounded-xl mt-4 transition-all duration-200 transform hover:translate-y-[-1px] ${
+                      role === "counselor"
+                        ? "bg-[#1E2D4E] hover:bg-[#152037] text-white shadow-[0_4px_12px_rgba(30,45,78,0.2)] hover:shadow-[0_6px_16px_rgba(30,45,78,0.3)]"
+                        : "bg-[#F59E0B] hover:bg-[#D97706] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)]"
+                    }`}
+                  >
+                    {role === "counselor" 
+                      ? isCounselorSignUp ? "계정 신청 완료하기" : "로그인" 
+                      : isSignUp ? "회원가입" : "로그인"}
+                  </button>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-2 w-full">
+                  {role === "counselor" ? (
+                    <button
+                      onClick={() => {
+                        setIsCounselorSignUp(!isCounselorSignUp);
+                        setAuthError("");
+                      }}
+                      className="text-xs text-[#8C7862] hover:underline transition-all"
+                    >
+                      {isCounselorSignUp ? "이미 신청하셨나요? 로그인하기" : "아직 전문 계정이 없으신가요? 상담사 계정 신청하기"}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setIsSignUp(!isSignUp);
+                        setAuthError("");
+                      }}
+                      className="text-xs text-[#8C7862] hover:underline transition-all"
+                    >
+                      {isSignUp ? "이미 계정이 있으신가요? 로그인하기" : "아직 계정이 없으신가요? 회원가입하기"}
+                    </button>
+                  )}
+                  
+                  <button
+                    onClick={() => {
+                      setRole(null);
+                      setStep("select");
+                    }}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors mt-2"
+                  >
+                    ← 역할 선택으로 돌아가기
+                  </button>
+                </div>
+
+                {/* 5. C-006 서비스 한계 고지 문구 (전문가 전용 화면 하단 배치) */}
+                {role === "counselor" && (
+                  <div className="mt-8 text-[10px] text-gray-400 leading-relaxed max-w-sm text-center border-t border-[#EAE5D9]/60 pt-4 px-2">
+                    <span className="font-bold text-[#1E2D4E] block mb-1">⚠️ 전문 상담 서비스 한계 고지</span>
+                    본 서비스는 우울·자살 예방을 위한 보조 도구이며, 전문적인 의학적 진단이나 치료를 대체할 수 없습니다.
+                  </div>
+                )}
+              </div>
+
+              {/* DEVELOPMENT ONLY: Quick Test Accounts Panel - START (Placed OUTSIDE the login card, easily removable) */}
+              {role === "counselor" ? (
+                !isCounselorSignUp && (
+                  <div className="w-full bg-[#1E2D4E]/5 border border-[#1E2D4E]/10 rounded-2xl p-4 text-left shadow-sm">
+                    <p className="text-[11px] font-bold text-[#1E2D4E] mb-2 flex items-center gap-1">
+                      🔑 [테스트용] 전문 상담사 빠른 입력
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEmail("counselor@uulppae.com");
+                          setPassword("counselor123");
+                        }}
+                        className="w-full text-[11px] bg-white border border-[#EAE5D9] hover:border-[#1E2D4E] rounded-lg py-1.5 px-3 font-semibold text-gray-700 hover:text-[#1E2D4E] shadow-sm transition-all text-center"
+                      >
+                        counselor@uulppae.com 로 자동 입력
+                      </button>
+                    </div>
+                  </div>
+                )
+              ) : (
+                !isSignUp && (
+                  <div className="w-full bg-[#F59E0B]/5 border border-[#F59E0B]/10 rounded-2xl p-4 text-left shadow-sm">
+                    <p className="text-[11px] font-bold text-[#F59E0B] mb-2 flex items-center gap-1">
+                      🔑 [테스트용] 개인 사용자 빠른 입력
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      <button
+                        onClick={() => {
+                          setEmail("testuser@example.com");
+                          setPassword("testpass123");
+                        }}
+                        className="text-[11px] bg-white border border-[#EAE5D9] hover:border-[#F59E0B] rounded-lg py-1.5 px-3 font-semibold text-gray-700 hover:text-[#F59E0B] shadow-sm transition-all"
+                      >
+                        기존 사용자 (프로필 있음)
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEmail("test@test.com");
+                          setPassword("test123");
+                        }}
+                        className="text-[11px] bg-white border border-[#EAE5D9] hover:border-[#F59E0B] rounded-lg py-1.5 px-3 font-semibold text-gray-700 hover:text-[#F59E0B] shadow-sm transition-all"
+                      >
+                        일반 테스트 계정
+                      </button>
+                    </div>
+                  </div>
+                )
+              )}
+              {/* DEVELOPMENT ONLY: Quick Test Accounts Panel - END */}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* 2단계 인증 모달 안내창 */}
+      {showTwoFactorInfo && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white border border-[#EAE5D9] rounded-3xl p-8 max-w-md w-full shadow-2xl text-left transform scale-100 transition-all duration-300">
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-10 h-10 bg-[#1E2D4E]/10 text-[#1E2D4E] rounded-xl flex items-center justify-center text-lg">
+                  🛡️
+                </span>
+                <div>
+                  <h3 className="font-extrabold text-lg text-gray-900 leading-tight">2단계 인증(2FA) 보안 제도</h3>
+                  <span className="text-[10px] text-gray-400 font-semibold tracking-wider block mt-0.5">TWO-FACTOR AUTHENTICATION SECURITY GUIDE</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowTwoFactorInfo(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold text-lg p-1 transition-colors focus:outline-none"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs text-gray-600 leading-relaxed">
+              <div className="bg-[#FAF8F5] border border-[#EAE5D9] p-4 rounded-xl">
+                <p className="font-bold text-[#1E2D4E] mb-1">Q. 왜 2단계 인증이 필수인가요?</p>
+                <p className="text-gray-500">
+                  보건복지부 및 개인정보 보호법의 고위험 민감의료정보 취급 가이드라인에 따라, 외부 불법 접근을 차단하기 위해 로그인 정보 입력 후 지정된 신뢰 기기 또는 모바일 OTP(One-Time Password) 앱을 통한 2차 본인 검증이 법적으로 의무화되어 있습니다.
+                </p>
+              </div>
+
+              <div className="bg-[#FAF8F5] border border-[#EAE5D9] p-4 rounded-xl">
+                <p className="font-bold text-[#1E2D4E] mb-1">Q. 어떻게 이용하나요?</p>
+                <ol className="list-decimal pl-4 space-y-1 text-gray-500">
+                  <li>전문 상담사 포털 계정(이메일, 비밀번호)을 입력하고 로그인 버튼을 누릅니다.</li>
+                  <li>자동으로 2단계 인증(OTP 입력) 화면으로 전환됩니다.</li>
+                  <li>모바일 OTP 인증기 앱(Google Authenticator 등) 또는 지정된 SMS로 전송받은 6자리 일회용 코드를 입력하면 즉시 승인됩니다.</li>
+                </ol>
+              </div>
+              
+              <p className="text-[10px] text-[#8C7862] text-center font-medium bg-[#FAF8F5] py-2 rounded-lg border border-dashed border-[#EAE5D9]">
+                💡 데모 버전에서는 누구나 간편하게 6자리 임의 번호나 단축키로 테스트할 수 있습니다.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowTwoFactorInfo(false)}
+              className="w-full bg-[#1E2D4E] hover:bg-[#152037] text-white font-bold py-3.5 rounded-xl mt-6 transition-all duration-200 shadow-md text-xs"
+            >
+              이해했습니다 및 닫기
+            </button>
           </div>
         </div>
       )}
+
 
       {/* Consent */}
       {step === "consent" && (
