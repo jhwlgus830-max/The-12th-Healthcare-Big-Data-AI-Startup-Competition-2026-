@@ -1,0 +1,62 @@
+Total documents in public_resource_kb: 2786
+
+Region distribution:
+- 서울: 651
+- 경기: 513
+- 부산: 201
+- 경북: 149
+- 경남: 144
+- 대구: 140
+- 대전: 129
+- 전북: 126
+- 인천: 125
+- 충남: 113
+- 강원: 106
+- 전남: 105
+- 충북: 93
+- 광주: 93
+- 울산: 44
+- 제주: 40
+- 세종: 14
+
+First 10 documents:
+Doc 1:
+  Name: (복지)예사랑병원
+  Region: 부산
+  Address: 부산광역시 서구 옥천로130번길 38 (아미동2가)
+Doc 2:
+  Name: (의)고담의료재단마더스병원
+  Region: 울산
+  Address: 울산광역시 남구 화합로 107 (달동)
+Doc 3:
+  Name: (의)나사렛의료재단 나사렛국제병원
+  Region: 인천
+  Address: 인천광역시 연수구 먼우금로 98- (동춘동)
+Doc 4:
+  Name: (의)아나의료재단강릉아나병원
+  Region: 강원
+  Address: 강원도 강릉시 용지로 129 129
+Doc 5:
+  Name: (재)예수의꽃동네유지재단 인곡자애병원
+  Region: 충북
+  Address: 충청북도 음성군 맹동면 꽃동네길 37-0 ()
+Doc 6:
+  Name: (재)천주의성요한병원
+  Region: 광주
+  Address: 광주광역시 북구 태봉로 32, 유동 115-1
+Doc 7:
+  Name: (학)일송학원 한림대학교성심병원
+  Region: 서울
+  Address: 관평로170번길 22
+Doc 8:
+  Name: 21C한일병원
+  Region: 경남
+  Address: 경상남도 거제시 사등면 지석리 580-4
+Doc 9:
+  Name: BH병원
+  Region: 부산
+  Address: 부산광역시 남구 수영로 165
+Doc 10:
+  Name: Dr. 고 신경정신과의원
+  Region: 서울
+  Address: 서울특별시 광진구 능동로 324 3층 (중곡동)

@@ -108,5 +108,10 @@
       "있음"
     ],
     "service_agreement": true
+  },
+  "user-1d5976e5": {
+    "email": "tester_1779331624@mallang.com",
+    "password": "securepassword123",
+    "nickname": "김말랑_테스터"
   }
 }

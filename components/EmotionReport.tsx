@@ -10,13 +10,15 @@ interface EmotionReportProps {
   phq9Score?: number;
   phq9Severity?: string;
   sessionId?: string | null;
+  onNavigateToMap?: () => void;
 }
 
 export default function EmotionReport({ 
   onContinueChat,
   phq9Score = 14, // 기본값 설정 (테스트용)
   phq9Severity = "🟠 중등도",
-  sessionId
+  sessionId,
+  onNavigateToMap
 }: EmotionReportProps) {
   const [currentTab, setCurrentTab] = useState("대화턴");
   const [reportData, setReportData] = useState<{
@@ -559,6 +561,14 @@ export default function EmotionReport({
           >
             대화 계속하기 <ArrowRight size={18} />
           </button>
+          {onNavigateToMap && (
+            <button 
+              onClick={onNavigateToMap}
+              className="flex-1 bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white font-bold py-3.5 rounded-xl shadow-md transform hover:translate-y-[-1px] transition-all flex items-center justify-center gap-2"
+            >
+              📍 내 주변 심리상담센터 찾기
+            </button>
+          )}
           <button className="flex-1 bg-[#FDFCFB] border border-[#EAE5D9] text-[#3E3A35] font-bold py-3.5 rounded-xl hover:bg-[#FAF8F5] transition-colors flex items-center justify-center gap-2">
             <Calendar size={18} /> 다음 재평가 예약
           </button>

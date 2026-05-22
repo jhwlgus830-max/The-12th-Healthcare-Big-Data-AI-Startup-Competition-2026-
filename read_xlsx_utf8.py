@@ -1,7 +1,12 @@
 import zipfile
 import xml.etree.ElementTree as ET
+import os
 
 def get_xlsx_data(path):
+    if not os.path.exists(path):
+        print(f"[ERROR] File not found: {path}")
+        return
+        
     z = zipfile.ZipFile(path)
     names = z.namelist()
     shared_strings = []
@@ -13,36 +18,62 @@ def get_xlsx_data(path):
             
     workbook_root = ET.fromstring(z.read('xl/workbook.xml'))
     ns_wb = {'main': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
-    sheets = [s.get('name') for s in workbook_root.findall('.//main:sheet', ns_wb)]
     
-    sheet_root = ET.fromstring(z.read('xl/worksheets/sheet1.xml'))
-    ns_sh = {'main': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
-    
-    rows = {}
-    for r in sheet_root.findall('.//main:row', ns_sh):
-        row_idx = int(r.get('r'))
-        row_cells = {}
-        for c in r.findall('.//main:c', ns_sh):
-            cell_ref = c.get('r')
-            val_node = c.find('main:v', ns_sh)
-            val = val_node.text if val_node is not None else ""
-            cell_type = c.get('t')
-            if cell_type == 's' and val != "":
-                val = shared_strings[int(val)]
-            col_letter = "".join([char for char in cell_ref if char.isalpha()])
-            row_cells[col_letter] = val
-            rows[row_idx] = row_cells
-            
+    # Extract sheet name and sheet ID mapping
+    sheets_info = []
+    for s in workbook_root.findall('.//main:sheet', ns_wb):
+        name = s.get('name')
+        sheet_id = s.get('sheetId')
+        # Map sheets in order of sheet1.xml, sheet2.xml, etc.
+        sheets_info.append((name, sheet_id))
+        
     output = []
-    output.append(f"Sheets in Excel: {sheets}")
-    for k in sorted(rows.keys()):
-        row = rows[k]
-        if any(row.values()):
-            non_empty = {col: val for col, val in row.items() if val != ""}
-            output.append(f"Row {k}: {non_empty}")
-            
+    output.append(f"Excel File: {path}")
+    output.append(f"Sheets in Excel: {[info[0] for info in sheets_info]}")
+    
+    # We will try to parse sheet1.xml, sheet2.xml... sequentially matching sheets_info order
+    sheet_files = sorted([f for f in names if f.startswith('xl/worksheets/sheet')])
+    
+    for idx, (sheet_name, sheet_id) in enumerate(sheets_info):
+        # Match with sheet file (sheet1.xml, sheet2.xml etc. might match idx+1)
+        target_sheet_file = f"xl/worksheets/sheet{idx+1}.xml"
+        if target_sheet_file not in names:
+            # Fallback if names are different
+            if idx < len(sheet_files):
+                target_sheet_file = sheet_files[idx]
+            else:
+                continue
+                
+        output.append(f"\n--- SHEET: {sheet_name} ---")
+        sheet_root = ET.fromstring(z.read(target_sheet_file))
+        ns_sh = {'main': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+        
+        rows = {}
+        for r in sheet_root.findall('.//main:row', ns_sh):
+            row_idx = int(r.get('r'))
+            row_cells = {}
+            for c in r.findall('.//main:c', ns_sh):
+                cell_ref = c.get('r')
+                val_node = c.find('main:v', ns_sh)
+                val = val_node.text if val_node is not None else ""
+                cell_type = c.get('t')
+                if cell_type == 's' and val != "":
+                    try:
+                        val = shared_strings[int(val)]
+                    except:
+                        pass
+                col_letter = "".join([char for char in cell_ref if char.isalpha()])
+                row_cells[col_letter] = val
+                rows[row_idx] = row_cells
+                
+        for k in sorted(rows.keys()):
+            row = rows[k]
+            if any(row.values()):
+                non_empty = {col: val for col, val in row.items() if val != ""}
+                output.append(f"Row {k}: {non_empty}")
+                
     with open('xlsx_content.txt', 'w', encoding='utf-8') as f:
         f.write("\n".join(output))
 
-get_xlsx_data('design/RAG_기술_심리케어_구현표 (2).xlsx')
+get_xlsx_data('design/문제점-해결방안-솔루션(전문가).xlsx')
 print("Successfully extracted Excel contents to xlsx_content.txt!")

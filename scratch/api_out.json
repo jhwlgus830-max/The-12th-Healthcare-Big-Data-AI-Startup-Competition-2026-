@@ -1,0 +1,4562 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "name": "(학)일송학원 한림대학교성심병원",
+      "category": "public",
+      "address": "관평로170번길 22",
+      "homepage": "https://hallym.hallym.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "Dr. 고 신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 324 3층 (중곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "The(더)공감 정신건강의학과의원",
+      "category": "public",
+      "address": "940 3층(조원동 일호골든타워)",
+      "homepage": "http://www.suwonpsy.com/",
+      "region": "서울"
+    },
+    {
+      "name": "가득한집",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 133-7, 301호(시흥동)",
+      "homepage": "www.homelessness.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "가람슬기",
+      "category": "public",
+      "address": "서울특별시 광진구 천호대로 116길 109, 301",
+      "homepage": "www.가람슬기.kr",
+      "region": "서울"
+    },
+    {
+      "name": "가람신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 시흥대로 554 (신림동)",
+      "homepage": "http://www.garam-clinic.com/main/main.php",
+      "region": "서울"
+    },
+    {
+      "name": "가온길",
+      "category": "public",
+      "address": "서울특별시 노원구 공릉로 58나길 17, 2층(하계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "가족사랑서울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 당산로 222 (당산동5가)",
+      "homepage": "http://www.ifamilylove.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "가족사랑서울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 보라매로 113 (대방동)",
+      "homepage": "http://www.ifamilylove.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "가족사랑정신과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 양천로 461 5층 (가양동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "가톨릭대학교 여의도성모병원",
+      "category": "public",
+      "address": "서울특별시 영등포구 63로 10 여의도성모병원 (여의도동)",
+      "homepage": "https://www.cmcsungmo.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "가톨릭대학교 은평성모병원",
+      "category": "public",
+      "address": "서울특별시 은평구 통일로 1021 (진관동)",
+      "homepage": "https://www.cmcep.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강남 연정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 338 강남파라곤 1층 101호",
+      "homepage": "http://www.yeonclinic.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강남구 보건소",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 668",
+      "homepage": "https://health.gangnam.go.kr",
+      "region": "서울"
+    },
+    {
+      "name": "강남구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 강남구 자곡로 100, 자곡문화센터 2층",
+      "homepage": "https://health.gangnam.go.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강남구립 행복요양병원",
+      "category": "public",
+      "address": "서울특별시 강남구 헌릉로 590길 60",
+      "homepage": "http://www.gangnamguhospital.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강남정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 119 (역삼동, 5층 일부)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "강남정신과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 997",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "강남푸른정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초동 1329-6 5층 501호",
+      "homepage": "https://gangnampureun.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "강남하늘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 봉은사로 105 5층",
+      "homepage": "https://gangnamskyclinic.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "강동경희대학교병원",
+      "category": "public",
+      "address": "서울특별시 강동구 동남로 892 (상일동)",
+      "homepage": "http://www.khnmc.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강동구 보건소",
+      "category": "public",
+      "address": "서울특별시 강동구 성내로 45",
+      "homepage": "https://health.gangdong.go.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강릉시정신건강복지센터",
+      "category": "public",
+      "address": "강릉시 남구길 23번길24 3층,4층",
+      "homepage": "www.gnmind.com",
+      "region": "서울"
+    },
+    {
+      "name": "강북구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 강북구 삼양로19길 154 삼각산분소 3층",
+      "homepage": "ehealth.gangbuk.go.kr/site/kr/maeum",
+      "region": "서울"
+    },
+    {
+      "name": "강북구보건소",
+      "category": "public",
+      "address": "서울특별시 강북구 한천로 897",
+      "homepage": "https://ehealth.gangbuk.go.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강북삼성병원",
+      "category": "public",
+      "address": "서울특별시 종로구 새문안로 29 (평동)",
+      "homepage": "https://www.kbsmc.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강서구보건소",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 561 강서보건소",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "강서그룹홈",
+      "category": "public",
+      "address": "서울특별시 강서구 초록마을로16길 20",
+      "homepage": "www.wmind.org",
+      "region": "서울"
+    },
+    {
+      "name": "강서양지",
+      "category": "public",
+      "address": "서울특별시 강서구 등촌로35 가길 26, 301호",
+      "homepage": "https://blog.naver.com/gsyj1",
+      "region": "서울"
+    },
+    {
+      "name": "강서필병원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로17길 24",
+      "homepage": "http://www.feelhp.com/",
+      "region": "서울"
+    },
+    {
+      "name": "강신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 신림로 340 르네상스 복합쇼핑몰 13층 1304호",
+      "homepage": "http://kskclinic.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "강신삼신경정신과의원",
+      "category": "public",
+      "address": "서울 동대문구 홍릉로 5",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "같은마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 324 글로리타워 (번동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "개운정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 동작대로 114 5층 (방배동, 유문빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "건국대학교병원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 120-1 (화양동)",
+      "homepage": "https://www.kuh.ac.kr/main.do",
+      "region": "서울"
+    },
+    {
+      "name": "건대하늘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 아차산로 213 웅진빌딩 4층 (화양동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "경찰병원",
+      "category": "public",
+      "address": "서울특별시 송파구 송이로 123 국립경찰병원 (가락동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "경찰병원",
+      "category": "public",
+      "address": "서울특별시 송파구 송이로 123",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "경희궁삼성정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 송월길 99 2207호 (홍파동, 경희궁자이 2단지)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "경희대학교병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 경희대로 23 (회기동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "경희의료원",
+      "category": "public",
+      "address": "서울특별시 동대문구 홍릉로81 2층",
+      "homepage": "ddmmind.net",
+      "region": "서울"
+    },
+    {
+      "name": "고려대학교의과대학부속구로병원",
+      "category": "public",
+      "address": "서울특별시 구로구 구로동로 148 고려대부속구로병원 (구로동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "고려제일정신과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 구로동로 240 세일빌딩 2층 (구로동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "고려힐링정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 신촌로35길 10 212호 (북아현동, e편한세상신촌 4단지)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "고정인정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 313 211~212호 (역삼동, 성아하이츠 1차)",
+      "homepage": "http://mindinmind.co.kr/?module=Html&action=SiteComp&sSubNo=5",
+      "region": "서울"
+    },
+    {
+      "name": "공감정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 404-1 3층 (송파동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "공감플러스",
+      "category": "public",
+      "address": "서울특별시 강서구 화곡로61길 130 남영빌딩 3층",
+      "homepage": "sotong2013.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "관악구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 관악구 관악로 145, 3동 4층",
+      "homepage": "www.gwanakmaum.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "관악구보건소",
+      "category": "public",
+      "address": "서울특별시 관악구 관악로 145",
+      "homepage": "http://www.gwanak.go.kr/site/health/main.do",
+      "region": "서울"
+    },
+    {
+      "name": "관악좋은집",
+      "category": "public",
+      "address": "서울특별시 관악구 법원단지32길 5, 201호(신림동)",
+      "homepage": "caf?.naver.com/positivehouse",
+      "region": "서울"
+    },
+    {
+      "name": "광진 오사랑의집",
+      "category": "public",
+      "address": "서울특별시 광진구 긴고랑로 36길 57-11, 301호",
+      "homepage": "www.gj-silver.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "광진구보건소",
+      "category": "public",
+      "address": "서울특별시 광진구 자양로 117",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "광진구정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 광진구 긴고랑로 110 중곡종합건강센터 4층",
+      "homepage": "www.hopegj.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "광화문숲정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 종로3길 30 3층 (청진동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "구로구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 구로구 새말로 60",
+      "homepage": "www.grcmhc.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "구로구공동희망학교",
+      "category": "public",
+      "address": "서울특별시 구로구 구로중앙로18길 50, 2층",
+      "homepage": "gcmh2013.com",
+      "region": "서울"
+    },
+    {
+      "name": "구로구보건소",
+      "category": "public",
+      "address": "서울특별시 구로구 구로중앙로 28길 66",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "구의연세정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 자양로 95 (자양동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "국립재활원",
+      "category": "public",
+      "address": "서울특별시 강북구 삼각산로 58 (수유동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "국립정신건강센터",
+      "category": "public",
+      "address": "서울특별시 광진구 용마산로 127 (중곡동, 국립정신건강센터)",
+      "homepage": "www.ncmh.go.kr/ncmh/main.do",
+      "region": "서울"
+    },
+    {
+      "name": "국립정신건강센터",
+      "category": "public",
+      "address": "서울특별시 강북구 삼양로 335-1 2층",
+      "homepage": "www.gbalcohol.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "국립중앙의료원",
+      "category": "public",
+      "address": "서울특별시 강동구 성내로 45, 1층",
+      "homepage": "www.happygd.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "국립중앙의료원",
+      "category": "public",
+      "address": "서울특별시 중구 을지로 245",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "국립중앙의료원",
+      "category": "public",
+      "address": "서울특별시 중구 을지로 245 (을지로6가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "굿모닝정신과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 아차산로 220 203호 (자양동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "그라따",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉로 181 가길6 1층",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "그루정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 양화로 165 상진빌딩 6층 (동교동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "그린홈",
+      "category": "public",
+      "address": "서울특별시 중랑구 동일로 92길 39-21, 2층",
+      "homepage": "igonggam.net",
+      "region": "서울"
+    },
+    {
+      "name": "금천구보건소",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 73길 70",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "금천키다리정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 403 셈프레팜 902호 (독산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "기린정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 봉은사로 474 2층 203호 (삼성동, 쌍용 플래티넘)",
+      "homepage": "https://girinmind.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "길벗둥지",
+      "category": "public",
+      "address": "서울특별시 동대문구 서울시립대로 18길 36, 1층",
+      "homepage": "www.길벗둥지.com",
+      "region": "서울"
+    },
+    {
+      "name": "김동현정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 언주로 869 4층 (신사동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김문엽정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 아차산로 431 상가1-205호 (구의동, 강변에스케이뷰)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김병수정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로 125 로이어즈타워 2층 203호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김병후정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 반포대로 287 407,408-1호 (반포동, 래미안퍼스티지중심상가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김상준정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 동일로 802 (중화동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김선미신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 중대로 80 (문정동, 엘지트윈리젠시 3층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동로 211 (신정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김영우정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 321 (수유동, 학성빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김영헌정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1550 208호 (상계동, 고려프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김영화정신과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 전농로 22 5층 (답십리동, 엠제이빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김용호정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 왕십리로 410 상가 L동 136호 (하왕십리동, 센트라스)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김유광정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 양화로 50 3층 (합정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로 455 3층 308호 (서초동, 강남태영데시앙루브)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김정일정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 603 3층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김종하정신과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1123 (길동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김준정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 논현로 833 재경빌딩 5층 501호 (신사동)",
+      "homepage": "https://kimjoonclinic.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "김태영정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1382 303호 (상계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "김표한정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 망우로21길 4 2층 (휘경동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "꿈꾸는달팽이",
+      "category": "public",
+      "address": "서울특별시 구로구 디지털로 26길 110, 동일테크노타운 2차 302호",
+      "homepage": "blog.naver.com/dreamdal2015",
+      "region": "서울"
+    },
+    {
+      "name": "꿈꾸는집",
+      "category": "public",
+      "address": "서울특별시 관악구 당곡6길 65, 201호",
+      "homepage": "www.1wool.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "나눔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 1832 9층 (봉천동, 삼한빌딩)",
+      "homepage": "http://ypnanum2.79.ypage.kr/bbs/board.php?bo_table=yp_introduction02&wr_id=1",
+      "region": "서울"
+    },
+    {
+      "name": "나눔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 방배로 97 청유빌딩 4층 (방배동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "나눔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 왕십리로 339 2층 (하왕십리동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "나눔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 삼성로 38 개포빌딩 4층 403호 (개포동)",
+      "homepage": "http://ypnanum2.79.ypage.kr/bbs/board.php?bo_table=yp_introduction05&wr_id=1",
+      "region": "서울"
+    },
+    {
+      "name": "나눔터",
+      "category": "public",
+      "address": "서울특별시 성북구 석관동 133-44, 태영빌딩 501호",
+      "homepage": "www.seokgyenanum.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "나래정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 214 602호 (시흥동, 비즈메디빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "나우정신과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1033 5층 (천호동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "나음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 사가정로 389 (면목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "남송엠정신과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 천호대로 307 3층 (답십리동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "남신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 중앙로 276 (신정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "내동화세상",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉산 3길 17-16",
+      "homepage": "www.ndhworld.com",
+      "region": "서울"
+    },
+    {
+      "name": "노만희정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 용산구 한남대로21길 17 7층 (한남동, 신화빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "노명선정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 523 (역삼동, 유림빌딩 3층일부)",
+      "homepage": "http://www.rohsclinic.com/",
+      "region": "서울"
+    },
+    {
+      "name": "노왕구정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 압구정로 156 307호 (신사동, 카로시티2빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "노원구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 455, 인산빌딩 5층",
+      "homepage": "www.nowonmind.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "노원구보건소",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 437",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "노원신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1393 305호 (상계동, 일신프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "노원아이존",
+      "category": "public",
+      "address": "서울특별시 노원구 한글비석로 326, 3층",
+      "homepage": "www.nowonaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "노원을지대학교병원",
+      "category": "public",
+      "address": "서울특별시 노원구 한글비석로 68 을지병원 (하계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "노원희망공간이룸",
+      "category": "public",
+      "address": "서울특별시 노원구 한글비석로 422, 2층(상계동)",
+      "homepage": "cafe.daum.net/ncmhe",
+      "region": "서울"
+    },
+    {
+      "name": "노정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 신촌로 266-1 3층 (아현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "노정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 성산로4길 15 3층",
+      "homepage": "www.mapomhc.org",
+      "region": "서울"
+    },
+    {
+      "name": "녹색병원",
+      "category": "public",
+      "address": "서울특별시 중랑구 사가정로49길 53 (면목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "누리봄",
+      "category": "public",
+      "address": "서울특별시 광진구 용마산로 25길 10",
+      "homepage": "www.nurispring.net",
+      "region": "서울"
+    },
+    {
+      "name": "늘벗정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 경인로 661 신도림1차푸르지오 235호 (신도림동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "늘푸른정신과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1092 (성내동, 에스케이허브진)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "늘푸른집",
+      "category": "public",
+      "address": "서울특별시 도봉구 시루봉로 295-3",
+      "homepage": "www.nulpurunjip.net",
+      "region": "서울"
+    },
+    {
+      "name": "다나병원",
+      "category": "public",
+      "address": "서울특별시 도봉구 해등로 129 (창동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "다미신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 116 4층 (잠실동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "다솜",
+      "category": "public",
+      "address": "서울특별시 구로구 고척로 10길 9-5",
+      "homepage": "www.dasom1004.kti114.net",
+      "region": "서울"
+    },
+    {
+      "name": "다온정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로35가길 9 225호,226호 (신천동, 잠실 푸르지오 월드마크)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "다일천사병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 서울시립대로 57 천사병원 B1,1,2,3,6층 (전농동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "다정이네",
+      "category": "public",
+      "address": "서울특별시 종로구 세검정로 7가길 18, 301호",
+      "homepage": "www.homelessness.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "다함정신건강 상담센터",
+      "category": "public",
+      "address": "서울특별시 성북구 보문로34길 39, 4층",
+      "homepage": "www.swumentalhealth.com",
+      "region": "서울"
+    },
+    {
+      "name": "닥터진힐링정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송이로 200 2층 (문정동, 대진빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "대길엘림",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 54길 19, 301호",
+      "homepage": "daegilwelfare.com",
+      "region": "서울"
+    },
+    {
+      "name": "대길푸른초장",
+      "category": "public",
+      "address": "서울특별시 영등포구 영등포로 84길 4-14",
+      "homepage": "www.greengrass.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "대림성모병원",
+      "category": "public",
+      "address": "서울특별시 영등포구 시흥대로 657 (대림동, 대림성모병원)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "대성정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 진황도로 158 (둔촌동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "대치마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 남부순환로 2927 대치 클래시아 3층 301호 (대치동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "더맑은신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 논현로 507 301호 (역삼동, 성지하이츠3차빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "더정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중구 남대문로9길 40 센터플레이스 204호 (다동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "도담",
+      "category": "public",
+      "address": "서울특별시 동대문구 사가정로 258, 4층",
+      "homepage": "www.dodam-partager.net",
+      "region": "서울"
+    },
+    {
+      "name": "도봉구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 도봉구 방학로3길 117, 1층",
+      "homepage": "health.dobong.go.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "도봉구보건소",
+      "category": "public",
+      "address": "서울특별시 도봉구 방학로 3길 117",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "도봉구정신건강복지센터(부설)",
+      "category": "public",
+      "address": "서울특별시 도봉구 방학로3길 117, 1층",
+      "homepage": "health.dobong.go.kr",
+      "region": "서울"
+    },
+    {
+      "name": "도연정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 망우로 74 2층 (휘경동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "돌봄사랑채",
+      "category": "public",
+      "address": "서울특별시 광진구 아차산로 26길 28",
+      "homepage": "dolbom2014.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "동교정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 신촌로 62 (동교동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "동그라미",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 43길 30-11, 202호",
+      "homepage": "cafe.naver.com/1004round",
+      "region": "서울"
+    },
+    {
+      "name": "동남정신과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 북촌로5길 64 3층 (소격동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "동대문구보건소",
+      "category": "public",
+      "address": "서울특별시 동대문구 천호대로 145",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "동대문아이존",
+      "category": "public",
+      "address": "서울특별시 동대문구 답십리로 63길 73 형제빌딩 2층",
+      "homepage": "www.ddmaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "동서울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 자양로 186-1 1층 (구의동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "동작구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 동작구 남부순환로 2025",
+      "homepage": "www.dongjak.go.kr",
+      "region": "서울"
+    },
+    {
+      "name": "동작구보건소",
+      "category": "public",
+      "address": "서울특별시 동작구 장승배기로 10길 42",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "동작아이존",
+      "category": "public",
+      "address": "서울특별시 동작구 국사봉길 109",
+      "homepage": "www.djaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "동화정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 385-1 (중곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "두드림마음건강센터",
+      "category": "public",
+      "address": "서울특별시 양천구 등촌로 194, 4층",
+      "homepage": "cafe.daum.net/dodmhc",
+      "region": "서울"
+    },
+    {
+      "name": "드림하우스(구 사랑마을)",
+      "category": "public",
+      "address": "서울특별시 중랑구 망우로74가길 9",
+      "homepage": "igonggam.net",
+      "region": "서울"
+    },
+    {
+      "name": "디딤돌",
+      "category": "public",
+      "address": "서울특별시 도봉구 도당로 27길 47, 2층",
+      "homepage": "ddimdol.biz",
+      "region": "서울"
+    },
+    {
+      "name": "디딤정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 488 5층 (상계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "디딤정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 동작대로 118 503호 (방배동, 예다인프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "디딤정신과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 119 (잠실동, 파인애플상가 4B 29호)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "라엘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 양평로 99 10층 (양평동4가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "라임정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 국제금융로 78 홍우빌딩 3층 1호 (여의도동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "라임정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 신반포로3길 8 301호 (반포동, 반포프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "레브린정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 삼성로140길 6 라파빌딩 2층 (청담동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "로뎀나무",
+      "category": "public",
+      "address": "서울특별시 서대문구 증가로24마길 19, 101호",
+      "homepage": "www.rodemnamu.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "로뎀정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 삼성로96길 27 401호 (삼성동, 진솔빌딩)",
+      "homepage": "https://www.goodoc.co.kr/hospitals/35072",
+      "region": "서울"
+    },
+    {
+      "name": "류한욱정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 342 (논현동, 301, 301-1호)",
+      "homepage": "https://www.modoodoc.com/hospital/6317/%EB%A5%98%ED%95%9C%EC%9A%B1%EC%A0%95%EC%8B%A0%EA%B3%BC%EC%9D%98%EC%9B%90-%EC%84%9C%EC%9A%B8%EC%8B%9C-%EA%B0%95%EB%82%A8%EA%B5%AC-%EB%85%BC%ED%98%84%EB%8F%99/",
+      "region": "서울"
+    },
+    {
+      "name": "리본병원",
+      "category": "public",
+      "address": "서울특별시 구로구 경인로 393-7 일이삼전자타운 5,6,7층 (고척동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "리커버리하우스",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로172길 116(신림동), 2층",
+      "homepage": "www.1wool.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "마곡정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 마곡중앙로 161-17 보타닉파크타워Ⅰ 4층 401호 (마곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마나스정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 장군봉1길 56 3층 (봉천동, 우형빌딩)",
+      "homepage": "https://blog.naver.com/manasclinic",
+      "region": "서울"
+    },
+    {
+      "name": "마음공간정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 세종대로 159 9층 (세종로)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음과마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로39길 6-21 2층 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음과마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 고산자로 399 304호, 305호 (용두동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음과마음정신과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 도림로 65 한정빌딩 2층 (구로동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음과사람정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 마포대로 53 마포트라팰리스 C동 206호 (도화동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음과정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 화곡로 161 3층 303호 (화곡동, 대성빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음누리정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 동작대로 7 5층 (사당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음누리정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 삼성로 155 419, 420호 (대치동, 대치퍼스트빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음무늬정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 월드컵로3길 14 (합정동, 마포한강2차푸르지오)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음벗김종범정신과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 329 5층 (수유동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 상도로 247 4층 (상도동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음사랑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 신촌로16길 4 3층 (노고산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음샘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초대로 302 502호 (서초동, 교대역인앤인오피스)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음쉼정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 238 스카이쏠라빌딩 10층 (도곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음안정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 올림픽로 651 6층 (천호동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음연정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 방배로 111 3층 (방배동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음의 뜰 정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동동로 268 신한빌딩 5층 (목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음의지도정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 186 2층 (화곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음자리",
+      "category": "public",
+      "address": "서울특별시 양천구 목동 중앙남로 16다길 9, 204호",
+      "homepage": "maumjary.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 404-1 2층, 지하1층 (송파동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마음편한정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 도봉구 노해로63길 78 502호 (창동, 신원빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마인드",
+      "category": "public",
+      "address": "서울특별시 동대문구 전농로 38길 35, 2,3층",
+      "homepage": "www.마인드.com",
+      "region": "서울"
+    },
+    {
+      "name": "마인드닥터주니어정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 망우로 353 C동 301호 (상봉동, 현대이노시티)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마인드랩공간정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 언주로130길 10 지하2층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마인드힐링정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로86길 17 702호 (대치동, 선릉엠티빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마인드힐정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 새문안로 69 구세군회관 706호 (신문로1가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "마포구보건소",
+      "category": "public",
+      "address": "서울특별시 마포구 월드컵로 212",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "맑은샘",
+      "category": "public",
+      "address": "서울특별시 강동구 구천면로 28길 21, 401호(천호동)",
+      "homepage": "igonggam.net",
+      "region": "서울"
+    },
+    {
+      "name": "맑은샘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 43-17 (화곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "멋진월요일",
+      "category": "public",
+      "address": "서울특별시 성동구 성덕정길 116 4층",
+      "homepage": "wm.ggcoop.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "메티스정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 언주로 413 4층 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "멘토스병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 한천로 49 (답십리동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "명륜신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 대학로 144 (혜화동, 중원빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "명지병원",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 561 강서구보건소 지하1층",
+      "homepage": "www.kscmhc.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "목동하늘샘",
+      "category": "public",
+      "address": "서울특별시 양천구 목동 중앙남로 9길 28-1, 201호",
+      "homepage": "fountainhouse.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "무지개둥지",
+      "category": "public",
+      "address": "서울특별시 은평구 연서로 45-2",
+      "homepage": "caf?.daum.net/psygrouphome",
+      "region": "서울"
+    },
+    {
+      "name": "문경서정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 390 (중곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "문홍세신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 524 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "문화정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 은평로 194 2층 203, 204호 (응암동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "미소정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 마포대로 52 207호 (도화동, 고려아카데미텔Ⅱ)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "미소정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 논현로 841 제이비 미소빌딩 3층 310호 (신사동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "미아정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 40 3층 (미아동, 대경빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "민정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 성암로 189 지하1층 B104-1호 (상암동, 중소기업 DMC 타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 왕산로 45 3층 301호 (용두동, KY TOWER)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박신영정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 시흥대로 664 4층 (신대방동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박언규정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 동작대로 89 404호 (사당동, 골든시네마타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박재순신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 501 304호 (상계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 통일로 741 5층 (대조동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박종철신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 새문안로5가길 3-1 505호 (당주동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박주형신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 중구 을지로 196 202호 (을지로4가, 경명빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박진생정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 313 216,217호 (역삼동, 성지하이츠1)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박진억신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 남현길 7 3층 (남현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박창증정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 종로 22 인주빌딩 604호 (서린동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "박희관정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 328 306호 (번동, 가든타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "밝은길",
+      "category": "public",
+      "address": "서울특별시 중랑구 상봉중앙로 5가길 48, 2층",
+      "homepage": "07082869554.kt",
+      "region": "서울"
+    },
+    {
+      "name": "밝은미래정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1006 (성내동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "밝은서울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 동작대로 70 4층 (방배동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "백산정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 276 (독산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "백상정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 426 405호 (화곡동, VIP오피스텔)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "백상정신과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 경서로 6 (고척동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "백상창정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 마곡동로4길 23 3층 301호 (마곡동, 레지던스루체브릿지호텔)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "베드로신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 동소문로 92 지상8층 (동소문동5가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "베이직병원",
+      "category": "public",
+      "address": "서울특별시 도봉구 삼양로 610 지하1층층 지상1,2,3,4호 (쌍문동, 산수디앤씨)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "변영돈신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 340 대치 EM 프라자 405호 (대치동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "변재영정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 장승배기로 103 (노량진동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "복지와 사람들",
+      "category": "public",
+      "address": "서울특별시 구로구 새말로 60, 재중요양병원 별관 지층",
+      "homepage": "www.gracc.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "봄빛정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 284 지상2층 (내발산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 100 6층 (잠실동, 효창타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 상도로 69 3층 (대방동, 상원빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 269-15 힐스테이트에코마곡 2층 209호 (마곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "빛날정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 342 에스케이 허브블루 210호 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "사과나무정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 올림픽로 665 대일빌딩 2층 (천호동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "사랑마을정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 모래내로 217 (남가좌동, 우일빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "사랑샘터정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 30 9층 903호 (미아동, 에코피아빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "사회복지법인 성가소비녀회 성가복지병원",
+      "category": "public",
+      "address": "서울특별시 성북구 종암로 191 (하월곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "삼성사과나무정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 마포대로 33 205,206호 (도화동, 한화오벨리스크)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "삼성서울병원",
+      "category": "public",
+      "address": "서울특별시 강남구 일원로 81 (일원동, 삼성의료원)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "삼성아이정신과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 380 (송파동, 5층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "삼육서울병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 망우로 82 (휘경동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "상계신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1379 204호 (상계동, 다모아빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "상도연세정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 상도로 264 주유노빌딩 2층 (상도1동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "상록수정신과의원",
+      "category": "public",
+      "address": "서울특별시 중구 퇴계로 436-1 2층 (신당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "상암정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 월드컵북로 402 케이지아이티센터 215,220호 (상암동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "새로돋는집",
+      "category": "public",
+      "address": "서울특별시 관악구 대학 18길 41, 401호",
+      "homepage": "www.1wool.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "새롬마을",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 237다길 43, 201호(상계동)",
+      "homepage": "saerommaeul.kr",
+      "region": "서울"
+    },
+    {
+      "name": "새벗클럽하우스",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로52길 88 참빛빌딩 3, 4층",
+      "homepage": "www.sbhouse.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "새봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 남부순환로97길 3 KS프리미어빌딩 303호 (개봉동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "새오름터",
+      "category": "public",
+      "address": "서울특별시 은평구 연서로22길 4(대조동)",
+      "homepage": "www.saeorum.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "새움병원",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 123길 11 5층",
+      "homepage": "gcmhc.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "새움병원",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로139길 8 새움병원 (독산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "샘신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 사평대로55길 8 3층 (반포동, 신영빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "샹가",
+      "category": "public",
+      "address": "서울특별시 서대문구 증가로10길 16-4, 302호",
+      "homepage": "blog.naver.com/shangga2015",
+      "region": "서울"
+    },
+    {
+      "name": "서광윤신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 인촌로24길 11 (안암동5가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서대문 해벗누리",
+      "category": "public",
+      "address": "서울특별시 서대문구 모래내로173",
+      "homepage": "www.sdmhb.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서대문구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 서대문구 연희로 290, 4층",
+      "homepage": "health.sdm.go.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "서대문구보건소",
+      "category": "public",
+      "address": "서울특별시 서대문구 연희로 242",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서대문아이존",
+      "category": "public",
+      "address": "서울특별시 서대문구 연희로26 동방사회복지회 2층",
+      "homepage": "www.sdmizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서울W정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 가산디지털1로 181 가산 더블유센터 214호 (가산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울그린정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 망우로 123 5층 (휘경동, 휘경메디컬프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울다르크",
+      "category": "public",
+      "address": "서울특별시 양천구 목동 중앙본로 7가길 19-7 다나네스트빌 103호",
+      "homepage": "seouldarc.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서울대병원",
+      "category": "public",
+      "address": "서울특별시 종로구 성균관로 15길 10",
+      "homepage": "www.jongnomind.org",
+      "region": "서울"
+    },
+    {
+      "name": "서울대병원",
+      "category": "public",
+      "address": "서울특별시 중구 서소문로 6길 16 3층",
+      "homepage": "www.junggumind.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서울대학교병원",
+      "category": "public",
+      "address": "서울특별시 종로구 대학로 101",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울대학교병원",
+      "category": "public",
+      "address": "서울특별시 종로구 대학로 101 (연건동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울디딤정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 1905 2층 (봉천동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울마음숲정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로 148 김영학원사옥 204호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울명병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 고산자로 421 (용두동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동중앙북로7가길 61 4층 (목동, 목동 RICH SQUARE)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울성모정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 광평로56길 8-13 수서타워 302, 303호 (수서동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울성심병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 왕산로 259 서울성심병원 (청량리동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울송도병원",
+      "category": "public",
+      "address": "서울특별시 중구 다산로 78 (신당동, 송도병원)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울송정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 385 6층 604호 (마곡동, 우성에스비타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울시자살예방센터",
+      "category": "public",
+      "address": "서울특별시 구로구 가마산로 272, 5층",
+      "homepage": "suicide.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서울시청 보건의료정책과",
+      "category": "public",
+      "address": "서울특별시 중구 세종대로 110, 4층 (덕수궁길 15)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울아이정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 492 401호 (상계동, 프린스빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울연정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 오목로 300 206동 310호 (목동, 목동현대하이페리온2)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울우리아이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 강변역로4길 10 4층 (구의동, 강변역지너스타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울우리집",
+      "category": "public",
+      "address": "서울특별시 강동구 상일로 25길 7-12, 201호",
+      "homepage": "www.saramsarang.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서울윤정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 망우로 304 2층 203호 (상봉동, 상봉베스트원아파트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울의료원",
+      "category": "public",
+      "address": "서울특별시 종로구 동숭3길 40 일석기념관 3,4층",
+      "homepage": "www.blutouch.net",
+      "region": "서울"
+    },
+    {
+      "name": "서울의료원",
+      "category": "public",
+      "address": "서울특별시 중랑구 면목로238 중랑구민회관 1층",
+      "homepage": "mind.jungnang.go.kr/mind/main.do",
+      "region": "서울"
+    },
+    {
+      "name": "서울적십자병원",
+      "category": "public",
+      "address": "서울특별시 종로구 새문안로 9",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울적십자병원",
+      "category": "public",
+      "address": "서울특별시 종로구 새문안로 9 적십자병원 (평동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울지음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 통일로 840 범서빌딩 3층 (불광동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울청정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로 403 5층 2호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울탑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 월계로 4 5층 (하월곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울탑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 반포대로 287 336~337호 (반포동, 래미안퍼스티지중심상가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울탑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 관악로 168 (봉천동, 대우슈페리움2단지)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울탑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 114 (잠실동, 서경빌딩 5층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울탑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 마포대로 68 (도화동, 마포아크로타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 동부병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 무학로 124 (용두동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 동부병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 무학로 124",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 북부병원",
+      "category": "public",
+      "address": "서울특별시 중랑구 양원역로 38",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 북부병원",
+      "category": "public",
+      "address": "서울특별시 중랑구 양원역로 38 (망우동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 서남병원",
+      "category": "public",
+      "address": "서울특별시 양천구 신정이펜1로 20(신정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 서북병원",
+      "category": "public",
+      "address": "서울특별시 은평구 갈현로7길 49",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 서울의료원",
+      "category": "public",
+      "address": "서울특별시 중랑구 신내로 156",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 어린이병원",
+      "category": "public",
+      "address": "서울특별시 서초구 헌릉로 260",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시 은평병원",
+      "category": "public",
+      "address": "서울특별시 은평구 백련산로 90",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시보라매병원",
+      "category": "public",
+      "address": "서울특별시 동작구 보라매로5길 20",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시보라매병원",
+      "category": "public",
+      "address": "서울특별시 동작구 보라매로5길 20 (신대방동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시서남병원",
+      "category": "public",
+      "address": "서울특별시 양천구 신정이펜1로 20 (신정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시서북병원",
+      "category": "public",
+      "address": "서울특별시 은평구 갈현로7길 49 (역촌동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시서울의료원",
+      "category": "public",
+      "address": "서울특별시 중랑구 신내로 156 (신내동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시어린이병원",
+      "category": "public",
+      "address": "서울특별시 서초구 헌릉로 260 (내곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울특별시은평병원",
+      "category": "public",
+      "address": "서울특별시 은평구 백련산로 90 (응암동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서울현정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 이문로 98 3층 (이문동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서진복지재단",
+      "category": "public",
+      "address": "서울특별시 도봉구 방학로 53, 백윤빌딩 2층",
+      "homepage": "www.dbalcohol.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서초구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 서초구 염곡말길 9 느티나무쉼터 3층",
+      "homepage": "www.scgmhc.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서초구보건소",
+      "category": "public",
+      "address": "서울특별시 서초구 남부순환로 2584",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "서초아이존",
+      "category": "public",
+      "address": "서울특별시 서초구 방배로173 지하1층",
+      "homepage": "www.scaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서초열린세상",
+      "category": "public",
+      "address": "서울특별시 서초구 신반포로33 길22, 반포종합사회 복지관410호",
+      "homepage": "www.seochomind.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "서촌정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 효자로7길 14 1층 (통의동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "석계정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 화랑로 321 건안빌딩 4층 (월계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "선릉김정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 410 (대치동, 금강타워 502호)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "선일정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 방배로 215 3층 (방배동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "선정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 259 (내발산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "선정신과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로204가길 34 307호 (중계동, 씨앤미복합빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성동구보건소",
+      "category": "public",
+      "address": "서울특별시 성동구 마장로 23길 10",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모 다움",
+      "category": "public",
+      "address": "서울특별시 성동구 청계천로 506 성동종합사회복지관 4층",
+      "homepage": "www.smcmh.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "성모나무정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 화랑로 337 3층 303호 (월계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모누리정신건강의학과",
+      "category": "public",
+      "address": "서울특별시 중랑구 면목로 299 3층 (면목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모라이프정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 광나루로 604 진넥스 베르디엠 201호 (구의동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모마음정신과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 동일로 903 2~5층 (묵동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모샘병원",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉로 683 5,6,7층 (방학동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모숲정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 사당로 300 215호 (사당동, 이수자이)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모연정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 경인로67길 23 301-2호 (신도림동, 신도림2차푸르지오)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로87길 13 6층 (삼성동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모정신과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 영중로 51-1 10층 (영등포동6가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모행복정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 양산로 42 성보빌딩 3층 (거여동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모휴정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉로 551 (쌍문동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성모힐정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 328 강남역 쉐르빌 2층 208,209호 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성북구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 성북구 화랑로 63",
+      "homepage": "www.sbcmhc1.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "성북구보건소",
+      "category": "public",
+      "address": "서울특별시 성북구 화랑로 63",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성북구자살예방센터",
+      "category": "public",
+      "address": "서울특별시 성북구 오패산로 21, 4층",
+      "homepage": "www.salja.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "성북아이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 동소문로20가길 12 (동선동1가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성북우리아이들병원",
+      "category": "public",
+      "address": "서울특별시 성북구 동소문로46길 10 (하월곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성신병원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 181 (미아동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성심의료재단강동성심병원",
+      "category": "public",
+      "address": "서울특별시 강동구 성안로 150 (길동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성애의료재단 성애병원",
+      "category": "public",
+      "address": "서울특별시 영등포구 여의대방로53길 22 (신길동, 성애병원)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "성지병원",
+      "category": "public",
+      "address": "서울특별시 금천구 가산로 122 (가산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "세림서울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 423 207호 (청담동, 청우빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "세종정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 사당로 220 3층 (사당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "세화정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 면목로 456 한성빌딩 3층 (면목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "소담",
+      "category": "public",
+      "address": "서울특별시 강북구 한천로 166길 30, 3층(수유동)",
+      "homepage": "sodam.ezbuilder.co.kr/h/",
+      "region": "서울"
+    },
+    {
+      "name": "소망나무",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 50길 8 2층",
+      "homepage": "www.hopecenter.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "소망정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 효령로 260 서초빌딩 4(일부)층 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "소망홈",
+      "category": "public",
+      "address": "서울특별시 광진구 천호대로 113길 29",
+      "homepage": "www.somanghome.kti114.net",
+      "region": "서울"
+    },
+    {
+      "name": "소민정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 영동대로 602 3층 304호 (삼성동, 삼성동미켈란107)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "소정정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 아차산로 42 정명빌딩 8층 (성수동1가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 인사동5길 25 하나로빌딩 401호 (인사동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송이네집",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 48 가길 7-11",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송주연정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동로 203 4층 (신정동, 로데오빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송지영정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 회기로 154 2층 (회기동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송파구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 송파구 양산로 5",
+      "homepage": "www.songpa.go.kr/ehealth/",
+      "region": "서울"
+    },
+    {
+      "name": "송파구보건소",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 326",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송파구정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 송파구 양산로 5",
+      "homepage": "http://www.spmind.or.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "송파드림정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 마천로 53 대경빌딩 4층 (오금동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송파미소병원",
+      "category": "public",
+      "address": "서울특별시 송파구 오금로 513 위례빌딩 (거여동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송파서울정신과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 392 (송파동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송파성모정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 167 B동 B212호 (문정동, 문정역테라타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "송파아이존",
+      "category": "public",
+      "address": "서울특별시 송파구 장지동 충민로 6길 17",
+      "homepage": "www.aizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "송파어우러기",
+      "category": "public",
+      "address": "서울특별시 송파구 백제고분로 446, 204호",
+      "homepage": "harmony.ggcoop.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "수린목",
+      "category": "public",
+      "address": "서울특별시 구로구 고척로3길 99 대하쉐르빌 9동 101호",
+      "homepage": "www.수린목.kr",
+      "region": "서울"
+    },
+    {
+      "name": "수서삼성정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 밤고개로1길 10 201호 (수서동, 수서현대벤쳐빌)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "수정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중구 동호로 180 2층 203호 (신당동, 동양빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "순천향대학교 부속 서울병원",
+      "category": "public",
+      "address": "서울특별시 용산구 대사관로 59 (한남동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "쉼정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1116 2층 207,028호 (성내동, 라이저강동빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "쉼플러스정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 215 씨엘타워 602호층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "스롤라인",
+      "category": "public",
+      "address": "서울특별시 용산구 백범로 90길 이레빌딩 1층",
+      "homepage": "www.srolanh.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "신림정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 신림로 366 (신림동, 7층)",
+      "homepage": "http://www.sillimclinic.co.kr/",
+      "region": "서울"
+    },
+    {
+      "name": "신림평온정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 1619-1 4층 (신림동)",
+      "homepage": "https://sillimpeaceful.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "신석호정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 개포로 615 201-1호, 308호 (개포동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "신재경정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 양화로 156 3층 315호 (동교동, LG팰리스빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "심온정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 압구정로 212 302호 (신사동, 방우빌딩 302호)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "심정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 마곡중앙6로 66 퀸즈파크텐 2층 204호 (마곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "아로정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초대로 317 건원빌딩 3층 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "아름다운교회 사랑의집",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 71가길 27(수유동)",
+      "homepage": "www.sarangzip.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "아름다운세상",
+      "category": "public",
+      "address": "서울특별시 구로구 고척로 52라길 11-23",
+      "homepage": "www.beautifulworld.kti114.net",
+      "region": "서울"
+    },
+    {
+      "name": "아름드리",
+      "category": "public",
+      "address": "서울특별시 양천구 남부순환로 59길 16-1, 201호",
+      "homepage": "http://caf?.daum.net/아름드리주거시설",
+      "region": "서울"
+    },
+    {
+      "name": "아린정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 도봉로 3 대양직업전문학교,현대스위스저축은행빌딩 4층 401호 (길음동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "아이나래정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 378 (방이동, 4층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "아이맘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 482 3층 (상계동, 덕영빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "안세정신과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 신촌로 93 (창천동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "알에이치(RH)정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로22길 25 2층 210호 (서초동, 서초리시온)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "알코올의존자 사회복귀시설 까리따스",
+      "category": "public",
+      "address": "서울특별시 서초구 남부순환로 2124번지 까리따스 방배종합사회복지관 4층",
+      "homepage": "www.cacc.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "양양군정신건강복지센터",
+      "category": "public",
+      "address": "양양군 양양읍 양양로 9-5(양양군보건소2층)",
+      "homepage": "http://www.diddid0197.com/",
+      "region": "서울"
+    },
+    {
+      "name": "양창순정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중구 소공로 35 310호 (회현동1가, 롯데캐슬아이리스오피스존)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "양천구보건소",
+      "category": "public",
+      "address": "서울특별시 양천구 목동서로 339",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "양천아이존",
+      "category": "public",
+      "address": "서울특별시 양천구 화곡로 47",
+      "homepage": "www.childfund.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "어깨동무",
+      "category": "public",
+      "address": "서울특별시 중랑구 동일로92길 39-2,1 2층",
+      "homepage": "igonggam.net",
+      "region": "서울"
+    },
+    {
+      "name": "어울림",
+      "category": "public",
+      "address": "서울특별시 중랑구 용마산로331-1 401, 402",
+      "homepage": "www.igonggam.net",
+      "region": "서울"
+    },
+    {
+      "name": "에버그린하우스",
+      "category": "public",
+      "address": "서울특별시 은평구 갈현로 29길 51 예성베르빌B01호",
+      "homepage": "egreenhouse.modoo.at",
+      "region": "서울"
+    },
+    {
+      "name": "에스정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 시흥대로 399 시티렉스 201호 (독산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "에이원정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 동교로 179 2층 (동교동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "에이치플러스 양지병원",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 1636 양지병원 (신림동)",
+      "homepage": "https://www.newyjh.com/main/index.htm",
+      "region": "서울"
+    },
+    {
+      "name": "엘림신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 왕십리로 294-2 2층 (행당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "여울목",
+      "category": "public",
+      "address": "서울특별시 강서구 화곡로 13길 66-28, 301호",
+      "homepage": "caf?.daum.net/최현모",
+      "region": "서울"
+    },
+    {
+      "name": "여의도삼성정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 여의대방로 383 208호 (여의도동, 경도빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "여의도쉼정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 의사당대로 127 203호 (여의도동, 롯데캐슬엠파이어)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "여의도힐정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 여의나루로 42 여의도종합상가 510-가호 (여의도동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세가산숲정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 가산디지털1로 171 가산 에스케이 브이원 센터 220호 (가산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세광화문정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 새문안로 103-1 3,5층 (신문로1가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세나루정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 404 우일빌딩 2층 (송파동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세누리정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 오목로 322 보성빌딩 5층 501호 (목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세늘봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 422 (송파동, 영빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세대학교의과대학 강남세브란스병원",
+      "category": "public",
+      "address": "서울특별시 강남구 언주로 211 강남세브란스병원 (도곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세라온정신과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 호암로 602 4층 (신림동)",
+      "homepage": "https://yonseiraon.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "연세라이프정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 111 준경타워 4층 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세로뎀정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 서강로 142 3층,5층 (노고산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세마곡숲정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 마곡중앙5로 6 마곡나루역보타닉푸르지오시티 2층 238호 (마곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세맑은정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 월드컵로 87 마포로얄프라자 3층 301호 (망원동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세맑음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로62길 7 경산빌딩 4층 (대치동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세멘토정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 백범로 1 3층 (노고산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세반디정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 창경궁로 266 2층 (혜화동, 복지빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세밝은마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 통일로 451 5층 (홍제동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세밝은맘정신과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 성산로 488 3층 (대신동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 통일로 857 (갈현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 시흥대로 551 광희빌딩 4층 (구로동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세삼성정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 514 삼흥2빌딩 12층 (대치동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세소울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 360 4층 401호 (내발산동, 솔레드림빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세소울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 108 (잠실동, 8층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세소울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1392 5층 (상계동, 한일빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세소울정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 통일로 464 홍제빌딩 5층 5-1호 (홍제동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세손정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 남부순환로 2614 310호 (양재동, 한솔로이젠트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세숲정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 진관2로 15-46 601호 (진관동, 메트로프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세엘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 사임당로 39 한성빌딩 4층 402호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세웰 정신건강의학과 의원",
+      "category": "public",
+      "address": "서울특별시 중구 남대문로9길 51 효덕빌딩 5층 511호 (을지로1가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세유앤김정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 528 6층 (대치동, 슈페리어타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초대로 24 2층 (방배동, 새한빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 종로 335 5층 (창신동, 원풍빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 디지털로32길 79 조영빌딩 3층 (구로동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세진정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 만리재로 15 2층 203호 (공덕동, 제일빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세채움정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 339 8층 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세필정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1015 8층 (천호동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세필정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 598 2층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세필정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 신촌로 174 2층 (대흥동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세필정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 종로 19 413-2호, 414-1호 (종로1가, 르메이에르종로타운)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세필정신과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 2056 2층 (남현동, 태림빌딩)",
+      "homepage": "http://www.feelclinic.co.kr/sub/index.php",
+      "region": "서울"
+    },
+    {
+      "name": "연세필정신과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 신정중앙로 103 701호 (신정동, 담우빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세햇살정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 신림로 318 6층 (신림동, 청암두산위브센티움)",
+      "homepage": "http://yonseisunny.com/",
+      "region": "서울"
+    },
+    {
+      "name": "연세훈정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 관악로 195 301호 (봉천동, 관악위버폴리스)",
+      "homepage": "http://happyhoon.com/main/index.html",
+      "region": "서울"
+    },
+    {
+      "name": "연세휴정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로 375 505호 (서초동, 서초현대타워아파트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세휴정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 도곡로 409 503호 (대치동, 타워엠프리스)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연세힐정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 한글비석로 270 스카이타워 2층층 202호 (중계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "연정신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로4길 46 1층 118호 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "열린마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 259 성운빌딩 4층 (군자동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "열린성모정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 한글비석로 384 (중계동, 대호프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "열린세상",
+      "category": "public",
+      "address": "서울특별시 양천구 남부순환로 450, 301호",
+      "homepage": "wmind.org",
+      "region": "서울"
+    },
+    {
+      "name": "열린정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 등촌로5길 2 6층 (화곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "영동신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로 146 302호 (서초동, 경원빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "영등포구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 영등포구 당산로 123, 영등포구보건소 4층",
+      "homepage": "www.ydp.go.kr/health/main.do",
+      "region": "서울"
+    },
+    {
+      "name": "영등포구보건소",
+      "category": "public",
+      "address": "서울특별시 영등포구 당산로 123",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "영등포아이존",
+      "category": "public",
+      "address": "서울특별시 영등포구 영등포로 84길 24-14, 2층",
+      "homepage": "www,ydpaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "예선정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로4길 6 강남역 센트럴 푸르지오 시티 305호 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "예솜정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 개포로 205 양재빌딩 4층 401호 (개포동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "예스홈",
+      "category": "public",
+      "address": "서울특별시 도봉구 우이천로 38 나길 53",
+      "homepage": "www.yeshome.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "예온정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 보문로 183 논현빌딩 3층 302호 (삼선동4가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "예체르하우스",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 18아길 25-14 201호",
+      "homepage": "ysrhouse.modoo.at/",
+      "region": "서울"
+    },
+    {
+      "name": "오늘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 용산구 한강대로 69 2층 205~206호 (한강로2가, 용산푸르지오써밋)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "오정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 왕산로32길 7 BYC 청량리 오피스텔 5층 (용두동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "오정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 영신로40길 3-1 (영등포동6가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "온맘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 양재대로 1607 약봉빌딩 2층 (천호동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "용산구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 용산구 녹사평대로150 용산보건소1층",
+      "homepage": "ysmind.org",
+      "region": "서울"
+    },
+    {
+      "name": "용산구보건소",
+      "category": "public",
+      "address": "서울특별시 용산구 녹사평대로 150",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "용산새빛",
+      "category": "public",
+      "address": "서울특별시 용산구 원효로 35길 1-22",
+      "homepage": "yssb.org",
+      "region": "서울"
+    },
+    {
+      "name": "용인정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 신반포로 205 반포쇼핑타운 6동 3층 (잠원동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "우리공감정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 법원로 114 C동 212호 (문정동, 엠스테이트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "우리동네연세정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 강서로 43 도양라비앙타워 8층 802호 (화곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "우리집",
+      "category": "public",
+      "address": "서울특별시 광진구 긴고랑로36길 57-11, 202호",
+      "homepage": "www.gj-silver.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "우행원신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 종로 329-1 2층 (창신동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "웰봄정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1089 301호 (천호동, 강동 헤르셔)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "위드유",
+      "category": "public",
+      "address": "서울특별시 동대문구 한천로 424, 인월빌딩 4층",
+      "homepage": "www.위드유.org",
+      "region": "서울"
+    },
+    {
+      "name": "위드정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 441 (석촌동, 6층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "위례해솔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 위례광장로 193 대길프라자 604호 (장지동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "유범희정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 남부순환로 2804 A동 202-3호 (도곡동, 아카데미스위트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "유앤문정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 영동대로85길 34 대치2차 아이파크 2층 208호 (대치동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "유정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 월드컵로 82-1 4층 (서교동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "유지민정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 자양로 109 202호 (자양동, 구의현대홈시티)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "유쾌한집1",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉산 3길 12-4 401호",
+      "homepage": "blog.daum.net/plhouse2014",
+      "region": "서울"
+    },
+    {
+      "name": "유쾌한집2",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉산 3길 12-4 401호",
+      "homepage": "blog.daum.net/plhouse2014",
+      "region": "서울"
+    },
+    {
+      "name": "유쾌한집3",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉산 3길 12-4 401호",
+      "homepage": "blog.daum.net/plhouse2014",
+      "region": "서울"
+    },
+    {
+      "name": "유쾌한집4",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉산 3길 12-4 401호",
+      "homepage": "blog.daum.net/plhouse2014",
+      "region": "서울"
+    },
+    {
+      "name": "윤정신과의원",
+      "category": "public",
+      "address": "서울특별시 중구 다산로 133 3층 (신당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "윤혜리정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 용산구 한강대로 95 2층 212호 (한강로2가, 래미안용산)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "윤홍균정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 백범로 178 A-202호 (공덕동, 마포신영지웰)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "은초록샘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 양천로 492 201호 (등촌동, 길훈엔트런스빌)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "은평구 정신건강복지센터",
+      "category": "public",
+      "address": "서울특별시 은평구 연서로 34길 11",
+      "homepage": "health.ep.go.kr",
+      "region": "서울"
+    },
+    {
+      "name": "은평구보건소",
+      "category": "public",
+      "address": "서울특별시 은평구 은평로 195",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "은혜로운집",
+      "category": "public",
+      "address": "서울특별시 은평구 갈현로 15길 27-1",
+      "homepage": "www.grace.seoul.kr",
+      "region": "서울"
+    },
+    {
+      "name": "을지대학교 을지병원",
+      "category": "public",
+      "address": "서울특별시 노원구 노원로 16길 15 중계주공 9단지 912동 1층",
+      "homepage": "www.nowon-addiction.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "의료법인 우리아이들 의료재단 우리아이들병원",
+      "category": "public",
+      "address": "서울특별시 구로구 새말로 15 2~9층 (구로동, 삼전솔하임)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "의료법인다나의료재단구로다나병원",
+      "category": "public",
+      "address": "서울특별시 구로구 개봉로 126 (개봉동, 구로다나병원빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "의료법인한전의료재단 한일병원",
+      "category": "public",
+      "address": "서울특별시 도봉구 우이천로 308 (쌍문동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이대목동병원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동서로 339 양천구보건소 지하1층",
+      "homepage": "www.yctouch.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "이도희정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 532 (논현동, 2층 일부)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이민수정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 인촌로24길 20 3층 (안암동5가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이백정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 641 우암빌딩 201호 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이범용정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로 245 6층 (반포동, 반포동 강남빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이범정정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 통일로 863 3층 (갈현동, 유화프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이상연신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 통일로 162 3층 (교남동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이선이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로 164 7층 (서초동, 신한국빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이성주정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 왕산로 176 5층 (전농동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이수정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 동작대로 121 7층 (사당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이수철신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1037 세우빌딩 (천호동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이승민정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 남부순환로 2615 303호 (도곡동, 극동스타클래스)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이앤정정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1345 2층 204호 (상계동, 인천빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이유정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 431 406,407호 (역삼동, 에스케이허브오피스텔)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이음",
+      "category": "public",
+      "address": "서울특별시 강동구 성내2동 136-18",
+      "homepage": "www.yiumm.net",
+      "region": "서울"
+    },
+    {
+      "name": "이인수정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 압구정로73길 8 3층 (청담동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이재진정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 행당로 87 402호 (행당동, 대림리빙프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 신반포로 325 반포빌딩 3층 302호 (잠원동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 석촌호수로 61 5층 511일부 호 (잠실동, 트리지움)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 논현로 607 4층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이철정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초대로 266 201호 (서초동, 아스트라)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이택중신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 도산대로 110 4층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이한정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 311 한티빌딩 305호 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이화여자대학교의과대학부속목동병원",
+      "category": "public",
+      "address": "서울특별시 양천구 안양천로 1071 (목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "이화여자대학교의과대학부속서울병원",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 260 이화여자대학교 제2부속병원 (마곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "인성정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 마천로 264 4층 (거여동, 흥일빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "인제대학교 상계백병원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 1342 상계백병원 (상계동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "인제대학교 서울백병원",
+      "category": "public",
+      "address": "서울특별시 중구 마른내로 9-9 (저동2가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "일상정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 양평로 22 5층 (당산동6가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "임계원정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 종로구 혜화로 8 2층 (혜화동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "잠실아이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 293-19 (신천동, 현대타워 104호)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "잠실하늘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 송파대로 558 월드타워빌딩 2층 201호 (신천동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "장석하정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 올림픽로 787 2층 202호 (암사동, 태성프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "장은진정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 313 209,210호 (역삼동, 성지하이츠1)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "장홍석정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 510 402호 (삼성동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "재단법인아산사회복지재단 서울아산병원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로43길 88 서울아산병원 (풍납동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "재단법인한국산업보건환경연구소부설 해상병원",
+      "category": "public",
+      "address": "서울특별시 영등포구 신길로 173 (신길동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "전성일정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 노해로 457 5층 (상계동, 은성빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "전재진정신과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 긴고랑로 64 2,3,4층 (중곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "전종호정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 405 (수유동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "전지홍정신과의원",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉로 476 204호 (창동, 삼성쉐르빌퍼스티)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "전현수정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 중대로 68 401호 (문정동, 훼미리 샤르망)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "정경화정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 금천구 독산로 134 (시흥동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "정선주정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 압구정로 224 209호 (신사동, 우미빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "정성철정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 동소문로 20-1 지상3층 (동소문동2가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "정인과정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 구로구 가마산로 205 (구로동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "정희진정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 남부순환로 2652 4층 (양재동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "조광신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로 380 (중곡동,(2,3,4층))",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "조남현정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 압구정로 228 3층 301호 (신사동, 대웅빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "조맹제정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 영등포구 당산로 133 303호 (당산동3가, 서림빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "종로 행복일굼터",
+      "category": "public",
+      "address": "서울특별시 종로구 종로43길 9",
+      "homepage": "www.jnhappy.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "종로구보건소",
+      "category": "public",
+      "address": "서울특별시 종로구 자하문로 19길 36",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "종로아이존",
+      "category": "public",
+      "address": "서울특별시 종로구 자하문로 89",
+      "homepage": "www.jongnoaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "좋은나무",
+      "category": "public",
+      "address": "서울특별시 중랑구 동일로92길 39-21, 202호",
+      "homepage": "igonggam.net",
+      "region": "서울"
+    },
+    {
+      "name": "좋은사람들",
+      "category": "public",
+      "address": "서울특별시 영등포구 도림로 188-1(대림동)",
+      "homepage": "www.postivepeople.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "좋은정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 수색로 40 4층 (남가좌동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "주정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 서강로 144 403호 (노고산동, 동인빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "중구보건소",
+      "category": "public",
+      "address": "서울특별시 중구 다산로 39길 16",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "중구아이존",
+      "category": "public",
+      "address": "서울특별시 중구 서소문로6길 16",
+      "homepage": "www.jaizone.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "중랑구보건소",
+      "category": "public",
+      "address": "서울특별시 중랑구 봉화산로 179",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "중랑한울지역 정신건강센터",
+      "category": "public",
+      "address": "서울특별시 중랑구 용마산로 115길 65 우주빌딩 4층",
+      "homepage": "www.1woollove.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "중앙대학교병원",
+      "category": "public",
+      "address": "서울특별시 동작구 흑석로 102 (흑석동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "지앤지병원",
+      "category": "public",
+      "address": "서울특별시 강남구 영동대로 626 2~10층 (삼성동, GNG병원빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "지음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중랑구 면목로 495 이레빌딩 701호 (상봉동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "지음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 116-1 신원빌딩 5층 (잠실동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "지혜병원",
+      "category": "public",
+      "address": "서울특별시 동대문구 천호대로 421 (장안동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "지혜샘정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 용산구 한강대로 297 우신빌딩 4층 (갈월동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "진심정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 테헤란로 141 703호 (역삼동, KR타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "차의과학대학교 강남차병원",
+      "category": "public",
+      "address": "서울특별시 강남구 논현로 566 (역삼동, 역삼동 606-4)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "청량리정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 왕산로 236 1층 (전농동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "청소년사회 복귀시설 비상",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 2054 광일빌딩 4층",
+      "homepage": "www.visang.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "최명기정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 잠원로 24 408-1호 (반포동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "최수호신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로 341 삼원빌딩 8호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "최신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로53길 7 강남애니타워 302호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "최인광정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 443 301호 (청담동, 정한빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "최종배정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 남부순환로350길 4 301호 (양재동, 대진빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "최태영정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동대문구 천호대로 295 3층 7호 (답십리동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "치유정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 은평로 121 13층 (응암동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "카프여성거주시설",
+      "category": "public",
+      "address": "서울특별시 마포구 성미산로5길 50-15",
+      "homepage": "www.karfwtc.com",
+      "region": "서울"
+    },
+    {
+      "name": "카프치료 공동체 둥지",
+      "category": "public",
+      "address": "서울특별시 은평구 연서로 37가길 10-10, 201호",
+      "homepage": "karfnest.smpon.kr",
+      "region": "서울"
+    },
+    {
+      "name": "카프치료공동체 감나무집",
+      "category": "public",
+      "address": "서울특별시 마포구 연남동 565-37",
+      "homepage": "karftc.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "탑정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 408 YBM강남센터 12층 (역삼동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "태능성심정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 노원구 동일로 987 2층 (공릉동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "태화샘솟는집",
+      "category": "public",
+      "address": "서울특별시 마포구 아현동 772",
+      "homepage": "www.fountainhouse.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "태화해뜨는샘",
+      "category": "public",
+      "address": "서울특별시 강남구 광평로 185 태화기독교사회복지관 3층",
+      "homepage": "www.sunrising.org",
+      "region": "서울"
+    },
+    {
+      "name": "토마스정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 논현로150길 26 5층 (논현동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "파란마음",
+      "category": "public",
+      "address": "서울특별시 은평구 갈현로 33길 32, 201호",
+      "homepage": "saramsarang.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "편한마음정신과의원",
+      "category": "public",
+      "address": "서울특별시 은평구 서오릉로 140 3층 (대조동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "평온정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 양재대로 1477 6층 602호 (길동, 삼환빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "평화정신재활시설",
+      "category": "public",
+      "address": "서울특별시 노원구 노원로 331, 평화종합사회복지관 3층(중계동)",
+      "homepage": "www.phcmh.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "표진인정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 백범로 199 206호 (신공덕동, 메트로디오빌)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "푸른고래정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 도봉구 도봉로150길 43 2층 207,208호 (방학동, ESA 아파트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "푸른마음정신과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 능동로50길 8 3,4,5층 (중곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "푸른존",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 66길 35, 1층(미아동)",
+      "homepage": "proonzone.wix.com/proonzone",
+      "region": "서울"
+    },
+    {
+      "name": "프렌드정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 왕십리로 315 4층 (행당동, 한동타워)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "하나정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성북구 동소문로 97 5층 2호 (동소문동6가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "하나정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 남부순환로 2941 4층 (대치동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "하늘소",
+      "category": "public",
+      "address": "서울특별시 양천구 화곡로 8길 21-4, 2층",
+      "homepage": "www.하늘소.kr",
+      "region": "서울"
+    },
+    {
+      "name": "하얀마음",
+      "category": "public",
+      "address": "서울특별시 송파구 석촌호수로 20길 28-1, 201호",
+      "homepage": "saramsarang.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "학교법인 고려중앙학원 고려대학교의과대학부속병원(안암병원)",
+      "category": "public",
+      "address": "서울특별시 성북구 고려대로 73 고려대병원 (안암동5가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "학교법인가톨릭학원가톨릭대학교서울성모병원",
+      "category": "public",
+      "address": "서울특별시 서초구 반포대로 222 (반포동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "학교법인연세대학교의과대학세브란스병원",
+      "category": "public",
+      "address": "서울특별시 서대문구 연세로 50-1 (신촌동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한국보훈복지의료공단 중앙보훈병원",
+      "category": "public",
+      "address": "서울특별시 강동구 진황도로 61길 53",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한국보훈복지의료공단 중앙보훈병원",
+      "category": "public",
+      "address": "서울특별시 강동구 진황도로61길 53 (둔촌동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한국원자력의학원원자력병원",
+      "category": "public",
+      "address": "서울특별시 노원구 노원로 75",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한국원자력의학원원자력병원",
+      "category": "public",
+      "address": "서울특별시 노원구 노원로 75 한국원자력의학원 (공릉동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한그루",
+      "category": "public",
+      "address": "서울특별시 구로구 서해안로 30길 17, 301",
+      "homepage": "hangru.org",
+      "region": "서울"
+    },
+    {
+      "name": "한림대학교 강남성심병원",
+      "category": "public",
+      "address": "서울특별시 영등포구 신길로 1 (대림동, 강남성심병원)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한림대학교 한강성심병원",
+      "category": "public",
+      "address": "서울특별시 영등포구 버드나루로7길 12 (영등포동7가, 한강성심병원)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한마루정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 중구 다산로 245 302호 (무학동, 상민빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한마음세상",
+      "category": "public",
+      "address": "서울특별시 강서구 초록마을로 32길, 33-18",
+      "homepage": "www.wmind.org",
+      "region": "서울"
+    },
+    {
+      "name": "한마음의집",
+      "category": "public",
+      "address": "서울특별시 서대문구 연희로39다길 20, 1층",
+      "homepage": "www.hanmaumzip.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "한마음정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 중앙로 282 (신정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한별정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동서로 256 3층 (목동, 동문빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한빛정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 남부순환로 1838 13층 (봉천동, CS타워)",
+      "homepage": "http://www.hanbitnp.net/",
+      "region": "서울"
+    },
+    {
+      "name": "한빛하우스",
+      "category": "public",
+      "address": "서울특별시 서대문구 연희로39다길 20, 2층",
+      "homepage": "caf?.naver.com/hanbichouse",
+      "region": "서울"
+    },
+    {
+      "name": "한솔신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 관악구 난곡로 268 3층 (신림동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한양대학교병원",
+      "category": "public",
+      "address": "서울특별시 성동구 왕십리로 222-1 (사근동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "한양대학교병원",
+      "category": "public",
+      "address": "서울특별시 성동구 행당로12",
+      "homepage": "www.mindcare.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "한울림",
+      "category": "public",
+      "address": "서울특별시 성북구 보국문로 6길 5-10번지 202호",
+      "homepage": "cafe.naver.com/hanullim",
+      "region": "서울"
+    },
+    {
+      "name": "한울지역 정신건강센터",
+      "category": "public",
+      "address": "서울특별시 관악구 장군봉길 46",
+      "homepage": "www.1wool.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "해들정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 아차산로 229 한림타워 4층 404호 (화양동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "해맑은뜰",
+      "category": "public",
+      "address": "서울특별시 은평구 갈현로 47길 32-14, 101호",
+      "homepage": "cafe.daum.net/haeddeul8",
+      "region": "서울"
+    },
+    {
+      "name": "해민정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 성동구 왕십리로 309 3층 303호 (행당동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "해비치",
+      "category": "public",
+      "address": "서울특별시 서대문구 증가로 24마길 11",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "해사랑",
+      "category": "public",
+      "address": "서울특별시 은평구 연서로41길 41, 301호",
+      "homepage": "www.wmind.org",
+      "region": "서울"
+    },
+    {
+      "name": "해솔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로 336 (방이동, 대우유토피아오피스텔 204호)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "해솔정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 마포구 백범로 13 신촌르메이에르타운II 3층 303호 (노고산동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "해오름",
+      "category": "public",
+      "address": "서울특별시 마포구 망원로11길 27-54",
+      "homepage": "caf?.daum.net/haeohrum",
+      "region": "서울"
+    },
+    {
+      "name": "행복나루정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 송파구 올림픽로35길 112 2동 323,324호 (신천동, 장미아파트 비상가)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "행복을 만드는 집",
+      "category": "public",
+      "address": "서울특별시 강북구 노해로 33길 29-3",
+      "homepage": "happiness2004.co.kr",
+      "region": "서울"
+    },
+    {
+      "name": "행복정신건강센터",
+      "category": "public",
+      "address": "서울특별시 강동구 진황도로119 4층",
+      "homepage": "www.happy2u.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "행복정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 강남대로 240 2층 202호 (도곡동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "행복찾기정신과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 45 (미아동, 숭인시장)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "행복한아이정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 서초중앙로 145 중산빌딩 2층 201호 (서초동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "행복한하루",
+      "category": "public",
+      "address": "서울특별시 도봉구 시루봉로 15라길 7-7 301호(방학동)",
+      "homepage": "cafe.daum.net/365happydayyo",
+      "region": "서울"
+    },
+    {
+      "name": "현대신경정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 압구정로 210 (신사동, 3층)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "현정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 양천구 오목로 345 목동 슬로우스퀘어 410호 (목동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "현정신과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 선릉로 431 505호 (역삼동, 에스케이허브오피스텔)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "현정신과의원",
+      "category": "public",
+      "address": "서울특별시 강동구 천호대로 1006 (성내동, 브라운스톤천호)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "혜민정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 남부순환로 2747 2층 201호 (도곡동, 심우빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "홍익병원",
+      "category": "public",
+      "address": "서울특별시 양천구 목동로 225 홍익병원본관 (신정동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "홍정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강남구 학동로 411 2층 204호 (청담동, 원일빌딩)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "홍정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 동작구 장승배기로 144 (노량진동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "홍제정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서대문구 통일로 476 2층 204호 (홍제동, 원일아파트)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "화곡하늘샘",
+      "category": "public",
+      "address": "서울특별시 강서구 방화대로6 다길 10-12, 401호",
+      "homepage": "taiwhafountainhouse.or.kr",
+      "region": "서울"
+    },
+    {
+      "name": "화인정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강서구 공항대로 525 303호 (등촌동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "화인정신과의원",
+      "category": "public",
+      "address": "서울특별시 광진구 광나루로56길 63 503호 (구의동, 프라임프라자)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "황규혁정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 강북구 도봉로 34 5층 (미아동)",
+      "homepage": "",
+      "region": "서울"
+    },
+    {
+      "name": "휴먼마인드정신건강의학과의원",
+      "category": "public",
+      "address": "서울특별시 서초구 강남대로 605 501호 (잠원동, 휴먼타워)",
+      "homepage": "",
+      "region": "서울"
+    }
+  ]
+}
