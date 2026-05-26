@@ -4,5 +4,10 @@ pydantic
 supabase
 python-dotenv
 numpy
+torch
+transformers
+safetensors
+langchain-community
+sentence-transformers
 openai
 python-multipart

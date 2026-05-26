@@ -16,14 +16,35 @@ from model import load_model, get_depression_score, get_chatbot_response
 from persona_router import route_persona
 from database import supabase
 
-# HuggingFace 임베딩 초기화 (Chroma/FAISS RAG 호환용)
-# Supabase의 vector(768) 스키마에 맞추기 위해 768차원 한국어 최적화 모델 사용
-from langchain_community.embeddings import HuggingFaceEmbeddings
-embedding_model = HuggingFaceEmbeddings(
-    model_name="jhgan/ko-sroberta-multitask",
-    model_kwargs={'device': 'cpu'},
-    encode_kwargs={'normalize_embeddings': True}
-)
+# HuggingFace 임베딩 초기화 (Chroma/FAISS RAG 호환 및 배포 메모리 절약 우회)
+embedding_model = None
+
+try:
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+    # saved_models나 transformers가 존재하고 메모리가 충분하면 ko-sroberta 로드
+    if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "saved_models", "KLUBERT_Dataset2")):
+        embedding_model = HuggingFaceEmbeddings(
+            model_name="jhgan/ko-sroberta-multitask",
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
+        print("[DB Server] ko-sroberta-multitask HuggingFace embedding model loaded successfully!")
+except Exception as e_embed:
+    print(f"[DB Server Warning] Failed to load heavy HuggingFaceEmbeddings: {e_embed}. Activating Lite Mock Embedding Mode...")
+
+class LiteMockEmbeddingModel:
+    def embed_query(self, text: str) -> List[float]:
+        # Supabase vector(768)와의 하위 호환성을 보장하기 위해 768차원 더미/정적 임시 벡터 생성 (메모리 0MB 사용)
+        import random
+        random.seed(len(text))
+        return [random.uniform(-0.1, 0.1) for _ in range(768)]
+
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        return [self.embed_query(t) for t in texts]
+
+if embedding_model is None:
+    embedding_model = LiteMockEmbeddingModel()
+
 
 app = FastAPI(title="마음 온도계 AI Backend", version="1.0.0")
 

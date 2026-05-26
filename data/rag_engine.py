@@ -5,9 +5,19 @@
 
 import os
 from typing import List, Dict, Optional
-from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_core.documents import Document
+
+HAS_LANGCHAIN = True
+try:
+    from langchain_community.vectorstores import FAISS
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+    from langchain_core.documents import Document
+except ImportError:
+    HAS_LANGCHAIN = False
+    class Document:
+        def __init__(self, page_content: str, metadata: dict = None):
+            self.page_content = page_content
+            self.metadata = metadata or {}
+
 
 # 3-3. 임베딩 모델 설정
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
@@ -20,21 +30,34 @@ VECTOR_STORE_DIR = os.path.join(BASE_DIR, "vector_store")
 class RAGEngine:
     def __init__(self, model_name: str = EMBEDDING_MODEL):
         """
-        RAG 엔진 초기화
+        RAG 엔진 초기화 (배포 512MB 메모리 초과 방지용 하이브리드 Fallback 지원)
         """
-        # 임베딩 모델 초기화 (CPU 환경 권장)
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name=model_name,
-            model_kwargs={'device': 'cpu'},
-            encode_kwargs={'normalize_embeddings': True} # IP(Inner Product) 검색을 위해 정규화
-        )
+        self.is_lite_mode = False
         self.indices = {}
         
-        # 기본 인덱스 로드 시도
-        self._load_all_indices()
+        if not HAS_LANGCHAIN:
+            print("[RAG Engine Alert] langchain is not installed. Activating ultra-lightweight Keyword Match Retriever.")
+            self.is_lite_mode = True
+            return
+            
+        try:
+            # 임베딩 모델 초기화 (CPU 환경 권장)
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name=model_name,
+                model_kwargs={'device': 'cpu'},
+                encode_kwargs={'normalize_embeddings': True}
+            )
+            # 기본 인덱스 로드 시도
+            self._load_all_indices()
+        except Exception as e_rag:
+            print(f"[RAG Engine Alert] Failed to load heavy neural RAG Retriever: {e_rag}. Activating ultra-lightweight Keyword Match Retriever instead.")
+            self.is_lite_mode = True
 
     def _load_all_indices(self):
-        """저장된 FAISS 인덱스들을 로드합니다. (Hot-swapping 지원을 위해 메모리에 유지)"""
+        """저장된 FAISS 인덱스들을 로드합니다."""
+        if self.is_lite_mode:
+            return
+            
         if not os.path.exists(VECTOR_STORE_DIR):
             os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
             
@@ -42,7 +65,11 @@ class RAGEngine:
         for kb in kb_types:
             path = os.path.join(VECTOR_STORE_DIR, kb)
             if os.path.exists(os.path.join(path, "index.faiss")):
-                self.indices[kb] = FAISS.load_local(path, self.embeddings, allow_dangerous_deserialization=True)
+                try:
+                    self.indices[kb] = FAISS.load_local(path, self.embeddings, allow_dangerous_deserialization=True)
+                except Exception as e_load:
+                    print(f"[RAG Engine Alert] FAISS load failed for '{kb}': {e_load}. Activating Lite Mode backup.")
+                    self.is_lite_mode = True
             else:
                 self.indices[kb] = None
 
@@ -76,6 +103,66 @@ class RAGEngine:
         3-5. Retriever 검색 수행
         상황별 동적 조정 (위기 인덱스는 K=3으로 제한)
         """
+        # ── LITE_MODE FALLBACK ──────────────────────────
+        if self.is_lite_mode:
+            try:
+                kb_data = [
+                    {"category": "위기전화", "title": "24시간 자살예방 상담전화 109", "content": "극심한 정서적 위기나 자해/자살 사고가 일어날 시, 언제든 109로 전화해 주시기 바랍니다. 전문 상담사들이 24시간 실시간 정서적 지지 및 위기 연계를 제공합니다.", "tags": ["위기전화", "긴급", "24시간"], "source": "보건복지부 위기개입매뉴얼_2024"},
+                    {"category": "위기전화", "title": "정신건강위기상담전화 1577-0199", "content": "전국 어디서나 1577-0199로 전화를 걸면 각 지자체의 정신건강복지센터 전문 요원들과 연결되어 심리적 안정화 및 내방 상담, 긴급 현장 동행 등을 연계받으실 수 있습니다.", "tags": ["위기전화", "정신건강복지센터"], "source": "보건복지부 위기개입매뉴얼_2024"},
+                    {"category": "자가관리콘텐츠", "title": "우울 해소를 위한 행동활성화(Behavioral Activation)", "content": "무기력이 짙어지면 방 안에만 고립되어 긍정 강화를 잃어버리는 악순환이 생깁니다. 하루 중 단 10분만이라도 좋아하는 차를 끓이거나 집 주변 골목을 걷는 사소한 행동 스케줄링을 통해 성취를 채워가세요.", "tags": ["행동활성화", "자가관리", "우울"], "source": "상담연습교본"},
+                    {"category": "자가관리콘텐츠", "title": "수면위생 10대 수칙", "content": "1) 매일 아침 같은 시간에 일어나기 2) 침대에 누워 스마트폰 쳐다보지 않기 3) 낮잠은 20분 이내로 제한하기 4) 오후 2시 이후 카페인 섭취 중단 5) 미지근한 물로 샤워 후 취침하기", "tags": ["수면위생", "생활습관"], "source": "상담연습교본"},
+                    {"category": "자가관리콘텐츠", "title": "마음챙김(Mindfulness) 호흡법", "content": "과거나 미래의 두려운 절망에 잠식되지 않도록 '지금 이 순간'의 호흡으로 돌아오는 연습입니다. 코끝을 스치는 숨의 촉감과 가슴의 오르내림에 온 신경을 집중해 5분간 숨을 고릅니다.", "tags": ["마음챙김", "호흡", "안정화기법"], "source": "자가관리콘텐츠 DB"},
+                    {"category": "인지왜곡개입", "title": "흑백논리 및 극단적 이분법 교정 가이드", "content": "내담자가 '완벽하지 못하면 실패한 것'이라고 생각할 때, '성공 아니면 완전 실패'의 양극단 사이에 10%에서 90%까지의 수많은 스펙트럼과 중간지대(Grey Zone)가 있음을 함께 선을 그려 설명해 줍니다.", "tags": ["인지왜곡", "흑백논리", "CBT"], "source": "상담연습교본"},
+                    {"category": "안전대응문구", "title": "자살 직접 행동 의도 감지 시의 표준 템플릿", "content": "사용자가 수단이나 직접 의도(자살, 수면제 과다 등)를 표명했을 시, AI는 자유로운 정서 공감 생성을 엄격히 축소하고: '지금 매우 고통스럽고 위험한 상태에 계십니다. 생명을 지키기 위해, 지금 즉시 이 화면의 109 핫라인 혹은 119로 긴급 연결을 해주세요.' 라는 안전 규격 문구만을 노출합니다.", "tags": ["고위험", "가드레일", "템플릿"], "source": "안전대응문구_2024"}
+                ]
+                
+                matched_docs = []
+                for item in kb_data:
+                    score = 0
+                    for tag in item["tags"]:
+                        if tag in query:
+                            score += 3
+                    if item["category"] in query:
+                        score += 2
+                    if any(word in query for word in item["title"].split()):
+                        score += 2
+                    if any(word in query for word in item["content"].split()):
+                        score += 1
+                        
+                    if kb_category == 'crisis_kb' and item["category"] in ["위기전화", "안전대응문구"]:
+                        score += 5
+                    if any(w in query for w in ["잠", "불면", "수면"]):
+                        if "수면" in item["title"] or "호흡" in item["title"]:
+                            score += 10
+                    if any(w in query for w in ["우울", "무기력", "슬퍼"]):
+                        if "행동활성화" in item["title"] or "호흡" in item["title"]:
+                            score += 8
+                    if any(w in query for w in ["끝내", "자살", "죽고", "수면제"]):
+                        if item["category"] in ["위기전화", "안전대응문구"]:
+                            score += 12
+                            
+                    if score > 0:
+                        matched_docs.append((score, item))
+                        
+                matched_docs.sort(key=lambda x: x[0], reverse=True)
+                
+                docs = []
+                for sc, doc_info in matched_docs[:3]:
+                    docs.append(Document(
+                        page_content=doc_info["content"],
+                        metadata={"source": doc_info["source"], "category": doc_info["category"]}
+                    ))
+                
+                if not docs:
+                    docs.append(Document(
+                        page_content="가장 힘겨운 정서적 위기에 놓였을 때 우울빼미와 클로가 당신 곁에 늘 함께하겠습니다. 언제든 마음의 대화를 걸어 주세요.",
+                        metadata={"source": "system_default", "category": "general"}
+                    ))
+                return docs
+            except Exception as e_lite:
+                print(f"[RAG Lite Error] Static search failed: {e_lite}")
+                return [Document(page_content="안전과 안정을 위한 상담 가이드가 활성화되어 있습니다.", metadata={"source": "system"})]
+
         top_k = 3 if kb_category == 'crisis_kb' else 5
         retriever = self._get_retriever(kb_category, top_k)
         
@@ -112,7 +199,11 @@ def create_sample_documents():
     - 임상/위기 매뉴얼: 한국어 의미 손실 방지를 위해 문단 경계 우선 + 최대 500자, 50자 오버랩
     - 공공기관: 시도/기관명/연락처 등 1개 청크 (통합)
     """
-    from langchain_text_splitters import RecursiveCharacterTextSplitter
+    try:
+        from langchain_text_splitters import RecursiveCharacterTextSplitter
+    except ImportError:
+        print("[RAG Engine Warning] langchain_text_splitters not installed. Returning empty sample documents.")
+        return [], [], []
     
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
