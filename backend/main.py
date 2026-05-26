@@ -131,8 +131,9 @@ def cosine_similarity(v1, v2):
 async def send_chat(request: ChatSendRequest):
     global electra_model, tokenizer, inv_map, run_cfg, device
     
-    if electra_model is None:
-        raise HTTPException(status_code=500, detail="감정 분석 모델이 로드되지 않았습니다.")
+    # Lite Mode 혹은 Full Mode 상관없이 inv_map만 준비되어 있으면 구동 가능합니다 (OOM 방지용 Lite Mode 대응)
+    if inv_map is None:
+        raise HTTPException(status_code=500, detail="감정 분석 맵 정보가 로드되지 않았습니다.")
         
     session_id = request.session_id
     user_id = request.user_id
