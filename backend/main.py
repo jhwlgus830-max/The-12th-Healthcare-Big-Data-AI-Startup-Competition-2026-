@@ -54,7 +54,9 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "https://the-12th-healthcare-big-data-ai-sta.vercel.app",
     ],
+    allow_origin_regex="https://.*\\.vercel\\.app",  # 모든 Vercel 배포 및 프리뷰 주소 허용
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
