@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LandingPage from "../components/LandingPage";
 import EmotionReport from "../components/EmotionReport";
@@ -28,6 +28,8 @@ export default function Home() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [devOpen, setDevOpen] = useState(false);
+  const [lastPhq9Date, setLastPhq9Date] = useState<string | null>(null);
+  const [showRephqPopup, setShowRephqPopup] = useState(false);
 
   // Real Auth states
   const [email, setEmail] = useState("");
@@ -56,6 +58,62 @@ export default function Home() {
   const [showSafetyDetail, setShowSafetyDetail] = useState(false);
   const [showCounselorDetail, setShowCounselorDetail] = useState(false);
   const [showAgeDetail, setShowAgeDetail] = useState(false);
+
+  // 세션 복구 및 상태 복구
+  useEffect(() => {
+    const localUser = localStorage.getItem("uulppae_user");
+    if (localUser) {
+      try {
+        const parsed = JSON.parse(localUser);
+        if (parsed.userId) {
+          setLoggedInUser({
+            userId: parsed.userId,
+            nickname: parsed.nickname,
+            email: parsed.email,
+            region: parsed.region
+          });
+          if (parsed.profile) {
+            setProfile(parsed.profile);
+          }
+          if (parsed.last_phq9_date) {
+            setLastPhq9Date(parsed.last_phq9_date);
+          }
+          if (parsed.has_profile) {
+            // 2주일 스킵 로직 검사
+            const lastDate = parsed.last_phq9_date;
+            if (lastDate) {
+              const diffTime = Math.abs(new Date().getTime() - new Date(lastDate).getTime());
+              const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+              if (diffDays < 14) {
+                setStep("chat");
+              } else {
+                setStep("chat");
+                setShowRephqPopup(true);
+              }
+            } else {
+              setStep("chat");
+            }
+          } else {
+            setStep("consent");
+          }
+        }
+      } catch (e) {
+        console.error("세션 복구 에러", e);
+      }
+    }
+  }, []);
+
+  // PHQ-9 2주일 락 스킵 제어
+  useEffect(() => {
+    if ((step === "consent" || step === "phq9" || step === "p4" || step === "pledge") && lastPhq9Date) {
+      const diffTime = Math.abs(new Date().getTime() - new Date(lastPhq9Date).getTime());
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays < 14) {
+        console.log("PHQ-9 2주일 재검사 락에 의해 검사 단계가 차단되었습니다. 챗방으로 이동합니다.");
+        setStep("chat");
+      }
+    }
+  }, [step, lastPhq9Date]);
 
   const allAgreed = agreements.privacy && agreements.terms && agreements.safety && agreements.counselorShare && agreements.ageVerify;
 
@@ -195,6 +253,7 @@ export default function Home() {
 
       const data = await res.json();
       setLoggedInUser({ userId: data.user_id, nickname: data.nickname, email: data.email, region: data.region });
+      setLastPhq9Date(data.last_phq9_date);
       
       const newProfile = {
         nickname: data.profile?.nickname || data.nickname || "",
@@ -213,11 +272,23 @@ export default function Home() {
         email: data.email, 
         region: data.region || data.profile?.region || "",
         profile: newProfile,
-        has_profile: data.has_profile
+        has_profile: data.has_profile,
+        last_phq9_date: data.last_phq9_date
       }));
       
       if (data.has_profile) {
-        setStep("chat");
+        if (data.last_phq9_date) {
+          const diffTime = Math.abs(new Date().getTime() - new Date(data.last_phq9_date).getTime());
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+          if (diffDays < 14) {
+            setStep("chat");
+          } else {
+            setStep("chat");
+            setShowRephqPopup(true);
+          }
+        } else {
+          setStep("chat");
+        }
       } else {
         setStep("consent");
       }
@@ -269,17 +340,43 @@ export default function Home() {
       });
       setProfile(mockProfile);
 
+      // 로컬 폴백에서 날짜 조회
+      let localLastPhq9Date = null;
+      try {
+        const localUsersStr = localStorage.getItem("local_users_fallback");
+        if (localUsersStr) {
+          const localUsers = JSON.parse(localUsersStr);
+          if (localUsers[mockUserId]) {
+            localLastPhq9Date = localUsers[mockUserId].last_phq9_date || null;
+          }
+        }
+      } catch (e) {}
+      
+      setLastPhq9Date(localLastPhq9Date);
+
       localStorage.setItem("uulppae_user", JSON.stringify({ 
         userId: mockUserId, 
         nickname: mockNickname, 
         email: email, 
         region: mockRegion,
         profile: mockProfile,
-        has_profile: hasProfile
+        has_profile: hasProfile,
+        last_phq9_date: localLastPhq9Date
       }));
 
       if (hasProfile) {
-        setStep("chat");
+        if (localLastPhq9Date) {
+          const diffTime = Math.abs(new Date().getTime() - new Date(localLastPhq9Date).getTime());
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+          if (diffDays < 14) {
+            setStep("chat");
+          } else {
+            setStep("chat");
+            setShowRephqPopup(true);
+          }
+        } else {
+          setStep("chat");
+        }
       } else {
         setStep("consent");
       }
@@ -1517,9 +1614,28 @@ export default function Home() {
               <h3 className="text-lg font-bold text-gray-900">나는 나 자신과 약속합니다</h3>
               
               <div className="flex flex-col gap-4 text-sm text-gray-700 w-full">
-                <div className="flex gap-2">
-                  <span className="text-[#F59E0B] font-bold">✓</span>
-                  <p className="leading-relaxed">나는 절대로 자살하지 않을 것이며, 자해나 자살을 시도하지도 않을 것을 서약합니다. 나는 자살하고 싶은 생각이 들면 반드시 (가족, 친구, 상담자, 성직자)에게 먼저 말할 것입니다. 만일 이 사람들을 만날 수 없으면 전화를 하거나 주위 사람에게 도움을 청하겠습니다.</p>
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex gap-2">
+                    <span className="text-[#F59E0B] font-bold">✓</span>
+                    <p className="leading-relaxed">나는 절대로 자살하지 않을 것이며, 자해나 자살을 시도하지도 않을 것을 서약합니다. 나는 자살하고 싶은 생각이 들면 반드시 (가족, 친구, 상담자, 성직자)에게 먼저 말할 것입니다. 만일 이 사람들을 만날 수 없으면 전화를 하거나 주위 사람에게 도움을 청하겠습니다.</p>
+                  </div>
+                  {/* Emergency Contact Input */}
+                  <div className="ml-5 mt-1 bg-[#FAF8F5] border border-[#EAE5D9] rounded-xl p-3 animate-fade-in flex flex-col gap-1.5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+                    <label htmlFor="emergency-contact" className="text-xs font-bold text-gray-750 flex items-center gap-1">
+                      🚨 위기 시 즉시 연락할 비상연락처 (가족, 친구 등)
+                    </label>
+                    <input
+                      id="emergency-contact"
+                      type="text"
+                      placeholder="예: 어머니 010-1234-5678 (닉네임 또는 연락처)"
+                      value={profile.contact}
+                      onChange={(e) => handleProfileChange("contact", e.target.value)}
+                      className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-800 placeholder-gray-400"
+                    />
+                    <p className="text-[10px] text-gray-400 font-medium">
+                      ※ 위기 상황 발생 시 상담원 연계 및 긴급 알림을 보낼 연락처입니다.
+                    </p>
+                  </div>
                 </div>
                 <div className="flex gap-2 border-t border-[#EAE5D9]/50 pt-3">
                   <span className="text-[#F59E0B] font-bold">✓</span>
@@ -1558,12 +1674,37 @@ export default function Home() {
                 {/* Counselor Signature */}
                 <div className="bg-white border border-dashed border-[#EAE5D9] rounded-xl p-4 flex flex-col gap-2 items-center justify-center relative overflow-hidden shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                   <label className="text-xs font-bold text-gray-500 absolute top-4 left-4">상담자 서명</label>
-                  <div className="text-sm font-bold text-gray-400 mt-4">
+                  <div className="text-sm font-bold text-gray-400 mt-4 mr-6">
                     우울빼미 서비스 운영팀
                   </div>
-                  {/* Mock Seal */}
-                  <div className="absolute right-4 bottom-4 w-10 h-10 border-2 border-red-400 rounded-full flex items-center justify-center text-red-400 font-bold text-xs transform rotate-12 opacity-80">
-                    인
+                  {/* Custom SVG filter to convert black to red (#DC2626) while keeping white/transparent */}
+                  <svg width="0" height="0" className="absolute pointer-events-none" style={{ position: "absolute", width: 0, height: 0 }}>
+                    <defs>
+                      <filter id="blackToRedStamp">
+                        <feColorMatrix type="matrix" values="
+                          0.14 0 0 0.86 0
+                          0 0.85 0 0.15 0
+                          0 0 0.85 0.15 0
+                          0 0 0 1 0
+                        " />
+                      </filter>
+                    </defs>
+                  </svg>
+                  {/* Mock Seal with Owl Image */}
+                  <div className="absolute right-3 bottom-2 w-14 h-14 border border-dashed border-[#DC2626] rounded-full flex items-center justify-center bg-white/40 transform rotate-12 opacity-85 shadow-[inset_0_0_4px_rgba(220,38,38,0.2)]">
+                    <div className="w-12 h-12 border-2 border-[#DC2626] rounded-full flex items-center justify-center relative overflow-hidden bg-white/20">
+                      <img 
+                        src="/우울빼미흑백.png" 
+                        alt="우울빼미 인장" 
+                        className="w-10 h-10 object-contain select-none"
+                        style={{
+                          filter: "url(#blackToRedStamp)"
+                        }}
+                      />
+                      <span className="absolute text-[8px] font-black text-[#DC2626] bottom-0.5 bg-white/70 px-0.5 rounded leading-none select-none">
+                        우울빼미
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1573,6 +1714,7 @@ export default function Home() {
             <button
               onClick={async () => {
                 if (signature.trim() !== "") {
+                  let savedDate = new Date().toISOString();
                   try {
                     const filteredPhq9 = phq9Answers.filter((a) => a !== null) as number[];
                     const p4List = [p4Answers.q1, p4Answers.q2, p4Answers.q3, p4Answers.q4];
@@ -1592,25 +1734,51 @@ export default function Home() {
                         phone: profile.phone
                       })
                     });
-                    if (!res.ok) {
+                    if (res.ok) {
+                      const resData = await res.json();
+                      if (resData.data && resData.data.last_phq9_date) {
+                        savedDate = resData.data.last_phq9_date;
+                      }
+                    } else {
                       console.error("설문 저장 실패");
                     }
                   } catch (err) {
                     console.error("설문 저장 API 연동 실패:", err);
                   }
                   
-                  // 거주지역(region) 세션 및 로컬스토리지 즉시 동기화
+                  setLastPhq9Date(savedDate);
+
+                  // 거주지역(region) 및 마지막 검사날짜 세션 및 로컬스토리지 즉시 동기화
                   setLoggedInUser(prev => prev ? { ...prev, region: profile.region } : null);
                   const localUser = localStorage.getItem("uulppae_user");
                   if (localUser) {
                     try {
                       const parsed = JSON.parse(localUser);
                       parsed.region = profile.region;
+                      parsed.last_phq9_date = savedDate;
+                      parsed.has_profile = true;
                       localStorage.setItem("uulppae_user", JSON.stringify(parsed));
                     } catch (e) {
                       console.error("로컬 스토리지 갱신 에러", e);
                     }
                   }
+
+                  // 로컬 폴백 오프라인 스토어 업데이트
+                  try {
+                    if (loggedInUser?.userId) {
+                      const localUsersStr = localStorage.getItem("local_users_fallback");
+                      let localUsers = localUsersStr ? JSON.parse(localUsersStr) : {};
+                      if (!localUsers[loggedInUser.userId]) {
+                        localUsers[loggedInUser.userId] = {};
+                      }
+                      localUsers[loggedInUser.userId].last_phq9_date = savedDate;
+                      localUsers[loggedInUser.userId].gender = profile.gender;
+                      localUsers[loggedInUser.userId].age_group = profile.ageGroup;
+                      localUsers[loggedInUser.userId].occupation = profile.occupation;
+                      localUsers[loggedInUser.userId].region = profile.region;
+                      localStorage.setItem("local_users_fallback", JSON.stringify(localUsers));
+                    }
+                  } catch (e) {}
                   
                   setStep("result");
                 }
@@ -1652,7 +1820,7 @@ export default function Home() {
             {/* Score Selector for Testing */}
             <div className={`p-3 rounded-xl flex flex-wrap gap-2 text-xs justify-center items-center shadow-inner ${isHighRisk ? "bg-[#111A2E]" : "bg-white border border-[#EAE5D9]"}`}>
               <span className="font-bold mr-1">🧪 시나리오 테스트용 점수 강제 세팅:</span>
-              <button onClick={() => { setPhq9Answers(Array(9).fill(0)); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟢 0~4점 (저위험 또치)</button>
+              <button onClick={() => { setPhq9Answers(Array(9).fill(0)); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟢 0~4점 (저위험 우울빼미)</button>
               <button onClick={() => { setPhq9Answers([1,2,1,2,0,0,1,0,0]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟡 5~9점 (자율 선택)</button>
               <button onClick={() => { setPhq9Answers([2,2,2,2,2,2,0,0,2]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔵 10~19점 (지우 상담)</button>
               <button onClick={() => { setPhq9Answers(Array(9).fill(3)); setP4Answers({ q1: "있음", q2: "있음", q2_text: "위기", q3: "매우 그렇다", q4: "없음", q4_text: "없음" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔴 P4 1+ 또는 PHQ 20+ (고위험 클로)</button>
@@ -1703,7 +1871,7 @@ export default function Home() {
                   onClick={() => { setInitialPersona(3); setStep("chat"); }}
                   className="font-bold py-4 px-8 rounded-xl transition-all duration-300 w-full mt-4 shadow-lg bg-white text-[#1E2D4E] hover:bg-[#FAF8F5] hover:scale-[1.01]"
                 >
-                  클로와 안전 가이드 대화 시작하기 🤍
+                  클로와 안전 가이드 대화 시작하기
                 </button>
               </div>
             )}
@@ -1727,7 +1895,7 @@ export default function Home() {
                   <span>💡</span>
                   <p>
                     성찰과 치유를 목적으로 하는 CBT-ACT(인지행동치료/수용전념치료) 기반의 대화를 진행합니다.<br />
-                    상태에 따라 토닥 민트 선생님이 추가적으로 지원을 도울 수 있습니다.
+                    상태에 따라 멘토 선생님이 추가적으로 지원을 도울 수 있습니다.
                   </p>
                 </div>
 
@@ -1755,11 +1923,11 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-2">
-                  {/* Card A: Tochi */}
+                  {/* Card A: Uulppae */}
                   <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
-                    <span className="text-4xl">🦔</span>
+                    <img src="/달려가는 우울빼미.png" alt="우울빼미" className="w-16 h-16 object-contain" />
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm">고슴도치 또치</h4>
+                      <h4 className="font-bold text-gray-900 text-sm">우울빼미</h4>
                       <p className="text-[11px] text-[#B7791F] font-semibold mt-1">따뜻한 위로와 친근한 대화</p>
                       <p className="text-xs text-gray-500 mt-2 leading-relaxed">
                         다정한 정서적 래포 형성과 일상의 따뜻한 이야기를 나눕니다.
@@ -1769,15 +1937,15 @@ export default function Home() {
                       onClick={() => { setInitialPersona(1); setStep("chat"); }}
                       className="w-full bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
-                      또치 선택
+                      우울빼미 선택
                     </button>
                   </div>
 
-                  {/* Card B: Mint Mentor */}
+                  {/* Card B: Mentor */}
                   <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
-                    <span className="text-4xl">🌿</span>
+                    <img src="/멘토 선생님.png" alt="멘토 선생님" className="w-16 h-16 object-contain" />
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm">토닥 민트 선생님</h4>
+                      <h4 className="font-bold text-gray-900 text-sm">멘토 선생님</h4>
                       <p className="text-[11px] text-[#065F46] font-semibold mt-1">인지 왜곡 및 부정 생각 정리</p>
                       <p className="text-xs text-gray-500 mt-2 leading-relaxed">
                         생각 오류를 소크라테스식 문답으로 스스로 고치도록 유도합니다.
@@ -1787,15 +1955,15 @@ export default function Home() {
                       onClick={() => { setInitialPersona(4); setStep("chat"); }}
                       className="w-full bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
-                      민트 선생님 선택
+                      멘토 선생님 선택
                     </button>
                   </div>
 
-                  {/* Card C: Gardener Hyunsu */}
+                  {/* Card C: Chulsoo */}
                   <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
-                    <span className="text-4xl">🏡</span>
+                    <img src="/개그맨 철수.png" alt="개그맨 철수" className="w-16 h-16 object-contain" />
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm">마음치유 가드너 현수</h4>
+                      <h4 className="font-bold text-gray-900 text-sm">개그맨 철수</h4>
                       <p className="text-[11px] text-[#86198F] font-semibold mt-1">웰니스 가이드 및 명상</p>
                       <p className="text-xs text-gray-500 mt-2 leading-relaxed">
                         스트레스를 완화하고 차분하게 감정 일기 작성을 지원합니다.
@@ -1805,14 +1973,14 @@ export default function Home() {
                       onClick={() => { setInitialPersona(5); setStep("chat"); }}
                       className="w-full bg-[#D946EF] hover:bg-[#C084FC] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
-                      가드너 현수 선택
+                      개그맨 철수 선택
                     </button>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* 4. 최소 우울 (Low Risk - Tochi) */}
+            {/* 4. 최소 우울 (Low Risk - Uulppae) */}
             {isLowRisk && (
               <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-[0_2px_8px_rgba(139,123,93,0.02)]">
                 <span className="bg-[#D1FAE5] text-[#065F46] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
@@ -1822,16 +1990,16 @@ export default function Home() {
                   <h3 className="text-2xl font-bold text-gray-900">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
                   <p className="text-sm text-gray-600 mt-2 leading-relaxed">
                     정서적으로 비교적 매우 안정된 상태로 감지되었습니다.<br />
-                    고슴도치 또치와 즐거운 이야기를 나누고 소중한 감정 자원을 충전해봐요.
+                    우울빼미와 즐거운 이야기를 나누고 소중한 감정 자원을 충전해봐요.
                   </p>
                 </div>
-                <img src="/고슴도치 또치.png" alt="고슴도치 또치" className="w-32 h-32 object-contain my-1" />
+                <img src="/달려가는 우울빼미.png" alt="우울빼미" className="w-32 h-32 object-contain my-1" />
 
                 <button
                   onClick={() => { setInitialPersona(1); setStep("chat"); }}
                   className="font-bold py-3.5 px-8 rounded-xl transition-all duration-300 w-full mt-2 shadow-sm bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white hover:scale-[1.01]"
                 >
-                  또치와 대화 시작하기 →
+                  우울빼미와 대화 시작하기 →
                 </button>
               </div>
             )}
@@ -1848,7 +2016,7 @@ export default function Home() {
 
       {/* Chat Screen */}
       {step === "chat" && (
-        <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen">
+        <div className="w-full max-w-6xl mx-auto p-4 flex justify-center items-center min-h-screen relative">
           <UserFlow 
             initialPersona={initialPersona} 
             onEndChat={(sid) => {
@@ -1866,6 +2034,47 @@ export default function Home() {
             profile={profile}
             onUpdateProfile={handleUpdateProfile}
           />
+
+          {/* PHQ-9 재검사 권장 알림 팝업 */}
+          {showRephqPopup && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+              <div className="bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center transform scale-100 transition-all duration-300">
+                <div className="w-16 h-16 bg-[#F59E0B]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <OwlLogo size={40} variant="ivory" />
+                </div>
+                
+                <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">PHQ-9 재검사 권장 알림</h3>
+                
+                <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                  마지막 우울증 건강 설문(PHQ-9)을 수행한 지 2주일이 경과했습니다. 현재 마음 상태를 정기적으로 점검하고 맞춤형 케어를 받기 위해 자가진단을 다시 진행하시겠습니까?
+                </p>
+                
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowRephqPopup(false);
+                      // 기존 설문 상태 초기화 후 검사 시작
+                      setPhq9Answers(Array(9).fill(null));
+                      setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" });
+                      setCurrentQuestionIndex(0);
+                      setStep("consent"); // consent부터 재검사 진행
+                    }}
+                    className="flex-1 py-3 px-4 bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold rounded-xl shadow-md transition-all text-sm"
+                  >
+                    지금 검사하기
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowRephqPopup(false)}
+                    className="flex-1 py-3 px-4 bg-white border border-[#EAE5D9] text-gray-700 font-bold rounded-xl hover:bg-[#F8F5F0] transition-colors text-sm"
+                  >
+                    나중에 하기
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1907,7 +2116,7 @@ export default function Home() {
               <textarea
                 value={diaryText}
                 onChange={(e) => setDiaryText(e.target.value)}
-                placeholder="여기에 오늘 하루의 마음과 대화 소감을 솔직하게 채워주세요... (예: 오늘 또치와 이야기 나누며 마음이 한결 편안해졌어요. 걱정이 가라앉는 기분이에요.)"
+                placeholder="여기에 오늘 하루의 마음과 대화 소감을 솔직하게 채워주세요... (예: 오늘 우울빼미와 이야기 나누며 마음이 한결 편안해졌어요. 걱정이 가라앉는 기분이에요.)"
                 className="w-full h-44 p-4 border border-[#EAE5D9] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#8C7862] text-sm resize-none leading-relaxed transition-all shadow-inner text-gray-800 bg-white"
               />
             </div>
@@ -1943,7 +2152,7 @@ export default function Home() {
                   const hasRisk = riskKeywords.some(kw => diaryText.includes(kw));
 
                   if (hasRisk) {
-                    setJournalWarning("작성하신 내용에서 안전이 깊이 우려되는 위험 단어 또는 표현이 포착되었습니다. 지금은 혼자 글을 쓰는 것보다, 당신의 안전을 절대적으로 수호해 주는 어시스턴트 클로와의 안전 가이드 대화로 즉시 전환합니다. 🤍");
+                    setJournalWarning("작성하신 내용에서 안전이 깊이 우려되는 위험 단어 또는 표현이 포착되었습니다. 지금은 혼자 글을 쓰는 것보다, 당신의 안전을 절대적으로 수호해 주는 어시스턴트 클로와의 안전 가이드 대화로 즉시 전환합니다.");
                     setTimeout(() => {
                       setJournalWarning("");
                       setInitialPersona(3); // 클로 강제 전환
@@ -1984,6 +2193,15 @@ export default function Home() {
             onNavigateToMap={() => {
               setPrevStep("report");
               setStep("map");
+            }}
+            profile={profile}
+            onUpdateProfile={handleUpdateProfile}
+            lastPhq9Date={lastPhq9Date}
+            onReTakePhq9={() => {
+              setPhq9Answers(Array(9).fill(null));
+              setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" });
+              setCurrentQuestionIndex(0);
+              setStep("consent");
             }}
           />
         </div>
@@ -2135,6 +2353,57 @@ export default function Home() {
               </button>
             </div>
             
+            <div className="mb-3 border-b border-gray-100 pb-3">
+              <span className="text-[10px] text-gray-400 font-semibold block mb-1">⏱️ PHQ-9 재검사 & 팝업 테스트</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const fifteenDaysAgo = new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString();
+                    setLastPhq9Date(fifteenDaysAgo);
+                    
+                    // 로컬스토리지 갱신
+                    const localUser = localStorage.getItem("uulppae_user");
+                    if (localUser) {
+                      try {
+                        const parsed = JSON.parse(localUser);
+                        parsed.last_phq9_date = fifteenDaysAgo;
+                        localStorage.setItem("uulppae_user", JSON.stringify(parsed));
+                      } catch (e) {}
+                    }
+                    
+                    // 오프라인 폴백 갱신
+                    if (loggedInUser?.userId) {
+                      try {
+                        const localUsersStr = localStorage.getItem("local_users_fallback");
+                        let localUsers = localUsersStr ? JSON.parse(localUsersStr) : {};
+                        if (!localUsers[loggedInUser.userId]) {
+                          localUsers[loggedInUser.userId] = {};
+                        }
+                        localUsers[loggedInUser.userId].last_phq9_date = fifteenDaysAgo;
+                        localStorage.setItem("local_users_fallback", JSON.stringify(localUsers));
+                      } catch (e) {}
+                    }
+                    
+                    alert("마지막 PHQ-9 검사일이 15일 전으로 설정되었습니다. 챗방에 재진입하면 권장 팝업이 나타납니다.");
+                  }}
+                  className="py-1.5 px-2 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold rounded-lg border border-amber-200 transition-all text-center"
+                >
+                  🕒 15일 전 가상 설정
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowRephqPopup(true);
+                    setDevOpen(false);
+                  }}
+                  className="py-1.5 px-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-lg border border-rose-200 transition-all text-center"
+                >
+                  🚨 권장 팝업 강제 표시
+                </button>
+              </div>
+            </div>
+
             <div className="mb-3">
               <span className="text-[10px] text-gray-400 font-semibold block mb-1">🔑 자동 로그인 단축키</span>
               <button

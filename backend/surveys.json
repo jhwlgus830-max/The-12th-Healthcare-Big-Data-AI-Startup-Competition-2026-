@@ -413,5 +413,31 @@
     "region": "서울",
     "id": "04f0cf70-88a2-419b-a521-e35f13ca8a77",
     "created_at": "2026-05-21T10:56:19.257458Z"
+  },
+  {
+    "user_id": "user-developer",
+    "phq9_score": 13,
+    "phq9_answers": [
+      3,
+      2,
+      1,
+      3,
+      0,
+      3,
+      1,
+      0,
+      0
+    ],
+    "p4_answers": [
+      "없음",
+      "없음",
+      "전혀 아니다",
+      "있음"
+    ],
+    "is_p4_high_risk": false,
+    "severity": "중증",
+    "region": "서울",
+    "id": "8755852b-7203-42f4-bca1-bb6068bd3ac0",
+    "created_at": "2026-05-26T01:08:14.094550Z"
   }
 ]

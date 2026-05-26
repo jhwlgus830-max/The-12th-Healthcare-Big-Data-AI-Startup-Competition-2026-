@@ -318,7 +318,7 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
                           <div className="p-4 bg-[#F5EFE6]/40 rounded-xl border border-[#EAE5D9]/60 flex justify-between items-center">
                             <div>
                               <p className="text-xs text-[#8C7862] font-bold mb-0.5">데일리 감정 일기 작성</p>
-                              <p className="text-sm font-semibold text-gray-700">또치 챗봇 연동 기록</p>
+                               <p className="text-sm font-semibold text-gray-700">우울빼미 챗봇 연동 기록</p>
                             </div>
                             <div className="flex items-center gap-2">
                               {hasJournal ? (
@@ -380,7 +380,7 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
                     <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
                       <TrendingUp size={18} className="text-[#1E2D4E]" /> 감정 변화 추세 (1~6회기 경과)
                     </h3>
-                    <p className="text-xs text-gray-400 mb-4">또치 챗봇 연동 및 상담 세션 통합 우울 추세 지표</p>
+                    <p className="text-xs text-gray-400 mb-4">우울빼미 챗봇 연동 및 상담 세션 통합 우울 추세 지표</p>
                   </div>
                   <div className="h-64 bg-white p-4 rounded-xl border border-[#EAE5D9]/40">
                     <ResponsiveContainer width="100%" height="100%">
@@ -487,7 +487,7 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
                           <span>유형: 웰니스 라이프 코칭 | 진행 상태: 완료</span>
                           <span>기록일시: 2026.05.18 10:00</span>
                         </div>
-                        <p className="text-gray-700 leading-relaxed font-medium">경미한 학업 스트레스로 인한 일시적 울적함 보고. 또치 챗봇을 통한 데일리 멘탈 웰니스 가이드를 성실히 준수함. 감정 일기에 긍정 정서 기록 빈도가 눈에 띄게 상승하고 있어 종결 회기를 논의함.</p>
+                        <p className="text-gray-700 leading-relaxed font-medium">경미한 학업 스트레스로 인한 일시적 울적함 보고. 우울빼미 챗봇을 통한 데일리 멘탈 웰니스 가이드를 성실히 준수함. 감정 일기에 긍정 정서 기록 빈도가 눈에 띄게 상승하고 있어 종결 회기를 논의함.</p>
                       </div>
                     )}
                   </div>
@@ -952,10 +952,10 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
                 {/* 4단계: 행동적 대안 */}
                 <div className="bg-[#FAF8F5] p-6 rounded-2xl border-l-[6px] border-l-green-600 border border-[#EAE5D9] shadow-sm">
                   <span className="px-2 py-0.5 bg-green-600 text-white rounded-md text-[10px] font-bold uppercase tracking-wider">4단계: 행동적 대안 및 개입 방안 (Alternatives)</span>
-                  <h4 className="text-lg font-black text-gray-900 mt-2">대안적 인지 정립 및 또치 챗봇 연계 행동 활성화</h4>
+                  <h4 className="text-lg font-black text-gray-900 mt-2">대안적 인지 정립 및 우울빼미 챗봇 연계 행동 활성화</h4>
                   <ul className="text-sm text-gray-600 leading-relaxed mt-2.5 font-medium list-disc pl-5 space-y-1.5">
                     <li>인지 재구성: "단 하나의 실수가 인생 전체의 실패를 의미하지는 않는다"는 유연한 생각 훈련.</li>
-                    <li>행동 활성화: 하루 20분 가벼운 동네 산책 및 햇빛 쬐기, 스마트폰을 끄고 또치 챗봇과의 기분 기록 대화에만 15분 몰입.</li>
+                    <li>행동 활성화: 하루 20분 가벼운 동네 산책 및 햇빛 쬐기, 스마트폰을 끄고 우울빼미 챗봇과의 기분 기록 대화에만 15분 몰입.</li>
                     <li>현실 검증: 면접관이 미소를 짓거나 부드럽게 고개를 끄덕였던 긍정적 단서들을 일지에 강제로 기록하여 편향 극복.</li>
                   </ul>
                 </div>
@@ -1084,7 +1084,7 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
                     <span className="flex items-center justify-center h-6 w-6 rounded-full bg-[#1E2D4E] text-[#FAF8F5] text-xs font-bold">3</span>
                     <div>
                       <h4 className="text-xs font-black text-gray-900">참여하기 (Participate)</h4>
-                      <p className="text-[10px] text-gray-500 leading-normal mt-0.5">현재 시점에 온전히 마음을 쏟아 또치 챗봇과의 상담 및 정서 일기 작성 등의 유용한 활동 속으로 자연스럽게 동참하기.</p>
+                      <p className="text-[10px] text-gray-500 leading-normal mt-0.5">현재 시점에 온전히 마음을 쏟아 우울빼미 챗봇과의 상담 및 정서 일기 작성 등의 유용한 활동 속으로 자연스럽게 동참하기.</p>
                     </div>
                   </div>
                 </div>

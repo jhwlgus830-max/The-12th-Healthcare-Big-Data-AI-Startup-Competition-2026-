@@ -11,6 +11,18 @@ interface EmotionReportProps {
   phq9Severity?: string;
   sessionId?: string | null;
   onNavigateToMap?: () => void;
+  lastPhq9Date?: string | null;
+  onReTakePhq9?: () => void;
+  profile?: {
+    nickname: string;
+    ageGroup: string;
+    gender: string;
+    occupation: string;
+    region: string;
+    contact: string;
+    phone: string;
+  } | null;
+  onUpdateProfile?: (updatedProfile: any) => Promise<void>;
 }
 
 export default function EmotionReport({ 
@@ -18,7 +30,11 @@ export default function EmotionReport({
   phq9Score = 14, // 기본값 설정 (테스트용)
   phq9Severity = "🟠 중등도",
   sessionId,
-  onNavigateToMap
+  onNavigateToMap,
+  lastPhq9Date = null,
+  onReTakePhq9,
+  profile,
+  onUpdateProfile
 }: EmotionReportProps) {
   const [currentTab, setCurrentTab] = useState("대화턴");
   const [reportData, setReportData] = useState<{
@@ -34,6 +50,89 @@ export default function EmotionReport({
   } | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // 마이페이지 이식 상태들
+  const [showMyPage, setShowMyPage] = useState(false);
+  const [editNickname, setEditNickname] = useState(profile?.nickname || "");
+  const [editGender, setEditGender] = useState(profile?.gender || "");
+  const [editAgeGroup, setEditAgeGroup] = useState(profile?.ageGroup || "");
+  const [editOccupation, setEditOccupation] = useState(profile?.occupation || "");
+  const [editRegion, setEditRegion] = useState(profile?.region || "");
+  const [editPhone, setEditPhone] = useState(profile?.phone || "");
+  const [editContact, setEditContact] = useState(profile?.contact || "");
+  
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+
+  // 프로필 데이터 변경 시 동기화
+  useEffect(() => {
+    if (profile) {
+      setEditNickname(profile.nickname || "");
+      setEditGender(profile.gender || "");
+      setEditAgeGroup(profile.ageGroup || "");
+      setEditOccupation(profile.occupation || "");
+      setEditRegion(profile.region || "");
+      setEditPhone(profile.phone || "");
+      setEditContact(profile.contact || "");
+    }
+  }, [profile]);
+
+  const ageGroups = ["10대 이하", "20대", "30대", "40대", "50대", "60대 이상"];
+  const genders = ["여성", "남성", "기타"];
+  const occupations = ["학생", "직장인", "자영업자", "주부", "취업준비생", "기타"];
+  const regions = [
+    "서울", "경기", "인천", "강원", "충북", "충남", 
+    "대전", "전북", "전남", "광주", "경북", "경남", 
+    "대구", "울산", "부산", "제주"
+  ];
+
+  const isEditProfileValid = editNickname.trim() !== "" && editGender !== "" && editAgeGroup !== "" && editOccupation !== "" && editRegion !== "";
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isEditProfileValid) return;
+    
+    setIsSaving(true);
+    setSaveMessage("");
+    
+    const updated = {
+      nickname: editNickname,
+      gender: editGender,
+      ageGroup: editAgeGroup,
+      occupation: editOccupation,
+      region: editRegion,
+      phone: editPhone,
+      contact: editContact
+    };
+    
+    try {
+      if (onUpdateProfile) {
+        await onUpdateProfile(updated);
+        setSaveMessage("✨ 성공적으로 저장되었습니다!");
+        setTimeout(() => {
+          setShowMyPage(false);
+          setSaveMessage("");
+        }, 1500);
+      } else {
+        throw new Error("Update callback not configured");
+      }
+    } catch (err) {
+      setSaveMessage("❌ 프로필 저장 중 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // PHQ-9 마지막 검사일 대비 경과 일수 계산
+  const getDaysSinceLastPhq9 = () => {
+    if (!lastPhq9Date) return null;
+    const lastDate = new Date(lastPhq9Date);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - lastDate.getTime());
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const diffDays = getDaysSinceLastPhq9();
 
   // PHQ-9 실제 점수 기반 등급 및 색상 매핑
   const actualScore = phq9Score;
@@ -556,24 +655,231 @@ export default function EmotionReport({
         {/* Bottom Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 mt-2 shrink-0">
           <button 
+            type="button"
+            onClick={() => {
+              if (diffDays !== null && diffDays < 14) {
+                alert(`아직 재검사 주기(2주일)가 되지 않았습니다.\n다음 검사는 ${14 - diffDays}일 후에 가능합니다.`);
+              } else if (onReTakePhq9) {
+                onReTakePhq9();
+              }
+            }}
+            className={`flex-1 font-bold py-2.5 px-4 rounded-xl transition-all flex flex-col items-center justify-center border shadow-sm ${
+              diffDays !== null && diffDays < 14
+                ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-75"
+                : "bg-white border-[#EAE5D9] text-gray-700 hover:bg-[#F8F5F0]"
+            }`}
+          >
+            <span className="text-xs flex items-center gap-1 font-bold">🦉 PHQ-9 다시 검사하기</span>
+            <span className="text-[10px] font-medium opacity-80 mt-0.5">
+              {diffDays !== null ? `마지막 검사: ${diffDays}일 전` : "마지막 검사: 이력 없음"}
+            </span>
+          </button>
+
+          <button 
             onClick={onContinueChat}
             className="flex-1 bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold py-3.5 rounded-xl shadow-[0_4px_12px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_16px_rgba(245,158,11,0.3)] transform hover:translate-y-[-1px] transition-all flex items-center justify-center gap-2"
           >
             대화 계속하기 <ArrowRight size={18} />
           </button>
+          
           {onNavigateToMap && (
             <button 
               onClick={onNavigateToMap}
               className="flex-1 bg-[#1E2D4E] hover:bg-[#2A3B5C] text-white font-bold py-3.5 rounded-xl shadow-md transform hover:translate-y-[-1px] transition-all flex items-center justify-center gap-2"
             >
-              📍 내 주변 심리상담센터 찾기
+              📍 내 주변 센터 찾기
             </button>
           )}
-          <button className="flex-1 bg-[#FDFCFB] border border-[#EAE5D9] text-[#3E3A35] font-bold py-3.5 rounded-xl hover:bg-[#FAF8F5] transition-colors flex items-center justify-center gap-2">
-            <Calendar size={18} /> 다음 재평가 예약
+
+          <button 
+            type="button"
+            onClick={() => setShowMyPage(true)}
+            className="flex-1 bg-white border border-[#EAE5D9] text-[#3E3A35] font-bold py-3.5 rounded-xl hover:bg-[#FAF8F5] transition-colors flex items-center justify-center gap-2 shadow-sm"
+          >
+            👤 마이페이지
           </button>
         </div>
       </div>
+
+      {/* My Page (Profile Edit) Modal */}
+      {showMyPage && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in text-left">
+          <div className="bg-[#FAF8F5] border border-[#EAE5D9] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl text-left transform scale-100 transition-all duration-300 max-h-[90vh] overflow-y-auto">
+            
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#EAE5D9]">
+              <div className="flex items-center gap-2">
+                <span className="w-9 h-9 bg-[#1E2D4E]/10 text-[#1E2D4E] rounded-xl flex items-center justify-center text-lg">
+                  👤
+                </span>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 leading-tight">마이페이지</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">내 인적사항 정보를 확인하고 수정할 수 있습니다.</p>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setShowMyPage(false)} 
+                className="text-gray-400 hover:text-gray-600 font-bold text-lg p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Content - Edit Form */}
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              
+              {/* 1. Nickname */}
+              <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                <label className="text-xs font-bold text-gray-700 block mb-1.5">닉네임 <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  placeholder="예: 빼미"
+                  value={editNickname}
+                  onChange={(e) => setEditNickname(e.target.value)}
+                  className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-sm text-gray-800"
+                  required
+                />
+              </div>
+
+              {/* 2. Age Group */}
+              <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                <label className="text-xs font-bold text-gray-700 block mb-1.5">연령대 <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                  {ageGroups.map((age) => (
+                    <button
+                      type="button"
+                      key={age}
+                      onClick={() => setEditAgeGroup(age)}
+                      className={`py-1.5 text-[11px] font-medium rounded-lg border transition-all ${
+                        editAgeGroup === age
+                          ? "bg-[#1E2D4E] text-white border-[#1E2D4E] shadow-sm font-bold"
+                          : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
+                      }`}
+                    >
+                      {age}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Gender */}
+              <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                <label className="text-xs font-bold text-gray-700 block mb-1.5">성별 <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {genders.map((gender) => (
+                    <button
+                      type="button"
+                      key={gender}
+                      onClick={() => setEditGender(gender)}
+                      className={`py-1.5 text-[11px] font-medium rounded-lg border transition-all ${
+                        editGender === gender
+                          ? "bg-[#1E2D4E] text-white border-[#1E2D4E] shadow-sm font-bold"
+                          : "bg-white text-gray-600 border-[#EAE5D9] hover:bg-[#F8F5F0]"
+                      }`}
+                    >
+                      {gender}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. Occupation & Region in a grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Occupation */}
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                  <label className="text-xs font-bold text-gray-700 block mb-1.5">직업 <span className="text-red-500">*</span></label>
+                  <select
+                    value={editOccupation}
+                    onChange={(e) => setEditOccupation(e.target.value)}
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-700"
+                    required
+                  >
+                    <option value="" disabled>선택해주세요</option>
+                    {occupations.map((occ) => (
+                      <option key={occ} value={occ}>{occ}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Region */}
+                <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)]">
+                  <label className="text-xs font-bold text-gray-700 block mb-1.5">거주 지역 <span className="text-red-500">*</span></label>
+                  <select
+                    value={editRegion}
+                    onChange={(e) => setEditRegion(e.target.value)}
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-700"
+                    required
+                  >
+                    <option value="" disabled>선택해주세요</option>
+                    {regions.map((reg) => (
+                      <option key={reg} value={reg}>{reg}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 5. User Phone & Emergency Contact */}
+              <div className="bg-white border border-[#EAE5D9] rounded-xl p-3.5 shadow-[0_2px_8px_rgba(139,123,93,0.01)] space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-gray-700 block mb-1">본인 연락처 <span className="text-gray-400 font-normal">(선택)</span></label>
+                  <input
+                    type="text"
+                    placeholder="예: 010-1234-5678"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-800"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-700 block mb-1">비상연락처 <span className="text-gray-400 font-normal">(선택)</span></label>
+                  <input
+                    type="text"
+                    placeholder="예: 010-1234-5678"
+                    value={editContact}
+                    onChange={(e) => setEditContact(e.target.value)}
+                    className="bg-white border border-[#EAE5D9] rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#8C7862] transition-all w-full text-xs text-gray-800"
+                  />
+                </div>
+              </div>
+
+              {/* Message display */}
+              {saveMessage && (
+                <div className={`p-2.5 rounded-lg text-xs font-bold text-center ${
+                  saveMessage.startsWith("❌") ? "bg-red-50 text-red-600 border border-red-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                }`}>
+                  {saveMessage}
+                </div>
+              )}
+
+              {/* Modal Footer Buttons */}
+              <div className="flex gap-2 pt-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowMyPage(false)}
+                  className="px-4 py-2 border border-[#EAE5D9] text-gray-600 text-xs font-bold rounded-lg hover:bg-gray-100 transition-colors"
+                  disabled={isSaving}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isEditProfileValid || isSaving}
+                  className={`px-5 py-2 text-xs font-bold rounded-lg shadow-sm transition-all text-white ${
+                    isEditProfileValid && !isSaving
+                      ? "bg-[#1E2D4E] hover:bg-[#152037]"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  {isSaving ? "저장 중..." : "수정 완료"}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

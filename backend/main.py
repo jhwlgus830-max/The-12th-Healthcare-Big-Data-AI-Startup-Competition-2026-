@@ -167,9 +167,9 @@ async def send_chat(request: ChatSendRequest):
         
     routed_persona_name = route_persona(phq9_score, p4_answers_dict)
     
-    # persona_id 매핑 (프론트엔드 호환용: 1또치, 2지우, 3클로, 4멘토, 5철수)
+    # persona_id 매핑 (프론트엔드 호환용: 1우울빼미, 2지우, 3클로, 4멘토, 5철수)
     persona_map = {
-        "🦔 고슴도치 또치": 1,
+        "🦉 우울빼미": 1,
         "🧑‍⚕️ 상담사 지우": 2,
         "🤖 AI 어시스턴트 클로": 3,
         "🧑‍⚕️ 멘토 선생님": 4,
@@ -211,7 +211,7 @@ async def send_chat(request: ChatSendRequest):
         if request.initial_persona in [1, 2, 3, 4, 5]:
             persona_id = request.initial_persona
             rev_persona_map = {
-                1: "🦔 고슴도치 또치",
+                1: "🦉 우울빼미",
                 2: "🧑‍⚕️ 상담사 지우",
                 3: "🤖 AI 어시스턴트 클로",
                 4: "🧑‍⚕️ 멘토 선생님",
@@ -225,10 +225,10 @@ async def send_chat(request: ChatSendRequest):
                 routed_persona_name = "🧑‍⚕️ 상담사 지우"
             elif phq9_score >= 5:
                 persona_id = 1
-                routed_persona_name = "🦔 고슴도치 또치"
+                routed_persona_name = "🦉 우울빼미"
             else:
                 persona_id = 1
-                routed_persona_name = "🦔 고슴도치 또치"
+                routed_persona_name = "🦉 우울빼미"
         
     is_high_risk_flag = (persona_id == 3)  # 클로 배정 시 고위험 플래그 True
         
@@ -290,64 +290,78 @@ async def send_chat(request: ChatSendRequest):
         print(f"[Dual Retriever Error] 과거 기억 로드 실패: {me_err}")
             
     # 6. GPT-4o mini 공감형 챗봇 응답 생성
-    ttochi_prompt_text = "당신은 따뜻하고 귀여운 위로를 건네는 '고슴도치 또치'입니다. 반말을 사용하며 아주 친근하고 다정하게 대답해 주세요."
+    wooulppaemi_prompt_text = "당신은 따뜻하고 귀여운 위로를 건네는 '우울빼미'입니다. 반말을 사용하며 아주 친근하고 다정하게 대답해 주세요."
     try:
-        ttochi_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "ttochi_prompt_fixed.txt")
-        if os.path.exists(ttochi_path):
-            with open(ttochi_path, "r", encoding="utf-8") as pf:
-                ttochi_prompt_text = pf.read().strip()
+      wooulppaemi_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "wooulppaemi_prompt_fixed.txt")
+      if os.path.exists(wooulppaemi_path):
+        with open(wooulppaemi_path, "r", encoding="utf-8") as pf:
+          wooulppaemi_prompt_text = pf.read().strip()
     except Exception as pf_err:
-        print(f"[Persona Prompt Loader Warning] 또치 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 우울빼미 프롬프트 파일 로드 실패: {pf_err}")
 
     mentor_prompt_text = "당신은 현명하고 따뜻하게 인지 왜곡을 짚어주는 '멘토 선생님'입니다. 생각을 전환할 수 있는 소크라테스식 질문을 던져주세요."
     try:
-        mentor_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "mentor_prompt_fixed.txt")
-        if os.path.exists(mentor_path):
-            with open(mentor_path, "r", encoding="utf-8") as pf:
-                mentor_prompt_text = pf.read().strip()
+      mentor_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "mentor_prompt_fixed.txt")
+      if os.path.exists(mentor_path):
+        with open(mentor_path, "r", encoding="utf-8") as pf:
+          mentor_prompt_text = pf.read().strip()
     except Exception as pf_err:
-        print(f"[Persona Prompt Loader Warning] 멘토 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 멘토 프롬프트 파일 로드 실패: {pf_err}")
 
     chulsoo_prompt_text = "당신은 유머러스하고 긍정적인 에너지를 불어넣는 '개그맨 철수'입니다. 활기차고 가벼운 기분 전환 이야기를 나눠주세요."
     try:
-        chulsoo_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chulsoo_prompt_fixed.txt")
-        if os.path.exists(chulsoo_path):
-            with open(chulsoo_path, "r", encoding="utf-8") as pf:
-                chulsoo_prompt_text = pf.read().strip()
+      chulsoo_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chulsoo_prompt_fixed.txt")
+      if os.path.exists(chulsoo_path):
+        with open(chulsoo_path, "r", encoding="utf-8") as pf:
+          chulsoo_prompt_text = pf.read().strip()
     except Exception as pf_err:
-        print(f"[Persona Prompt Loader Warning] 철수 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 철수 프롬프트 파일 로드 실패: {pf_err}")
 
     chloe_prompt_text = "당신은 위기 극복 안전 가이드 '클로'입니다. 침착하고 안전한 대응을 돕기 위해 차분하게 위기상담 전화를 권장해 주세요."
     try:
-        chloe_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chloe_prompt_fixed.txt")
-        if os.path.exists(chloe_path):
-            with open(chloe_path, "r", encoding="utf-8") as pf:
-                chloe_prompt_text = pf.read().strip()
+      chloe_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chloe_prompt_fixed.txt")
+      if os.path.exists(chloe_path):
+        with open(chloe_path, "r", encoding="utf-8") as pf:
+          chloe_prompt_text = pf.read().strip()
     except Exception as pf_err:
-        print(f"[Persona Prompt Loader Warning] 클로 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 클로 프롬프트 파일 로드 실패: {pf_err}")
 
     persona_prompts = {
-        1: ttochi_prompt_text,
+      1: wooulppaemi_prompt_text,
         2: "당신은 10년 차 경력의 따뜻하고 전문적인 심리 상담사 '지우'입니다. 경청과 긍정적 존중을 담아 정중한 어조로 조언해 주세요.",
         3: chloe_prompt_text,
         4: mentor_prompt_text,
         5: chulsoo_prompt_text
     }
     
-    # ── [로그인한 사용자의 거주지(region) 조회] ──
+    # ── [로그인한 사용자의 거주지(region), 성별(gender), 연령대(age_group) 조회] ──
     region = "서울"
+    gender = "선택 안함"
+    age_group = "20대"
     try:
-        survey_res = supabase.table("surveys").select("region").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
-        if survey_res.data and survey_res.data[0].get("region"):
-            region = survey_res.data[0]["region"]
+        survey_res = supabase.table("surveys").select("region", "gender", "age_group").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
+        if survey_res.data:
+            latest = survey_res.data[0]
+            if latest.get("region"):
+                region = latest["region"]
+            if latest.get("gender"):
+                gender = latest["gender"]
+            if latest.get("age_group"):
+                age_group = latest["age_group"]
         else:
             users = load_local_users()
-            if user_id in users and users[user_id].get("region"):
-                region = users[user_id]["region"]
+            if user_id in users:
+                u = users[user_id]
+                if u.get("region"):
+                    region = u["region"]
+                if u.get("gender"):
+                    gender = u["gender"]
+                if u.get("age_group"):
+                    age_group = u["age_group"]
     except Exception as reg_err:
-        print(f"[Backend Chat Error] Failed to resolve user region for chat. Error: {reg_err}")
+        print(f"[Backend Chat Error] Failed to resolve user profile for chat. Error: {reg_err}")
 
-    print(f"[DEBUG MAIN] Calling get_chatbot_response with persona_id={persona_id}, region={region}")
+    print(f"[DEBUG MAIN] Calling get_chatbot_response with persona_id={persona_id}, region={region}, gender={gender}, age_group={age_group}")
     try:
         bot_reply = get_chatbot_response(
             user_text=content,
@@ -356,7 +370,9 @@ async def send_chat(request: ChatSendRequest):
             persona_system=persona_prompts.get(persona_id, ""),
             persona_id=persona_id,
             past_memories=past_memories,
-            region=region
+            region=region,
+            gender=gender,
+            age_group=age_group
         )
     except Exception as e:
         bot_reply = f"감정을 깊이 있게 이해하는 도중 잠시 지연이 발생했어요. 조금만 천천히 이야기해 주시겠어요? (오류: {e})"
@@ -375,7 +391,7 @@ async def send_chat(request: ChatSendRequest):
     user_msg_data = user_msg.data[0]
     
     # 8. 봇 메시지 DB 저장 (Supabase)
-    bot_icon = "🦔" if persona_id == 1 else "👩" if persona_id == 2 else "🤖" if persona_id == 3 else "🎓" if persona_id == 4 else "😄"
+    bot_icon = "🦉" if persona_id == 1 else "👩" if persona_id == 2 else "🤖" if persona_id == 3 else "🎓" if persona_id == 4 else "😄"
     bot_msg = supabase.table("messages").insert({
         "session_id": session_id,
         "role": "assistant",
@@ -521,6 +537,9 @@ async def save_survey(request: SurveySaveRequest):
         severity = "경증"
         
     try:
+        import datetime
+        now_str = datetime.datetime.now().isoformat()
+        
         insert_data = {
             "user_id": request.user_id,
             "phq9_score": phq9_score,
@@ -539,27 +558,6 @@ async def save_survey(request: SurveySaveRequest):
             insert_data["region"] = request.region
         if request.contact:
             insert_data["contact"] = request.contact
-
-        # Synchronize local fallback first to guarantee it gets saved locally
-        try:
-            users = load_local_users()
-            if request.user_id in users:
-                users[request.user_id].update({
-                    "gender": request.gender,
-                    "age_group": request.age_group,
-                    "occupation": request.occupation,
-                    "region": request.region,
-                    "contact": request.contact,
-                    "emergency_contact": request.contact,
-                    "phone": request.phone,
-                    "phq9_score": phq9_score,
-                    "phq9_answers": phq9_answers,
-                    "p4_answers": p4_answers,
-                    "service_agreement": True
-                })
-                save_local_users(users)
-        except Exception as e_sync:
-            print(f"[Fallback Alert] Local user sync error during survey save: {e_sync}")
 
         # Safe insert to Supabase: try inserting with phone, fallback if column is missing
         res = None
@@ -580,8 +578,33 @@ async def save_survey(request: SurveySaveRequest):
             "id": "offline_survey_record",
             "user_id": request.user_id,
             "phq9_score": phq9_score,
-            "severity": severity
+            "severity": severity,
+            "created_at": now_str
         }
+        
+        last_phq9_date = record_data.get("created_at", now_str)
+
+        # Synchronize local fallback first to guarantee it gets saved locally
+        try:
+            users = load_local_users()
+            if request.user_id in users:
+                users[request.user_id].update({
+                    "gender": request.gender,
+                    "age_group": request.age_group,
+                    "occupation": request.occupation,
+                    "region": request.region,
+                    "contact": request.contact,
+                    "emergency_contact": request.contact,
+                    "phone": request.phone,
+                    "phq9_score": phq9_score,
+                    "phq9_answers": phq9_answers,
+                    "p4_answers": p4_answers,
+                    "service_agreement": True,
+                    "last_phq9_date": last_phq9_date
+                })
+                save_local_users(users)
+        except Exception as e_sync:
+            print(f"[Fallback Alert] Local user sync error during survey save: {e_sync}")
             
         return {
             "status": "success",
@@ -589,7 +612,8 @@ async def save_survey(request: SurveySaveRequest):
                 "phq9_score": phq9_score,
                 "is_p4_high_risk": is_p4_high_risk,
                 "severity": severity,
-                "record": record_data
+                "record": record_data,
+                "last_phq9_date": last_phq9_date
             }
         }
     except Exception as e:
@@ -728,7 +752,8 @@ def signup(request: SignupRequest):
             return {
                 "user_id": user_id,
                 "email": request.email,
-                "nickname": request.nickname
+                "nickname": request.nickname,
+                "last_phq9_date": None
             }
     except Exception as e:
         print(f"[Fallback Alert] custom_users table not found or query failed. Error: {e}")
@@ -749,11 +774,13 @@ def signup(request: SignupRequest):
         return {
             "user_id": user_id,
             "email": request.email,
-            "nickname": request.nickname
+            "nickname": request.nickname,
+            "last_phq9_date": None
         }
 
 @app.post("/api/auth/login")
 def login(request: LoginRequest):
+    last_phq9_date = None
     try:
         res = supabase.table("custom_users").select("*").eq("email", request.email).execute()
         if res.data:
@@ -772,6 +799,7 @@ def login(request: LoginRequest):
                     survey_res = supabase.table("surveys").select("*").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
                     if survey_res.data:
                         latest = survey_res.data[0]
+                        last_phq9_date = latest.get("created_at")
                         if latest.get("region"):
                             region = latest["region"]
                         gender = latest.get("gender")
@@ -789,6 +817,8 @@ def login(request: LoginRequest):
                     users = load_local_users()
                     if user_id in users:
                         u = users[user_id]
+                        if not last_phq9_date and "last_phq9_date" in u:
+                            last_phq9_date = u.get("last_phq9_date")
                         if not has_profile and "gender" in u and "age_group" in u and "occupation" in u:
                             has_profile = True
                             gender = u.get("gender")
@@ -806,6 +836,7 @@ def login(request: LoginRequest):
                     "nickname": user["nickname"],
                     "region": region,
                     "has_profile": has_profile,
+                    "last_phq9_date": last_phq9_date,
                     "profile": {
                         "nickname": user["nickname"],
                         "gender": gender,
@@ -832,6 +863,7 @@ def login(request: LoginRequest):
                     "nickname": u["nickname"],
                     "region": u.get("region", "서울"),
                     "has_profile": has_profile,
+                    "last_phq9_date": u.get("last_phq9_date"),
                     "profile": {
                         "nickname": u["nickname"],
                         "gender": u.get("gender"),

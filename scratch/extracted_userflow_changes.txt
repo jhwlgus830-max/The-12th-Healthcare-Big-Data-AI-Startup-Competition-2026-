@@ -1,0 +1,10542 @@
+Step: 771
+Description: "Change the label of Mentor from CBT to Socratic Questioning in UserFlow.tsx to align with the theoretical distinction."
+"          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded shadow ${currentPersona === 4 ? \"bg-[#6096C8] text-white\" : \"bg-white text-gray-800\"}`}>4. 멘토 (소크라테스식 질문)</button>\n          <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded shadow ${currentPersona === 5 ? \"bg-[#6096C8] text-white\" : \"bg-white text-gray-800\"}`}>5. 철수 (행동)</button>\n        </div>\n\n        {/* Banner */}\n        <div className={`p-4 border-b border-gray-100 flex justify-between items-center ${getBannerStyle()}`}>\n          <div className=\"flex flex-col gap-1\">\n            <h2 className=\"text-lg font-bold flex items-center gap-2\">\n              {currentPersona === 1 && \"🦔 고슴도치 또치와 대화 중\"}\n              {currentPersona === 2 && \"👩 상담사 지우와 대화 중\"}\n              {currentPersona === 3 && \"🚨 지금은 앱보다 사람과 직접 통화하는 것이 더 안전해요.\"}\n              {currentPersona === 4 && \"🎓 멘토 선생님과 대화 중\"}\n              {currentPersona === 5 && \"😄 개그맨 철수와 대화 중\"}\n            </h2>\n            <p className=\"text-xs opacity-80\">\n              {currentPersona === 1 && \"경도 · 일상 케어 모드\"}\n              {currentPersona === 2 && \"중등도 · 전문 상담 모드\"}\n              {currentPersona === 3 && \"혼자 감당하지 않아도 됩니다 · 위기 대응 모드\"}\n              {currentPersona === 4 && \"소크라테스식 질문을 통한 인지 재구조화 모드\"}\n              {currentPersona === 5 && \"행동 활성화 (유머) 모드\"}\n            </p>"
+--------------------------------------------------
+Step: 1618
+Description: "Add 'onNavigateToMap' callback prop and insert the '내 주변 센터 찾기' button in the chat banner."
+"export default function UserFlow({ initialPersona = 1, onEndChat, userId = \"user-003\", phq9Score = 0, phq9Answers = null, p4Answers = null, onNavigateToMap }: { initialPersona?: 1 | 2 | 3 | 4 | 5, onEndChat?: (sessionId: string | null) => void, userId?: string, phq9Score?: number, phq9Answers?: number[] | null, p4Answers?: string[] | null, onNavigateToMap?: () => void }) {\n  const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);\n  const [input, setInput] = useState(\"\");\n  const [score, setScore] = useState(45);\n  const [level, setLevel] = useState(\"🟠 중증\");\n  const [showWarningPopup, setShowWarningPopup] = useState(false);\n  const [sessionId, setSessionId] = useState<string | null>(null);\n  const [isLoading, setIsLoading] = useState(false);\n  \n  const scoreHistory = [\n    { turn: 1, score: 20 },\n    { turn: 2, score: 35 },\n    { turn: 3, score: 45 }\n  ];\n\n  const [messages, setMessages] = useState(userPersonaMessages[initialPersona]);\n\n  const handlePersonaChange = (p: 1 | 2 | 3 | 4 | 5) => {\n    setCurrentPersona(p);\n    setMessages(userPersonaMessages[p]);\n  };\n\n  const handleSend = async (e: React.FormEvent) => {\n    e.preventDefault();\n    if (!input.trim() || isLoading) return;\n    \n    const userText = input.trim();\n    setInput(\"\");\n    setIsLoading(true);\n    \n    const riskKeywords = [\"끝내고 싶\", \"죽고 싶\", \"자살\", \"자해\", \"수면제\", \"사라지고\", \"약 먹고\", \"죽어버\"];\n    const isRiskDetected = riskKeywords.some(kw => userText.includes(kw));\n\n    setMessages(prev => [...prev, { role: \"user\", content: userText }]);\n\n    try {\n      const res = await fetch(\"http://localhost:8000/api/chat/send\", {\n        method: \"POST\",\n        headers: {\n          \"Content-Type\": \"application/json\"\n        },\n        body: JSON.stringify({\n          session_id: sessionId,\n          user_id: userId,\n          content: userText,\n          initial_persona: currentPersona,\n          p
+<truncated 9635 bytes>
+--------------------------------------------------
+Step: 2548
+Description: "Implement My Page profile modification modal in UserFlow and update properties signature to support optional props from app/page.tsx."
+  Chunk 0:
+[
+  Chunk 1:
+{
+  Chunk 2:
+"
+  Chunk 3:
+A
+  Chunk 4:
+l
+  Chunk 5:
+l
+  Chunk 6:
+o
+  Chunk 7:
+w
+  Chunk 8:
+M
+  Chunk 9:
+u
+  Chunk 10:
+l
+  Chunk 11:
+t
+  Chunk 12:
+i
+  Chunk 13:
+p
+  Chunk 14:
+l
+  Chunk 15:
+e
+  Chunk 16:
+"
+  Chunk 17:
+:
+  Chunk 18:
+f
+  Chunk 19:
+a
+  Chunk 20:
+l
+  Chunk 21:
+s
+  Chunk 22:
+e
+  Chunk 23:
+,
+  Chunk 24:
+"
+  Chunk 25:
+E
+  Chunk 26:
+n
+  Chunk 27:
+d
+  Chunk 28:
+L
+  Chunk 29:
+i
+  Chunk 30:
+n
+  Chunk 31:
+e
+  Chunk 32:
+"
+  Chunk 33:
+:
+  Chunk 34:
+1
+  Chunk 35:
+6
+  Chunk 36:
+,
+  Chunk 37:
+"
+  Chunk 38:
+R
+  Chunk 39:
+e
+  Chunk 40:
+p
+  Chunk 41:
+l
+  Chunk 42:
+a
+  Chunk 43:
+c
+  Chunk 44:
+e
+  Chunk 45:
+m
+  Chunk 46:
+e
+  Chunk 47:
+n
+  Chunk 48:
+t
+  Chunk 49:
+C
+  Chunk 50:
+o
+  Chunk 51:
+n
+  Chunk 52:
+t
+  Chunk 53:
+e
+  Chunk 54:
+n
+  Chunk 55:
+t
+  Chunk 56:
+"
+  Chunk 57:
+:
+  Chunk 58:
+"
+  Chunk 59:
+i
+  Chunk 60:
+m
+  Chunk 61:
+p
+  Chunk 62:
+o
+  Chunk 63:
+r
+  Chunk 64:
+t
+  Chunk 65:
+ 
+  Chunk 66:
+{
+  Chunk 67:
+ 
+  Chunk 68:
+u
+  Chunk 69:
+s
+  Chunk 70:
+e
+  Chunk 71:
+S
+  Chunk 72:
+t
+  Chunk 73:
+a
+  Chunk 74:
+t
+  Chunk 75:
+e
+  Chunk 76:
+,
+  Chunk 77:
+ 
+  Chunk 78:
+u
+  Chunk 79:
+s
+  Chunk 80:
+e
+  Chunk 81:
+E
+  Chunk 82:
+f
+  Chunk 83:
+f
+  Chunk 84:
+e
+  Chunk 85:
+c
+  Chunk 86:
+t
+  Chunk 87:
+ 
+  Chunk 88:
+}
+  Chunk 89:
+ 
+  Chunk 90:
+f
+  Chunk 91:
+r
+  Chunk 92:
+o
+  Chunk 93:
+m
+  Chunk 94:
+ 
+  Chunk 95:
+\
+  Chunk 96:
+"
+  Chunk 97:
+r
+  Chunk 98:
+e
+  Chunk 99:
+a
+  Chunk 100:
+c
+  Chunk 101:
+t
+  Chunk 102:
+\
+  Chunk 103:
+"
+  Chunk 104:
+;
+  Chunk 105:
+\
+  Chunk 106:
+n
+  Chunk 107:
+i
+  Chunk 108:
+m
+  Chunk 109:
+p
+  Chunk 110:
+o
+  Chunk 111:
+r
+  Chunk 112:
+t
+  Chunk 113:
+ 
+  Chunk 114:
+{
+  Chunk 115:
+ 
+  Chunk 116:
+L
+  Chunk 117:
+i
+  Chunk 118:
+n
+  Chunk 119:
+e
+  Chunk 120:
+C
+  Chunk 121:
+h
+  Chunk 122:
+a
+  Chunk 123:
+r
+  Chunk 124:
+t
+  Chunk 125:
+,
+  Chunk 126:
+ 
+  Chunk 127:
+L
+  Chunk 128:
+i
+  Chunk 129:
+n
+  Chunk 130:
+e
+  Chunk 131:
+,
+  Chunk 132:
+ 
+  Chunk 133:
+X
+  Chunk 134:
+A
+  Chunk 135:
+x
+  Chunk 136:
+i
+  Chunk 137:
+s
+  Chunk 138:
+,
+  Chunk 139:
+ 
+  Chunk 140:
+Y
+  Chunk 141:
+A
+  Chunk 142:
+x
+  Chunk 143:
+i
+  Chunk 144:
+s
+  Chunk 145:
+,
+  Chunk 146:
+ 
+  Chunk 147:
+C
+  Chunk 148:
+a
+  Chunk 149:
+r
+  Chunk 150:
+t
+  Chunk 151:
+e
+  Chunk 152:
+s
+  Chunk 153:
+i
+  Chunk 154:
+a
+  Chunk 155:
+n
+  Chunk 156:
+G
+  Chunk 157:
+r
+  Chunk 158:
+i
+  Chunk 159:
+d
+  Chunk 160:
+,
+  Chunk 161:
+ 
+  Chunk 162:
+T
+  Chunk 163:
+o
+  Chunk 164:
+o
+  Chunk 165:
+l
+  Chunk 166:
+t
+  Chunk 167:
+i
+  Chunk 168:
+p
+  Chunk 169:
+,
+  Chunk 170:
+ 
+  Chunk 171:
+R
+  Chunk 172:
+e
+  Chunk 173:
+s
+  Chunk 174:
+p
+  Chunk 175:
+o
+  Chunk 176:
+n
+  Chunk 177:
+s
+  Chunk 178:
+i
+  Chunk 179:
+v
+  Chunk 180:
+e
+  Chunk 181:
+C
+  Chunk 182:
+o
+  Chunk 183:
+n
+  Chunk 184:
+t
+  Chunk 185:
+a
+  Chunk 186:
+i
+  Chunk 187:
+n
+  Chunk 188:
+e
+  Chunk 189:
+r
+  Chunk 190:
+ 
+  Chunk 191:
+}
+  Chunk 192:
+ 
+  Chunk 193:
+f
+  Chunk 194:
+r
+  Chunk 195:
+o
+  Chunk 196:
+m
+  Chunk 197:
+ 
+  Chunk 198:
+\
+  Chunk 199:
+"
+  Chunk 200:
+r
+  Chunk 201:
+e
+  Chunk 202:
+c
+  Chunk 203:
+h
+  Chunk 204:
+a
+  Chunk 205:
+r
+  Chunk 206:
+t
+  Chunk 207:
+s
+  Chunk 208:
+\
+  Chunk 209:
+"
+  Chunk 210:
+;
+  Chunk 211:
+\
+  Chunk 212:
+n
+  Chunk 213:
+i
+  Chunk 214:
+m
+  Chunk 215:
+p
+  Chunk 216:
+o
+  Chunk 217:
+r
+  Chunk 218:
+t
+  Chunk 219:
+ 
+  Chunk 220:
+{
+  Chunk 221:
+ 
+  Chunk 222:
+S
+  Chunk 223:
+e
+  Chunk 224:
+n
+  Chunk 225:
+d
+  Chunk 226:
+,
+  Chunk 227:
+ 
+  Chunk 228:
+R
+  Chunk 229:
+o
+  Chunk 230:
+t
+  Chunk 231:
+a
+  Chunk 232:
+t
+  Chunk 233:
+e
+  Chunk 234:
+C
+  Chunk 235:
+c
+  Chunk 236:
+w
+  Chunk 237:
+,
+  Chunk 238:
+ 
+  Chunk 239:
+A
+  Chunk 240:
+l
+  Chunk 241:
+e
+  Chunk 242:
+r
+  Chunk 243:
+t
+  Chunk 244:
+T
+  Chunk 245:
+r
+  Chunk 246:
+i
+  Chunk 247:
+a
+  Chunk 248:
+n
+  Chunk 249:
+g
+  Chunk 250:
+l
+  Chunk 251:
+e
+  Chunk 252:
+,
+  Chunk 253:
+ 
+  Chunk 254:
+I
+  Chunk 255:
+n
+  Chunk 256:
+f
+  Chunk 257:
+o
+  Chunk 258:
+ 
+  Chunk 259:
+}
+  Chunk 260:
+ 
+  Chunk 261:
+f
+  Chunk 262:
+r
+  Chunk 263:
+o
+  Chunk 264:
+m
+  Chunk 265:
+ 
+  Chunk 266:
+\
+  Chunk 267:
+"
+  Chunk 268:
+l
+  Chunk 269:
+u
+  Chunk 270:
+c
+  Chunk 271:
+i
+  Chunk 272:
+d
+  Chunk 273:
+e
+  Chunk 274:
+-
+  Chunk 275:
+r
+  Chunk 276:
+e
+  Chunk 277:
+a
+  Chunk 278:
+c
+  Chunk 279:
+t
+  Chunk 280:
+\
+  Chunk 281:
+"
+  Chunk 282:
+;
+  Chunk 283:
+\
+  Chunk 284:
+n
+  Chunk 285:
+i
+  Chunk 286:
+m
+  Chunk 287:
+p
+  Chunk 288:
+o
+  Chunk 289:
+r
+  Chunk 290:
+t
+  Chunk 291:
+ 
+  Chunk 292:
+{
+  Chunk 293:
+ 
+  Chunk 294:
+u
+  Chunk 295:
+s
+  Chunk 296:
+e
+  Chunk 297:
+r
+  Chunk 298:
+P
+  Chunk 299:
+e
+  Chunk 300:
+r
+  Chunk 301:
+s
+  Chunk 302:
+o
+  Chunk 303:
+n
+  Chunk 304:
+a
+  Chunk 305:
+M
+  Chunk 306:
+e
+  Chunk 307:
+s
+  Chunk 308:
+s
+  Chunk 309:
+a
+  Chunk 310:
+g
+  Chunk 311:
+e
+  Chunk 312:
+s
+  Chunk 313:
+,
+  Chunk 314:
+ 
+  Chunk 315:
+c
+  Chunk 316:
+h
+  Chunk 317:
+e
+  Chunk 318:
+c
+  Chunk 319:
+k
+  Chunk 320:
+P
+  Chunk 321:
+e
+  Chunk 322:
+r
+  Chunk 323:
+s
+  Chunk 324:
+o
+  Chunk 325:
+n
+  Chunk 326:
+a
+  Chunk 327:
+S
+  Chunk 328:
+w
+  Chunk 329:
+i
+  Chunk 330:
+t
+  Chunk 331:
+c
+  Chunk 332:
+h
+  Chunk 333:
+T
+  Chunk 334:
+r
+  Chunk 335:
+i
+  Chunk 336:
+g
+  Chunk 337:
+g
+  Chunk 338:
+e
+  Chunk 339:
+r
+  Chunk 340:
+ 
+  Chunk 341:
+}
+  Chunk 342:
+ 
+  Chunk 343:
+f
+  Chunk 344:
+r
+  Chunk 345:
+o
+  Chunk 346:
+m
+  Chunk 347:
+ 
+  Chunk 348:
+\
+  Chunk 349:
+"
+  Chunk 350:
+@
+  Chunk 351:
+/
+  Chunk 352:
+l
+  Chunk 353:
+i
+  Chunk 354:
+b
+  Chunk 355:
+/
+  Chunk 356:
+m
+  Chunk 357:
+o
+  Chunk 358:
+c
+  Chunk 359:
+k
+  Chunk 360:
+D
+  Chunk 361:
+a
+  Chunk 362:
+t
+  Chunk 363:
+a
+  Chunk 364:
+\
+  Chunk 365:
+"
+  Chunk 366:
+;
+  Chunk 367:
+\
+  Chunk 368:
+n
+  Chunk 369:
+\
+  Chunk 370:
+n
+  Chunk 371:
+i
+  Chunk 372:
+n
+  Chunk 373:
+t
+  Chunk 374:
+e
+  Chunk 375:
+r
+  Chunk 376:
+f
+  Chunk 377:
+a
+  Chunk 378:
+c
+  Chunk 379:
+e
+  Chunk 380:
+ 
+  Chunk 381:
+U
+  Chunk 382:
+s
+  Chunk 383:
+e
+  Chunk 384:
+r
+  Chunk 385:
+P
+  Chunk 386:
+r
+  Chunk 387:
+o
+  Chunk 388:
+f
+  Chunk 389:
+i
+  Chunk 390:
+l
+  Chunk 391:
+e
+  Chunk 392:
+ 
+  Chunk 393:
+{
+  Chunk 394:
+\
+  Chunk 395:
+n
+  Chunk 396:
+ 
+  Chunk 397:
+ 
+  Chunk 398:
+n
+  Chunk 399:
+i
+  Chunk 400:
+c
+  Chunk 401:
+k
+  Chunk 402:
+n
+  Chunk 403:
+a
+  Chunk 404:
+m
+  Chunk 405:
+e
+  Chunk 406:
+:
+  Chunk 407:
+ 
+  Chunk 408:
+s
+  Chunk 409:
+t
+  Chunk 410:
+r
+  Chunk 411:
+i
+  Chunk 412:
+n
+  Chunk 413:
+g
+  Chunk 414:
+;
+  Chunk 415:
+\
+  Chunk 416:
+n
+  Chunk 417:
+ 
+  Chunk 418:
+ 
+  Chunk 419:
+a
+  Chunk 420:
+g
+  Chunk 421:
+e
+  Chunk 422:
+G
+  Chunk 423:
+r
+  Chunk 424:
+o
+  Chunk 425:
+u
+  Chunk 426:
+p
+  Chunk 427:
+:
+  Chunk 428:
+ 
+  Chunk 429:
+s
+  Chunk 430:
+t
+  Chunk 431:
+r
+  Chunk 432:
+i
+  Chunk 433:
+n
+  Chunk 434:
+g
+  Chunk 435:
+;
+  Chunk 436:
+\
+  Chunk 437:
+n
+  Chunk 438:
+ 
+  Chunk 439:
+ 
+  Chunk 440:
+g
+  Chunk 441:
+e
+  Chunk 442:
+n
+  Chunk 443:
+d
+  Chunk 444:
+e
+  Chunk 445:
+r
+  Chunk 446:
+:
+  Chunk 447:
+ 
+  Chunk 448:
+s
+  Chunk 449:
+t
+  Chunk 450:
+r
+  Chunk 451:
+i
+  Chunk 452:
+n
+  Chunk 453:
+g
+  Chunk 454:
+;
+  Chunk 455:
+\
+  Chunk 456:
+n
+  Chunk 457:
+ 
+  Chunk 458:
+ 
+  Chunk 459:
+o
+  Chunk 460:
+c
+  Chunk 461:
+c
+  Chunk 462:
+u
+  Chunk 463:
+p
+  Chunk 464:
+a
+  Chunk 465:
+t
+  Chunk 466:
+i
+  Chunk 467:
+o
+  Chunk 468:
+n
+  Chunk 469:
+:
+  Chunk 470:
+ 
+  Chunk 471:
+s
+  Chunk 472:
+t
+  Chunk 473:
+r
+  Chunk 474:
+i
+  Chunk 475:
+n
+  Chunk 476:
+g
+  Chunk 477:
+;
+  Chunk 478:
+\
+  Chunk 479:
+n
+  Chunk 480:
+ 
+  Chunk 481:
+ 
+  Chunk 482:
+r
+  Chunk 483:
+e
+  Chunk 484:
+g
+  Chunk 485:
+i
+  Chunk 486:
+o
+  Chunk 487:
+n
+  Chunk 488:
+:
+  Chunk 489:
+ 
+  Chunk 490:
+s
+  Chunk 491:
+t
+  Chunk 492:
+r
+  Chunk 493:
+i
+  Chunk 494:
+n
+  Chunk 495:
+g
+  Chunk 496:
+;
+  Chunk 497:
+\
+  Chunk 498:
+n
+  Chunk 499:
+ 
+  Chunk 500:
+ 
+  Chunk 501:
+c
+  Chunk 502:
+o
+  Chunk 503:
+n
+  Chunk 504:
+t
+  Chunk 505:
+a
+  Chunk 506:
+c
+  Chunk 507:
+t
+  Chunk 508:
+:
+  Chunk 509:
+ 
+  Chunk 510:
+s
+  Chunk 511:
+t
+  Chunk 512:
+r
+  Chunk 513:
+i
+  Chunk 514:
+n
+  Chunk 515:
+g
+  Chunk 516:
+;
+  Chunk 517:
+\
+  Chunk 518:
+n
+  Chunk 519:
+ 
+  Chunk 520:
+ 
+  Chunk 521:
+p
+  Chunk 522:
+h
+  Chunk 523:
+o
+  Chunk 524:
+n
+  Chunk 525:
+e
+  Chunk 526:
+?
+  Chunk 527:
+:
+  Chunk 528:
+ 
+  Chunk 529:
+s
+  Chunk 530:
+t
+  Chunk 531:
+r
+  Chunk 532:
+i
+  Chunk 533:
+n
+  Chunk 534:
+g
+  Chunk 535:
+;
+  Chunk 536:
+\
+  Chunk 537:
+n
+  Chunk 538:
+}
+  Chunk 539:
+\
+  Chunk 540:
+n
+  Chunk 541:
+\
+  Chunk 542:
+n
+  Chunk 543:
+e
+  Chunk 544:
+x
+  Chunk 545:
+p
+  Chunk 546:
+o
+  Chunk 547:
+r
+  Chunk 548:
+t
+  Chunk 549:
+ 
+  Chunk 550:
+d
+  Chunk 551:
+e
+  Chunk 552:
+f
+  Chunk 553:
+a
+  Chunk 554:
+u
+  Chunk 555:
+l
+  Chunk 556:
+t
+  Chunk 557:
+ 
+  Chunk 558:
+f
+  Chunk 559:
+u
+  Chunk 560:
+n
+  Chunk 561:
+c
+  Chunk 562:
+t
+  Chunk 563:
+i
+  Chunk 564:
+o
+  Chunk 565:
+n
+  Chunk 566:
+ 
+  Chunk 567:
+U
+  Chunk 568:
+s
+  Chunk 569:
+e
+  Chunk 570:
+r
+  Chunk 571:
+F
+  Chunk 572:
+l
+  Chunk 573:
+o
+  Chunk 574:
+w
+  Chunk 575:
+(
+  Chunk 576:
+{
+  Chunk 577:
+ 
+  Chunk 578:
+\
+  Chunk 579:
+n
+  Chunk 580:
+ 
+  Chunk 581:
+ 
+  Chunk 582:
+i
+  Chunk 583:
+n
+  Chunk 584:
+i
+  Chunk 585:
+t
+  Chunk 586:
+i
+  Chunk 587:
+a
+  Chunk 588:
+l
+  Chunk 589:
+P
+  Chunk 590:
+e
+  Chunk 591:
+r
+  Chunk 592:
+s
+  Chunk 593:
+o
+  Chunk 594:
+n
+  Chunk 595:
+a
+  Chunk 596:
+ 
+  Chunk 597:
+=
+  Chunk 598:
+ 
+  Chunk 599:
+1
+  Chunk 600:
+,
+  Chunk 601:
+ 
+  Chunk 602:
+\
+  Chunk 603:
+n
+  Chunk 604:
+ 
+  Chunk 605:
+ 
+  Chunk 606:
+o
+  Chunk 607:
+n
+  Chunk 608:
+E
+  Chunk 609:
+n
+  Chunk 610:
+d
+  Chunk 611:
+C
+  Chunk 612:
+h
+  Chunk 613:
+a
+  Chunk 614:
+t
+  Chunk 615:
+,
+  Chunk 616:
+ 
+  Chunk 617:
+\
+  Chunk 618:
+n
+  Chunk 619:
+ 
+  Chunk 620:
+ 
+  Chunk 621:
+u
+  Chunk 622:
+s
+  Chunk 623:
+e
+  Chunk 624:
+r
+  Chunk 625:
+I
+  Chunk 626:
+d
+  Chunk 627:
+ 
+  Chunk 628:
+=
+  Chunk 629:
+ 
+  Chunk 630:
+\
+  Chunk 631:
+"
+  Chunk 632:
+u
+  Chunk 633:
+s
+  Chunk 634:
+e
+  Chunk 635:
+r
+  Chunk 636:
+-
+  Chunk 637:
+0
+  Chunk 638:
+0
+  Chunk 639:
+3
+  Chunk 640:
+\
+  Chunk 641:
+"
+  Chunk 642:
+,
+  Chunk 643:
+ 
+  Chunk 644:
+\
+  Chunk 645:
+n
+  Chunk 646:
+ 
+  Chunk 647:
+ 
+  Chunk 648:
+p
+  Chunk 649:
+h
+  Chunk 650:
+q
+  Chunk 651:
+9
+  Chunk 652:
+S
+  Chunk 653:
+c
+  Chunk 654:
+o
+  Chunk 655:
+r
+  Chunk 656:
+e
+  Chunk 657:
+ 
+  Chunk 658:
+=
+  Chunk 659:
+ 
+  Chunk 660:
+0
+  Chunk 661:
+,
+  Chunk 662:
+ 
+  Chunk 663:
+\
+  Chunk 664:
+n
+  Chunk 665:
+ 
+  Chunk 666:
+ 
+  Chunk 667:
+p
+  Chunk 668:
+h
+  Chunk 669:
+q
+  Chunk 670:
+9
+  Chunk 671:
+A
+  Chunk 672:
+n
+  Chunk 673:
+s
+  Chunk 674:
+w
+  Chunk 675:
+e
+  Chunk 676:
+r
+  Chunk 677:
+s
+  Chunk 678:
+ 
+  Chunk 679:
+=
+  Chunk 680:
+ 
+  Chunk 681:
+n
+  Chunk 682:
+u
+  Chunk 683:
+l
+  Chunk 684:
+l
+  Chunk 685:
+,
+  Chunk 686:
+ 
+  Chunk 687:
+\
+  Chunk 688:
+n
+  Chunk 689:
+ 
+  Chunk 690:
+ 
+  Chunk 691:
+p
+  Chunk 692:
+4
+  Chunk 693:
+A
+  Chunk 694:
+n
+  Chunk 695:
+s
+  Chunk 696:
+w
+  Chunk 697:
+e
+  Chunk 698:
+r
+  Chunk 699:
+s
+  Chunk 700:
+ 
+  Chunk 701:
+=
+  Chunk 702:
+ 
+  Chunk 703:
+n
+  Chunk 704:
+u
+  Chunk 705:
+l
+  Chunk 706:
+l
+  Chunk 707:
+,
+  Chunk 708:
+ 
+  Chunk 709:
+\
+  Chunk 710:
+n
+  Chunk 711:
+ 
+  Chunk 712:
+ 
+  Chunk 713:
+o
+  Chunk 714:
+n
+  Chunk 715:
+N
+  Chunk 716:
+a
+  Chunk 717:
+v
+  Chunk 718:
+i
+  Chunk 719:
+g
+  Chunk 720:
+a
+  Chunk 721:
+t
+  Chunk 722:
+e
+  Chunk 723:
+T
+  Chunk 724:
+o
+  Chunk 725:
+M
+  Chunk 726:
+a
+  Chunk 727:
+p
+  Chunk 728:
+,
+  Chunk 729:
+\
+  Chunk 730:
+n
+  Chunk 731:
+ 
+  Chunk 732:
+ 
+  Chunk 733:
+p
+  Chunk 734:
+r
+  Chunk 735:
+o
+  Chunk 736:
+f
+  Chunk 737:
+i
+  Chunk 738:
+l
+  Chunk 739:
+e
+  Chunk 740:
+,
+  Chunk 741:
+\
+  Chunk 742:
+n
+  Chunk 743:
+ 
+  Chunk 744:
+ 
+  Chunk 745:
+o
+  Chunk 746:
+n
+  Chunk 747:
+U
+  Chunk 748:
+p
+  Chunk 749:
+d
+  Chunk 750:
+a
+  Chunk 751:
+t
+  Chunk 752:
+e
+  Chunk 753:
+P
+  Chunk 754:
+r
+  Chunk 755:
+o
+  Chunk 756:
+f
+  Chunk 757:
+i
+  Chunk 758:
+l
+  Chunk 759:
+e
+  Chunk 760:
+ 
+  Chunk 761:
+\
+  Chunk 762:
+n
+  Chunk 763:
+}
+  Chunk 764:
+:
+  Chunk 765:
+ 
+  Chunk 766:
+{
+  Chunk 767:
+ 
+  Chunk 768:
+\
+  Chunk 769:
+n
+  Chunk 770:
+ 
+  Chunk 771:
+ 
+  Chunk 772:
+i
+  Chunk 773:
+n
+  Chunk 774:
+i
+  Chunk 775:
+t
+  Chunk 776:
+i
+  Chunk 777:
+a
+  Chunk 778:
+l
+  Chunk 779:
+P
+  Chunk 780:
+e
+  Chunk 781:
+r
+  Chunk 782:
+s
+  Chunk 783:
+o
+  Chunk 784:
+n
+  Chunk 785:
+a
+  Chunk 786:
+?
+  Chunk 787:
+:
+  Chunk 788:
+ 
+  Chunk 789:
+1
+  Chunk 790:
+ 
+  Chunk 791:
+|
+  Chunk 792:
+ 
+  Chunk 793:
+2
+  Chunk 794:
+ 
+  Chunk 795:
+|
+  Chunk 796:
+ 
+  Chunk 797:
+3
+  Chunk 798:
+ 
+  Chunk 799:
+|
+  Chunk 800:
+ 
+  Chunk 801:
+4
+  Chunk 802:
+ 
+  Chunk 803:
+|
+  Chunk 804:
+ 
+  Chunk 805:
+5
+  Chunk 806:
+,
+  Chunk 807:
+ 
+  Chunk 808:
+\
+  Chunk 809:
+n
+  Chunk 810:
+ 
+  Chunk 811:
+ 
+  Chunk 812:
+o
+  Chunk 813:
+n
+  Chunk 814:
+E
+  Chunk 815:
+n
+  Chunk 816:
+d
+  Chunk 817:
+C
+  Chunk 818:
+h
+  Chunk 819:
+a
+  Chunk 820:
+t
+  Chunk 821:
+?
+  Chunk 822:
+:
+  Chunk 823:
+ 
+  Chunk 824:
+(
+  Chunk 825:
+s
+  Chunk 826:
+e
+  Chunk 827:
+s
+  Chunk 828:
+s
+  Chunk 829:
+i
+  Chunk 830:
+o
+  Chunk 831:
+n
+  Chunk 832:
+I
+  Chunk 833:
+d
+  Chunk 834:
+:
+  Chunk 835:
+ 
+  Chunk 836:
+s
+  Chunk 837:
+t
+  Chunk 838:
+r
+  Chunk 839:
+i
+  Chunk 840:
+n
+  Chunk 841:
+g
+  Chunk 842:
+ 
+  Chunk 843:
+|
+  Chunk 844:
+ 
+  Chunk 845:
+n
+  Chunk 846:
+u
+  Chunk 847:
+l
+  Chunk 848:
+l
+  Chunk 849:
+)
+  Chunk 850:
+ 
+  Chunk 851:
+=
+  Chunk 852:
+>
+  Chunk 853:
+ 
+  Chunk 854:
+v
+  Chunk 855:
+o
+  Chunk 856:
+i
+  Chunk 857:
+d
+  Chunk 858:
+,
+  Chunk 859:
+ 
+  Chunk 860:
+\
+  Chunk 861:
+n
+  Chunk 862:
+ 
+  Chunk 863:
+ 
+  Chunk 864:
+u
+  Chunk 865:
+s
+  Chunk 866:
+e
+  Chunk 867:
+r
+  Chunk 868:
+I
+  Chunk 869:
+d
+  Chunk 870:
+?
+  Chunk 871:
+:
+  Chunk 872:
+ 
+  Chunk 873:
+s
+  Chunk 874:
+t
+  Chunk 875:
+r
+  Chunk 876:
+i
+  Chunk 877:
+n
+  Chunk 878:
+g
+  Chunk 879:
+,
+  Chunk 880:
+ 
+  Chunk 881:
+\
+  Chunk 882:
+n
+  Chunk 883:
+ 
+  Chunk 884:
+ 
+  Chunk 885:
+p
+  Chunk 886:
+h
+  Chunk 887:
+q
+  Chunk 888:
+9
+  Chunk 889:
+S
+  Chunk 890:
+c
+  Chunk 891:
+o
+  Chunk 892:
+r
+  Chunk 893:
+e
+  Chunk 894:
+?
+  Chunk 895:
+:
+  Chunk 896:
+ 
+  Chunk 897:
+n
+  Chunk 898:
+u
+  Chunk 899:
+m
+  Chunk 900:
+b
+  Chunk 901:
+e
+  Chunk 902:
+r
+  Chunk 903:
+,
+  Chunk 904:
+ 
+  Chunk 905:
+\
+  Chunk 906:
+n
+  Chunk 907:
+ 
+  Chunk 908:
+ 
+  Chunk 909:
+p
+  Chunk 910:
+h
+  Chunk 911:
+q
+  Chunk 912:
+9
+  Chunk 913:
+A
+  Chunk 914:
+n
+  Chunk 915:
+s
+  Chunk 916:
+w
+  Chunk 917:
+e
+  Chunk 918:
+r
+  Chunk 919:
+s
+  Chunk 920:
+?
+  Chunk 921:
+:
+  Chunk 922:
+ 
+  Chunk 923:
+n
+  Chunk 924:
+u
+  Chunk 925:
+m
+  Chunk 926:
+b
+  Chunk 927:
+e
+  Chunk 928:
+r
+  Chunk 929:
+[
+  Chunk 930:
+]
+  Chunk 931:
+ 
+  Chunk 932:
+|
+  Chunk 933:
+ 
+  Chunk 934:
+n
+  Chunk 935:
+u
+  Chunk 936:
+l
+  Chunk 937:
+l
+  Chunk 938:
+,
+  Chunk 939:
+ 
+  Chunk 940:
+\
+  Chunk 941:
+n
+  Chunk 942:
+ 
+  Chunk 943:
+ 
+  Chunk 944:
+p
+  Chunk 945:
+4
+  Chunk 946:
+A
+  Chunk 947:
+n
+  Chunk 948:
+s
+  Chunk 949:
+w
+  Chunk 950:
+e
+  Chunk 951:
+r
+  Chunk 952:
+s
+  Chunk 953:
+?
+  Chunk 954:
+:
+  Chunk 955:
+ 
+  Chunk 956:
+s
+  Chunk 957:
+t
+  Chunk 958:
+r
+  Chunk 959:
+i
+  Chunk 960:
+n
+  Chunk 961:
+g
+  Chunk 962:
+[
+  Chunk 963:
+]
+  Chunk 964:
+ 
+  Chunk 965:
+|
+  Chunk 966:
+ 
+  Chunk 967:
+n
+  Chunk 968:
+u
+  Chunk 969:
+l
+  Chunk 970:
+l
+  Chunk 971:
+,
+  Chunk 972:
+ 
+  Chunk 973:
+\
+  Chunk 974:
+n
+  Chunk 975:
+ 
+  Chunk 976:
+ 
+  Chunk 977:
+o
+  Chunk 978:
+n
+  Chunk 979:
+N
+  Chunk 980:
+a
+  Chunk 981:
+v
+  Chunk 982:
+i
+  Chunk 983:
+g
+  Chunk 984:
+a
+  Chunk 985:
+t
+  Chunk 986:
+e
+  Chunk 987:
+T
+  Chunk 988:
+o
+  Chunk 989:
+M
+  Chunk 990:
+a
+  Chunk 991:
+p
+  Chunk 992:
+?
+  Chunk 993:
+:
+  Chunk 994:
+ 
+  Chunk 995:
+(
+  Chunk 996:
+)
+  Chunk 997:
+ 
+  Chunk 998:
+=
+  Chunk 999:
+>
+  Chunk 1000:
+ 
+  Chunk 1001:
+v
+  Chunk 1002:
+o
+  Chunk 1003:
+i
+  Chunk 1004:
+d
+  Chunk 1005:
+,
+  Chunk 1006:
+\
+  Chunk 1007:
+n
+  Chunk 1008:
+ 
+  Chunk 1009:
+ 
+  Chunk 1010:
+p
+  Chunk 1011:
+r
+  Chunk 1012:
+o
+  Chunk 1013:
+f
+  Chunk 1014:
+i
+  Chunk 1015:
+l
+  Chunk 1016:
+e
+  Chunk 1017:
+?
+  Chunk 1018:
+:
+  Chunk 1019:
+ 
+  Chunk 1020:
+U
+  Chunk 1021:
+s
+  Chunk 1022:
+e
+  Chunk 1023:
+r
+  Chunk 1024:
+P
+  Chunk 1025:
+r
+  Chunk 1026:
+o
+  Chunk 1027:
+f
+  Chunk 1028:
+i
+  Chunk 1029:
+l
+  Chunk 1030:
+e
+  Chunk 1031:
+,
+  Chunk 1032:
+\
+  Chunk 1033:
+n
+  Chunk 1034:
+ 
+  Chunk 1035:
+ 
+  Chunk 1036:
+o
+  Chunk 1037:
+n
+  Chunk 1038:
+U
+  Chunk 1039:
+p
+  Chunk 1040:
+d
+  Chunk 1041:
+a
+  Chunk 1042:
+t
+  Chunk 1043:
+e
+  Chunk 1044:
+P
+  Chunk 1045:
+r
+  Chunk 1046:
+o
+  Chunk 1047:
+f
+  Chunk 1048:
+i
+  Chunk 1049:
+l
+  Chunk 1050:
+e
+  Chunk 1051:
+?
+  Chunk 1052:
+:
+  Chunk 1053:
+ 
+  Chunk 1054:
+(
+  Chunk 1055:
+u
+  Chunk 1056:
+p
+  Chunk 1057:
+d
+  Chunk 1058:
+a
+  Chunk 1059:
+t
+  Chunk 1060:
+e
+  Chunk 1061:
+d
+  Chunk 1062:
+:
+  Chunk 1063:
+ 
+  Chunk 1064:
+U
+  Chunk 1065:
+s
+  Chunk 1066:
+e
+  Chunk 1067:
+r
+  Chunk 1068:
+P
+  Chunk 1069:
+r
+  Chunk 1070:
+o
+  Chunk 1071:
+f
+  Chunk 1072:
+i
+  Chunk 1073:
+l
+  Chunk 1074:
+e
+  Chunk 1075:
+)
+  Chunk 1076:
+ 
+  Chunk 1077:
+=
+  Chunk 1078:
+>
+  Chunk 1079:
+ 
+  Chunk 1080:
+P
+  Chunk 1081:
+r
+  Chunk 1082:
+o
+  Chunk 1083:
+m
+  Chunk 1084:
+i
+  Chunk 1085:
+s
+  Chunk 1086:
+e
+  Chunk 1087:
+<
+  Chunk 1088:
+v
+  Chunk 1089:
+o
+  Chunk 1090:
+i
+  Chunk 1091:
+d
+  Chunk 1092:
+>
+  Chunk 1093:
+\
+  Chunk 1094:
+n
+  Chunk 1095:
+}
+  Chunk 1096:
+)
+  Chunk 1097:
+ 
+  Chunk 1098:
+{
+  Chunk 1099:
+\
+  Chunk 1100:
+n
+  Chunk 1101:
+ 
+  Chunk 1102:
+ 
+  Chunk 1103:
+c
+  Chunk 1104:
+o
+  Chunk 1105:
+n
+  Chunk 1106:
+s
+  Chunk 1107:
+t
+  Chunk 1108:
+ 
+  Chunk 1109:
+[
+  Chunk 1110:
+c
+  Chunk 1111:
+u
+  Chunk 1112:
+r
+  Chunk 1113:
+r
+  Chunk 1114:
+e
+  Chunk 1115:
+n
+  Chunk 1116:
+t
+  Chunk 1117:
+P
+  Chunk 1118:
+e
+  Chunk 1119:
+r
+  Chunk 1120:
+s
+  Chunk 1121:
+o
+  Chunk 1122:
+n
+  Chunk 1123:
+a
+  Chunk 1124:
+,
+  Chunk 1125:
+ 
+  Chunk 1126:
+s
+  Chunk 1127:
+e
+  Chunk 1128:
+t
+  Chunk 1129:
+C
+  Chunk 1130:
+u
+  Chunk 1131:
+r
+  Chunk 1132:
+r
+  Chunk 1133:
+e
+  Chunk 1134:
+n
+  Chunk 1135:
+t
+  Chunk 1136:
+P
+  Chunk 1137:
+e
+  Chunk 1138:
+r
+  Chunk 1139:
+s
+  Chunk 1140:
+o
+  Chunk 1141:
+n
+  Chunk 1142:
+a
+  Chunk 1143:
+]
+  Chunk 1144:
+ 
+  Chunk 1145:
+=
+  Chunk 1146:
+ 
+  Chunk 1147:
+u
+  Chunk 1148:
+s
+  Chunk 1149:
+e
+  Chunk 1150:
+S
+  Chunk 1151:
+t
+  Chunk 1152:
+a
+  Chunk 1153:
+t
+  Chunk 1154:
+e
+  Chunk 1155:
+<
+  Chunk 1156:
+1
+  Chunk 1157:
+ 
+  Chunk 1158:
+|
+  Chunk 1159:
+ 
+  Chunk 1160:
+2
+  Chunk 1161:
+ 
+  Chunk 1162:
+|
+  Chunk 1163:
+ 
+  Chunk 1164:
+3
+  Chunk 1165:
+ 
+  Chunk 1166:
+|
+  Chunk 1167:
+ 
+  Chunk 1168:
+4
+  Chunk 1169:
+ 
+  Chunk 1170:
+|
+  Chunk 1171:
+ 
+  Chunk 1172:
+5
+  Chunk 1173:
+>
+  Chunk 1174:
+(
+  Chunk 1175:
+i
+  Chunk 1176:
+n
+  Chunk 1177:
+i
+  Chunk 1178:
+t
+  Chunk 1179:
+i
+  Chunk 1180:
+a
+  Chunk 1181:
+l
+  Chunk 1182:
+P
+  Chunk 1183:
+e
+  Chunk 1184:
+r
+  Chunk 1185:
+s
+  Chunk 1186:
+o
+  Chunk 1187:
+n
+  Chunk 1188:
+a
+  Chunk 1189:
+)
+  Chunk 1190:
+;
+  Chunk 1191:
+\
+  Chunk 1192:
+n
+  Chunk 1193:
+ 
+  Chunk 1194:
+ 
+  Chunk 1195:
+c
+  Chunk 1196:
+o
+  Chunk 1197:
+n
+  Chunk 1198:
+s
+  Chunk 1199:
+t
+  Chunk 1200:
+ 
+  Chunk 1201:
+[
+  Chunk 1202:
+i
+  Chunk 1203:
+n
+  Chunk 1204:
+p
+  Chunk 1205:
+u
+  Chunk 1206:
+t
+  Chunk 1207:
+,
+  Chunk 1208:
+ 
+  Chunk 1209:
+s
+  Chunk 1210:
+e
+  Chunk 1211:
+t
+  Chunk 1212:
+I
+  Chunk 1213:
+n
+  Chunk 1214:
+p
+  Chunk 1215:
+u
+  Chunk 1216:
+t
+  Chunk 1217:
+]
+  Chunk 1218:
+ 
+  Chunk 1219:
+=
+  Chunk 1220:
+ 
+  Chunk 1221:
+u
+  Chunk 1222:
+s
+  Chunk 1223:
+e
+  Chunk 1224:
+S
+  Chunk 1225:
+t
+  Chunk 1226:
+a
+  Chunk 1227:
+t
+  Chunk 1228:
+e
+  Chunk 1229:
+(
+  Chunk 1230:
+\
+  Chunk 1231:
+"
+  Chunk 1232:
+\
+  Chunk 1233:
+"
+  Chunk 1234:
+)
+  Chunk 1235:
+;
+  Chunk 1236:
+\
+  Chunk 1237:
+n
+  Chunk 1238:
+ 
+  Chunk 1239:
+ 
+  Chunk 1240:
+c
+  Chunk 1241:
+o
+  Chunk 1242:
+n
+  Chunk 1243:
+s
+  Chunk 1244:
+t
+  Chunk 1245:
+ 
+  Chunk 1246:
+[
+  Chunk 1247:
+s
+  Chunk 1248:
+c
+  Chunk 1249:
+o
+  Chunk 1250:
+r
+  Chunk 1251:
+e
+  Chunk 1252:
+,
+  Chunk 1253:
+ 
+  Chunk 1254:
+s
+  Chunk 1255:
+e
+  Chunk 1256:
+t
+  Chunk 1257:
+S
+  Chunk 1258:
+c
+  Chunk 1259:
+o
+  Chunk 1260:
+r
+  Chunk 1261:
+e
+  Chunk 1262:
+]
+  Chunk 1263:
+ 
+  Chunk 1264:
+=
+  Chunk 1265:
+ 
+  Chunk 1266:
+u
+  Chunk 1267:
+s
+  Chunk 1268:
+e
+  Chunk 1269:
+S
+  Chunk 1270:
+t
+  Chunk 1271:
+a
+  Chunk 1272:
+t
+  Chunk 1273:
+e
+  Chunk 1274:
+(
+  Chunk 1275:
+4
+  Chunk 1276:
+5
+  Chunk 1277:
+)
+  Chunk 1278:
+;
+  Chunk 1279:
+\
+  Chunk 1280:
+n
+  Chunk 1281:
+ 
+  Chunk 1282:
+ 
+  Chunk 1283:
+c
+  Chunk 1284:
+o
+  Chunk 1285:
+n
+  Chunk 1286:
+s
+  Chunk 1287:
+t
+  Chunk 1288:
+ 
+  Chunk 1289:
+[
+  Chunk 1290:
+l
+  Chunk 1291:
+e
+  Chunk 1292:
+v
+  Chunk 1293:
+e
+  Chunk 1294:
+l
+  Chunk 1295:
+,
+  Chunk 1296:
+ 
+  Chunk 1297:
+s
+  Chunk 1298:
+e
+  Chunk 1299:
+t
+  Chunk 1300:
+L
+  Chunk 1301:
+e
+  Chunk 1302:
+v
+  Chunk 1303:
+e
+  Chunk 1304:
+l
+  Chunk 1305:
+]
+  Chunk 1306:
+ 
+  Chunk 1307:
+=
+  Chunk 1308:
+ 
+  Chunk 1309:
+u
+  Chunk 1310:
+s
+  Chunk 1311:
+e
+  Chunk 1312:
+S
+  Chunk 1313:
+t
+  Chunk 1314:
+a
+  Chunk 1315:
+t
+  Chunk 1316:
+e
+  Chunk 1317:
+(
+  Chunk 1318:
+\
+  Chunk 1319:
+"
+  Chunk 1320:
+🟠
+  Chunk 1321:
+ 
+  Chunk 1322:
+중
+  Chunk 1323:
+증
+  Chunk 1324:
+\
+  Chunk 1325:
+"
+  Chunk 1326:
+)
+  Chunk 1327:
+;
+  Chunk 1328:
+\
+  Chunk 1329:
+n
+  Chunk 1330:
+ 
+  Chunk 1331:
+ 
+  Chunk 1332:
+c
+  Chunk 1333:
+o
+  Chunk 1334:
+n
+  Chunk 1335:
+s
+  Chunk 1336:
+t
+  Chunk 1337:
+ 
+  Chunk 1338:
+[
+  Chunk 1339:
+s
+  Chunk 1340:
+h
+  Chunk 1341:
+o
+  Chunk 1342:
+w
+  Chunk 1343:
+W
+  Chunk 1344:
+a
+  Chunk 1345:
+r
+  Chunk 1346:
+n
+  Chunk 1347:
+i
+  Chunk 1348:
+n
+  Chunk 1349:
+g
+  Chunk 1350:
+P
+  Chunk 1351:
+o
+  Chunk 1352:
+p
+  Chunk 1353:
+u
+  Chunk 1354:
+p
+  Chunk 1355:
+,
+  Chunk 1356:
+ 
+  Chunk 1357:
+s
+  Chunk 1358:
+e
+  Chunk 1359:
+t
+  Chunk 1360:
+S
+  Chunk 1361:
+h
+  Chunk 1362:
+o
+  Chunk 1363:
+w
+  Chunk 1364:
+W
+  Chunk 1365:
+a
+  Chunk 1366:
+r
+  Chunk 1367:
+n
+  Chunk 1368:
+i
+  Chunk 1369:
+n
+  Chunk 1370:
+g
+  Chunk 1371:
+P
+  Chunk 1372:
+o
+  Chunk 1373:
+p
+  Chunk 1374:
+u
+  Chunk 1375:
+p
+  Chunk 1376:
+]
+  Chunk 1377:
+ 
+  Chunk 1378:
+=
+  Chunk 1379:
+ 
+  Chunk 1380:
+u
+  Chunk 1381:
+s
+  Chunk 1382:
+e
+  Chunk 1383:
+S
+  Chunk 1384:
+t
+  Chunk 1385:
+a
+  Chunk 1386:
+t
+  Chunk 1387:
+e
+  Chunk 1388:
+(
+  Chunk 1389:
+f
+  Chunk 1390:
+a
+  Chunk 1391:
+l
+  Chunk 1392:
+s
+  Chunk 1393:
+e
+  Chunk 1394:
+)
+  Chunk 1395:
+;
+  Chunk 1396:
+\
+  Chunk 1397:
+n
+  Chunk 1398:
+ 
+  Chunk 1399:
+ 
+  Chunk 1400:
+c
+  Chunk 1401:
+o
+  Chunk 1402:
+n
+  Chunk 1403:
+s
+  Chunk 1404:
+t
+  Chunk 1405:
+ 
+  Chunk 1406:
+[
+  Chunk 1407:
+s
+  Chunk 1408:
+e
+  Chunk 1409:
+s
+  Chunk 1410:
+s
+  Chunk 1411:
+i
+  Chunk 1412:
+o
+  Chunk 1413:
+n
+  Chunk 1414:
+I
+  Chunk 1415:
+d
+  Chunk 1416:
+,
+  Chunk 1417:
+ 
+  Chunk 1418:
+s
+  Chunk 1419:
+e
+  Chunk 1420:
+t
+  Chunk 1421:
+S
+  Chunk 1422:
+e
+  Chunk 1423:
+s
+  Chunk 1424:
+s
+  Chunk 1425:
+i
+  Chunk 1426:
+o
+  Chunk 1427:
+n
+  Chunk 1428:
+I
+  Chunk 1429:
+d
+  Chunk 1430:
+]
+  Chunk 1431:
+ 
+  Chunk 1432:
+=
+  Chunk 1433:
+ 
+  Chunk 1434:
+u
+  Chunk 1435:
+s
+  Chunk 1436:
+e
+  Chunk 1437:
+S
+  Chunk 1438:
+t
+  Chunk 1439:
+a
+  Chunk 1440:
+t
+  Chunk 1441:
+e
+  Chunk 1442:
+<
+  Chunk 1443:
+s
+  Chunk 1444:
+t
+  Chunk 1445:
+r
+  Chunk 1446:
+i
+  Chunk 1447:
+n
+  Chunk 1448:
+g
+  Chunk 1449:
+ 
+  Chunk 1450:
+|
+  Chunk 1451:
+ 
+  Chunk 1452:
+n
+  Chunk 1453:
+u
+  Chunk 1454:
+l
+  Chunk 1455:
+l
+  Chunk 1456:
+>
+  Chunk 1457:
+(
+  Chunk 1458:
+n
+  Chunk 1459:
+u
+  Chunk 1460:
+l
+  Chunk 1461:
+l
+  Chunk 1462:
+)
+  Chunk 1463:
+;
+  Chunk 1464:
+\
+  Chunk 1465:
+n
+  Chunk 1466:
+ 
+  Chunk 1467:
+ 
+  Chunk 1468:
+c
+  Chunk 1469:
+o
+  Chunk 1470:
+n
+  Chunk 1471:
+s
+  Chunk 1472:
+t
+  Chunk 1473:
+ 
+  Chunk 1474:
+[
+  Chunk 1475:
+i
+  Chunk 1476:
+s
+  Chunk 1477:
+L
+  Chunk 1478:
+o
+  Chunk 1479:
+a
+  Chunk 1480:
+d
+  Chunk 1481:
+i
+  Chunk 1482:
+n
+  Chunk 1483:
+g
+  Chunk 1484:
+,
+  Chunk 1485:
+ 
+  Chunk 1486:
+s
+  Chunk 1487:
+e
+  Chunk 1488:
+t
+  Chunk 1489:
+I
+  Chunk 1490:
+s
+  Chunk 1491:
+L
+  Chunk 1492:
+o
+  Chunk 1493:
+a
+  Chunk 1494:
+d
+  Chunk 1495:
+i
+  Chunk 1496:
+n
+  Chunk 1497:
+g
+  Chunk 1498:
+]
+  Chunk 1499:
+ 
+  Chunk 1500:
+=
+  Chunk 1501:
+ 
+  Chunk 1502:
+u
+  Chunk 1503:
+s
+  Chunk 1504:
+e
+  Chunk 1505:
+S
+  Chunk 1506:
+t
+  Chunk 1507:
+a
+  Chunk 1508:
+t
+  Chunk 1509:
+e
+  Chunk 1510:
+(
+  Chunk 1511:
+f
+  Chunk 1512:
+a
+  Chunk 1513:
+l
+  Chunk 1514:
+s
+  Chunk 1515:
+e
+  Chunk 1516:
+)
+  Chunk 1517:
+;
+  Chunk 1518:
+\
+  Chunk 1519:
+n
+  Chunk 1520:
+\
+  Chunk 1521:
+n
+  Chunk 1522:
+ 
+  Chunk 1523:
+ 
+  Chunk 1524:
+/
+  Chunk 1525:
+/
+  Chunk 1526:
+ 
+  Chunk 1527:
+L
+  Chunk 1528:
+o
+  Chunk 1529:
+c
+  Chunk 1530:
+a
+  Chunk 1531:
+l
+  Chunk 1532:
+ 
+  Chunk 1533:
+P
+  Chunk 1534:
+r
+  Chunk 1535:
+o
+  Chunk 1536:
+f
+  Chunk 1537:
+i
+  Chunk 1538:
+l
+  Chunk 1539:
+e
+  Chunk 1540:
+ 
+  Chunk 1541:
+S
+  Chunk 1542:
+y
+  Chunk 1543:
+n
+  Chunk 1544:
+c
+  Chunk 1545:
+ 
+  Chunk 1546:
+f
+  Chunk 1547:
+o
+  Chunk 1548:
+r
+  Chunk 1549:
+ 
+  Chunk 1550:
+O
+  Chunk 1551:
+f
+  Chunk 1552:
+f
+  Chunk 1553:
+l
+  Chunk 1554:
+i
+  Chunk 1555:
+n
+  Chunk 1556:
+e
+  Chunk 1557:
+ 
+  Chunk 1558:
+M
+  Chunk 1559:
+o
+  Chunk 1560:
+d
+  Chunk 1561:
+e
+  Chunk 1562:
+\
+  Chunk 1563:
+n
+  Chunk 1564:
+ 
+  Chunk 1565:
+ 
+  Chunk 1566:
+c
+  Chunk 1567:
+o
+  Chunk 1568:
+n
+  Chunk 1569:
+s
+  Chunk 1570:
+t
+  Chunk 1571:
+ 
+  Chunk 1572:
+[
+  Chunk 1573:
+l
+  Chunk 1574:
+o
+  Chunk 1575:
+c
+  Chunk 1576:
+a
+  Chunk 1577:
+l
+  Chunk 1578:
+P
+  Chunk 1579:
+r
+  Chunk 1580:
+o
+  Chunk 1581:
+f
+  Chunk 1582:
+i
+  Chunk 1583:
+l
+  Chunk 1584:
+e
+  Chunk 1585:
+,
+  Chunk 1586:
+ 
+  Chunk 1587:
+s
+  Chunk 1588:
+e
+  Chunk 1589:
+t
+  Chunk 1590:
+L
+  Chunk 1591:
+o
+  Chunk 1592:
+c
+  Chunk 1593:
+a
+  Chunk 1594:
+l
+  Chunk 1595:
+P
+  Chunk 1596:
+r
+  Chunk 1597:
+o
+  Chunk 1598:
+f
+  Chunk 1599:
+i
+  Chunk 1600:
+l
+  Chunk 1601:
+e
+  Chunk 1602:
+]
+  Chunk 1603:
+ 
+  Chunk 1604:
+=
+  Chunk 1605:
+ 
+  Chunk 1606:
+u
+  Chunk 1607:
+s
+  Chunk 1608:
+e
+  Chunk 1609:
+S
+  Chunk 1610:
+t
+  Chunk 1611:
+a
+  Chunk 1612:
+t
+  Chunk 1613:
+e
+  Chunk 1614:
+<
+  Chunk 1615:
+U
+  Chunk 1616:
+s
+  Chunk 1617:
+e
+  Chunk 1618:
+r
+  Chunk 1619:
+P
+  Chunk 1620:
+r
+  Chunk 1621:
+o
+  Chunk 1622:
+f
+  Chunk 1623:
+i
+  Chunk 1624:
+l
+  Chunk 1625:
+e
+  Chunk 1626:
+>
+  Chunk 1627:
+(
+  Chunk 1628:
+\
+  Chunk 1629:
+n
+  Chunk 1630:
+ 
+  Chunk 1631:
+ 
+  Chunk 1632:
+ 
+  Chunk 1633:
+ 
+  Chunk 1634:
+p
+  Chunk 1635:
+r
+  Chunk 1636:
+o
+  Chunk 1637:
+f
+  Chunk 1638:
+i
+  Chunk 1639:
+l
+  Chunk 1640:
+e
+  Chunk 1641:
+ 
+  Chunk 1642:
+|
+  Chunk 1643:
+|
+  Chunk 1644:
+ 
+  Chunk 1645:
+{
+  Chunk 1646:
+\
+  Chunk 1647:
+n
+  Chunk 1648:
+ 
+  Chunk 1649:
+ 
+  Chunk 1650:
+ 
+  Chunk 1651:
+ 
+  Chunk 1652:
+ 
+  Chunk 1653:
+ 
+  Chunk 1654:
+n
+  Chunk 1655:
+i
+  Chunk 1656:
+c
+  Chunk 1657:
+k
+  Chunk 1658:
+n
+  Chunk 1659:
+a
+  Chunk 1660:
+m
+  Chunk 1661:
+e
+  Chunk 1662:
+:
+  Chunk 1663:
+ 
+  Chunk 1664:
+\
+  Chunk 1665:
+"
+  Chunk 1666:
+임
+  Chunk 1667:
+시
+  Chunk 1668:
+ 
+  Chunk 1669:
+사
+  Chunk 1670:
+용
+  Chunk 1671:
+자
+  Chunk 1672:
+\
+  Chunk 1673:
+"
+  Chunk 1674:
+,
+  Chunk 1675:
+\
+  Chunk 1676:
+n
+  Chunk 1677:
+ 
+  Chunk 1678:
+ 
+  Chunk 1679:
+ 
+  Chunk 1680:
+ 
+  Chunk 1681:
+ 
+  Chunk 1682:
+ 
+  Chunk 1683:
+a
+  Chunk 1684:
+g
+  Chunk 1685:
+e
+  Chunk 1686:
+G
+  Chunk 1687:
+r
+  Chunk 1688:
+o
+  Chunk 1689:
+u
+  Chunk 1690:
+p
+  Chunk 1691:
+:
+  Chunk 1692:
+ 
+  Chunk 1693:
+\
+  Chunk 1694:
+"
+  Chunk 1695:
+3
+  Chunk 1696:
+0
+  Chunk 1697:
+대
+  Chunk 1698:
+\
+  Chunk 1699:
+"
+  Chunk 1700:
+,
+  Chunk 1701:
+\
+  Chunk 1702:
+n
+  Chunk 1703:
+ 
+  Chunk 1704:
+ 
+  Chunk 1705:
+ 
+  Chunk 1706:
+ 
+  Chunk 1707:
+ 
+  Chunk 1708:
+ 
+  Chunk 1709:
+g
+  Chunk 1710:
+e
+  Chunk 1711:
+n
+  Chunk 1712:
+d
+  Chunk 1713:
+e
+  Chunk 1714:
+r
+  Chunk 1715:
+:
+  Chunk 1716:
+ 
+  Chunk 1717:
+\
+  Chunk 1718:
+"
+  Chunk 1719:
+남
+  Chunk 1720:
+성
+  Chunk 1721:
+\
+  Chunk 1722:
+"
+  Chunk 1723:
+,
+  Chunk 1724:
+\
+  Chunk 1725:
+n
+  Chunk 1726:
+ 
+  Chunk 1727:
+ 
+  Chunk 1728:
+ 
+  Chunk 1729:
+ 
+  Chunk 1730:
+ 
+  Chunk 1731:
+ 
+  Chunk 1732:
+o
+  Chunk 1733:
+c
+  Chunk 1734:
+c
+  Chunk 1735:
+u
+  Chunk 1736:
+p
+  Chunk 1737:
+a
+  Chunk 1738:
+t
+  Chunk 1739:
+i
+  Chunk 1740:
+o
+  Chunk 1741:
+n
+  Chunk 1742:
+:
+  Chunk 1743:
+ 
+  Chunk 1744:
+\
+  Chunk 1745:
+"
+  Chunk 1746:
+직
+  Chunk 1747:
+장
+  Chunk 1748:
+인
+  Chunk 1749:
+\
+  Chunk 1750:
+"
+  Chunk 1751:
+,
+  Chunk 1752:
+\
+  Chunk 1753:
+n
+  Chunk 1754:
+ 
+  Chunk 1755:
+ 
+  Chunk 1756:
+ 
+  Chunk 1757:
+ 
+  Chunk 1758:
+ 
+  Chunk 1759:
+ 
+  Chunk 1760:
+r
+  Chunk 1761:
+e
+  Chunk 1762:
+g
+  Chunk 1763:
+i
+  Chunk 1764:
+o
+  Chunk 1765:
+n
+  Chunk 1766:
+:
+  Chunk 1767:
+ 
+  Chunk 1768:
+\
+  Chunk 1769:
+"
+  Chunk 1770:
+서
+  Chunk 1771:
+울
+  Chunk 1772:
+\
+  Chunk 1773:
+"
+  Chunk 1774:
+,
+  Chunk 1775:
+\
+  Chunk 1776:
+n
+  Chunk 1777:
+ 
+  Chunk 1778:
+ 
+  Chunk 1779:
+ 
+  Chunk 1780:
+ 
+  Chunk 1781:
+ 
+  Chunk 1782:
+ 
+  Chunk 1783:
+c
+  Chunk 1784:
+o
+  Chunk 1785:
+n
+  Chunk 1786:
+t
+  Chunk 1787:
+a
+  Chunk 1788:
+c
+  Chunk 1789:
+t
+  Chunk 1790:
+:
+  Chunk 1791:
+ 
+  Chunk 1792:
+\
+  Chunk 1793:
+"
+  Chunk 1794:
+\
+  Chunk 1795:
+"
+  Chunk 1796:
+,
+  Chunk 1797:
+\
+  Chunk 1798:
+n
+  Chunk 1799:
+ 
+  Chunk 1800:
+ 
+  Chunk 1801:
+ 
+  Chunk 1802:
+ 
+  Chunk 1803:
+ 
+  Chunk 1804:
+ 
+  Chunk 1805:
+p
+  Chunk 1806:
+h
+  Chunk 1807:
+o
+  Chunk 1808:
+n
+  Chunk 1809:
+e
+  Chunk 1810:
+:
+  Chunk 1811:
+ 
+  Chunk 1812:
+\
+  Chunk 1813:
+"
+  Chunk 1814:
+\
+  Chunk 1815:
+"
+  Chunk 1816:
+\
+  Chunk 1817:
+n
+  Chunk 1818:
+ 
+  Chunk 1819:
+ 
+  Chunk 1820:
+ 
+  Chunk 1821:
+ 
+  Chunk 1822:
+}
+  Chunk 1823:
+\
+  Chunk 1824:
+n
+  Chunk 1825:
+ 
+  Chunk 1826:
+ 
+  Chunk 1827:
+)
+  Chunk 1828:
+;
+  Chunk 1829:
+\
+  Chunk 1830:
+n
+  Chunk 1831:
+\
+  Chunk 1832:
+n
+  Chunk 1833:
+ 
+  Chunk 1834:
+ 
+  Chunk 1835:
+u
+  Chunk 1836:
+s
+  Chunk 1837:
+e
+  Chunk 1838:
+E
+  Chunk 1839:
+f
+  Chunk 1840:
+f
+  Chunk 1841:
+e
+  Chunk 1842:
+c
+  Chunk 1843:
+t
+  Chunk 1844:
+(
+  Chunk 1845:
+(
+  Chunk 1846:
+)
+  Chunk 1847:
+ 
+  Chunk 1848:
+=
+  Chunk 1849:
+>
+  Chunk 1850:
+ 
+  Chunk 1851:
+{
+  Chunk 1852:
+\
+  Chunk 1853:
+n
+  Chunk 1854:
+ 
+  Chunk 1855:
+ 
+  Chunk 1856:
+ 
+  Chunk 1857:
+ 
+  Chunk 1858:
+i
+  Chunk 1859:
+f
+  Chunk 1860:
+ 
+  Chunk 1861:
+(
+  Chunk 1862:
+p
+  Chunk 1863:
+r
+  Chunk 1864:
+o
+  Chunk 1865:
+f
+  Chunk 1866:
+i
+  Chunk 1867:
+l
+  Chunk 1868:
+e
+  Chunk 1869:
+)
+  Chunk 1870:
+ 
+  Chunk 1871:
+{
+  Chunk 1872:
+\
+  Chunk 1873:
+n
+  Chunk 1874:
+ 
+  Chunk 1875:
+ 
+  Chunk 1876:
+ 
+  Chunk 1877:
+ 
+  Chunk 1878:
+ 
+  Chunk 1879:
+ 
+  Chunk 1880:
+s
+  Chunk 1881:
+e
+  Chunk 1882:
+t
+  Chunk 1883:
+L
+  Chunk 1884:
+o
+  Chunk 1885:
+c
+  Chunk 1886:
+a
+  Chunk 1887:
+l
+  Chunk 1888:
+P
+  Chunk 1889:
+r
+  Chunk 1890:
+o
+  Chunk 1891:
+f
+  Chunk 1892:
+i
+  Chunk 1893:
+l
+  Chunk 1894:
+e
+  Chunk 1895:
+(
+  Chunk 1896:
+p
+  Chunk 1897:
+r
+  Chunk 1898:
+o
+  Chunk 1899:
+f
+  Chunk 1900:
+i
+  Chunk 1901:
+l
+  Chunk 1902:
+e
+  Chunk 1903:
+)
+  Chunk 1904:
+;
+  Chunk 1905:
+\
+  Chunk 1906:
+n
+  Chunk 1907:
+ 
+  Chunk 1908:
+ 
+  Chunk 1909:
+ 
+  Chunk 1910:
+ 
+  Chunk 1911:
+}
+  Chunk 1912:
+\
+  Chunk 1913:
+n
+  Chunk 1914:
+ 
+  Chunk 1915:
+ 
+  Chunk 1916:
+}
+  Chunk 1917:
+,
+  Chunk 1918:
+ 
+  Chunk 1919:
+[
+  Chunk 1920:
+p
+  Chunk 1921:
+r
+  Chunk 1922:
+o
+  Chunk 1923:
+f
+  Chunk 1924:
+i
+  Chunk 1925:
+l
+  Chunk 1926:
+e
+  Chunk 1927:
+]
+  Chunk 1928:
+)
+  Chunk 1929:
+;
+  Chunk 1930:
+\
+  Chunk 1931:
+n
+  Chunk 1932:
+\
+  Chunk 1933:
+n
+  Chunk 1934:
+ 
+  Chunk 1935:
+ 
+  Chunk 1936:
+/
+  Chunk 1937:
+/
+  Chunk 1938:
+ 
+  Chunk 1939:
+M
+  Chunk 1940:
+y
+  Chunk 1941:
+ 
+  Chunk 1942:
+P
+  Chunk 1943:
+a
+  Chunk 1944:
+g
+  Chunk 1945:
+e
+  Chunk 1946:
+ 
+  Chunk 1947:
+m
+  Chunk 1948:
+o
+  Chunk 1949:
+d
+  Chunk 1950:
+a
+  Chunk 1951:
+l
+  Chunk 1952:
+ 
+  Chunk 1953:
+s
+  Chunk 1954:
+t
+  Chunk 1955:
+a
+  Chunk 1956:
+t
+  Chunk 1957:
+e
+  Chunk 1958:
+s
+  Chunk 1959:
+\
+  Chunk 1960:
+n
+  Chunk 1961:
+ 
+  Chunk 1962:
+ 
+  Chunk 1963:
+c
+  Chunk 1964:
+o
+  Chunk 1965:
+n
+  Chunk 1966:
+s
+  Chunk 1967:
+t
+  Chunk 1968:
+ 
+  Chunk 1969:
+[
+  Chunk 1970:
+s
+  Chunk 1971:
+h
+  Chunk 1972:
+o
+  Chunk 1973:
+w
+  Chunk 1974:
+M
+  Chunk 1975:
+y
+  Chunk 1976:
+P
+  Chunk 1977:
+a
+  Chunk 1978:
+g
+  Chunk 1979:
+e
+  Chunk 1980:
+,
+  Chunk 1981:
+ 
+  Chunk 1982:
+s
+  Chunk 1983:
+e
+  Chunk 1984:
+t
+  Chunk 1985:
+S
+  Chunk 1986:
+h
+  Chunk 1987:
+o
+  Chunk 1988:
+w
+  Chunk 1989:
+M
+  Chunk 1990:
+y
+  Chunk 1991:
+P
+  Chunk 1992:
+a
+  Chunk 1993:
+g
+  Chunk 1994:
+e
+  Chunk 1995:
+]
+  Chunk 1996:
+ 
+  Chunk 1997:
+=
+  Chunk 1998:
+ 
+  Chunk 1999:
+u
+  Chunk 2000:
+s
+  Chunk 2001:
+e
+  Chunk 2002:
+S
+  Chunk 2003:
+t
+  Chunk 2004:
+a
+  Chunk 2005:
+t
+  Chunk 2006:
+e
+  Chunk 2007:
+(
+  Chunk 2008:
+f
+  Chunk 2009:
+a
+  Chunk 2010:
+l
+  Chunk 2011:
+s
+  Chunk 2012:
+e
+  Chunk 2013:
+)
+  Chunk 2014:
+;
+  Chunk 2015:
+
+
+  Chunk 2016:
+<
+  Chunk 2017:
+t
+  Chunk 2018:
+r
+  Chunk 2019:
+u
+  Chunk 2020:
+n
+  Chunk 2021:
+c
+  Chunk 2022:
+a
+  Chunk 2023:
+t
+  Chunk 2024:
+e
+  Chunk 2025:
+d
+  Chunk 2026:
+ 
+  Chunk 2027:
+1
+  Chunk 2028:
+6
+  Chunk 2029:
+8
+  Chunk 2030:
+9
+  Chunk 2031:
+8
+  Chunk 2032:
+ 
+  Chunk 2033:
+b
+  Chunk 2034:
+y
+  Chunk 2035:
+t
+  Chunk 2036:
+e
+  Chunk 2037:
+s
+  Chunk 2038:
+>
+--------------------------------------------------
+Step: 2552
+Description: "Update phone type to string in UserProfile interface inside components/UserFlow.tsx."
+"interface UserProfile {\n  nickname: string;\n  ageGroup: string;\n  gender: string;\n  occupation: string;\n  region: string;\n  contact: string;\n  phone: string;\n}"
+--------------------------------------------------
+Step: 3879
+Description: "Remove MyPage button from UserFlow.tsx."
+"              </button>\n            )}\n            <button \n              onClick={() => onEndChat && onEndChat(sessionId)}"
+--------------------------------------------------
+Step: 3885
+Description: "Delete MyPage modal markup from UserFlow.tsx."
+"              <span className=\"text-[10px] text-gray-400 font-medium\">잠시 후 대화창이 붉은 위기대응 모드로 전환됩니다...</span>\n            </div>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}"
+--------------------------------------------------
+Step: 3931
+Description: "Replace Ttochi text/icon with Uulppae (Owl) in UserFlow.tsx chat area header."
+"        <div className=\"bg-white border-b border-[#EAE5D9] p-2 flex gap-2 text-xs justify-center items-center overflow-x-auto\">\n          <span className=\"font-bold text-[#8C7862] shrink-0\">테스트용 페르소나:</span>\n          <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 1 ? \"bg-[#1E2D4E] text-white border-[#1E2D4E]\" : \"bg-white text-gray-800 hover:bg-[#F8F5F0]\"}`}>1. 우울빼미 (경증)</button>\n          <button onClick={() => handlePersonaChange(2)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 2 ? \"bg-[#1E2D4E] text-white border-[#1E2D4E]\" : \"bg-white text-gray-800 hover:bg-[#F8F5F0]\"}`}>2. 지우 (중등도)</button>\n          <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 3 ? \"bg-[#1E2D4E] text-white border-[#1E2D4E]\" : \"bg-white text-gray-800 hover:bg-[#F8F5F0]\"}`}>3. 클로 (고위험)</button>\n          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 4 ? \"bg-[#1E2D4E] text-white border-[#1E2D4E]\" : \"bg-white text-gray-800 hover:bg-[#F8F5F0]\"}`}>4. 멘토 (소크라테스식 질문)</button>\n          <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 5 ? \"bg-[#1E2D4E] text-white border-[#1E2D4E]\" : \"bg-white text-gray-800 hover:bg-[#F8F5F0]\"}`}>5. 철수 (행동)</button>\n        </div>\n\n        {/* Banner */}\n        <div className={`p-4 border-b border-[#EAE5D9] flex justify-between items-center ${getBannerStyle()}`}>\n          <div className=\"flex flex-col gap-1\">\n            <h2 className=\"text-lg font-bold flex items-center gap-2\">\n              {currentPersona === 1 && \"🦉 우울빼미와 대화 중\"}\
+<truncated 905 bytes>
+--------------------------------------------------
+Step: 4072
+Description: "Add handleLoadExampleDialogue helper method in UserFlow.tsx to load premium realistic demo conversation for judges to experience Owl persona easily."
+"  const [messages, setMessages] = useState(userPersonaMessages[initialPersona]);\n\n  const handlePersonaChange = (p: 1 | 2 | 3 | 4 | 5) => {\n    setCurrentPersona(p);\n    setMessages(userPersonaMessages[p]);\n  };\n\n  const handleLoadExampleDialogue = () => {\n    setMessages([\n      { role: \"bot\", content: \"안녕! 나는 우울빼미야. 🦉 오늘 하루는 어땠어? 네 마음을 편안하게 나에게 털어놓아봐. 언제나 네 편에서 들어줄게.\", icon: \"🦉\" },\n      { role: \"user\", content: \"요즘 취업 준비 때문에 마음이 너무 무겁고, 나만 계속 뒤처지는 것 같아.\" },\n      { role: \"bot\", content: \"그랬구나... 많이 무겁고 조급했겠다. 남들과 계속 비교하게 되면서 마음속에 부담감이 가득 쌓여 있었을 것 같아. 버텨내느라 정말 애썼어.\", icon: \"🦉\" },\n      { role: \"user\", content: \"응, 그래서 아무것도 하고 싶지 않고 무기력해. 그냥 다 포기할까 싶기도 해.\" },\n      { role: \"bot\", content: \"포기하고 싶을 만큼 정말 지치고 힘들었구나... 그만큼 네가 잘해내고 싶었고, 최선을 다하고 싶었기 때문에 더 아프게 느껴지는 걸지도 몰라. 오늘은 너무 무리해서 노력하지 않아도 괜찮아.\", icon: \"🦉\" },\n      { role: \"user\", content: \"이렇게 내 마음을 알아주니 큰 위로가 된다. 고마워.\" },\n      { role: \"bot\", content: \"네 마음의 짐을 조금이라도 덜어줄 수 있어서 정말 다행이야. 언제든 힘들 때 나를 찾아와서 편하게 털어놓아줘. 지금 가장 보듬어주고 싶은 너의 마음은 어떤 부분이야?\", icon: \"🦉\" }\n    ]);\n  };"
+--------------------------------------------------
+Step: 4076
+Description: "Add the banner alert for Persona 1 (우울빼미) in UserFlow.tsx to show a quick demo example button for judges."
+"        {/* Banner Alert for Persona 1 (우울빼미) - 심사위원 대화 예시 */}\n        {currentPersona === 1 && (\n          <div className=\"bg-[#FAF8F5] border-b border-[#EAE5D9]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0\">\n            <div className=\"flex items-center gap-2 text-gray-700\">\n              <span>🦉</span>\n              <span>실제 대화처럼 이어갈 수 있는 데모를 원하시나요?</span>\n            </div>\n            <button\n              type=\"button\"\n              onClick={handleLoadExampleDialogue}\n              className=\"bg-[#1E2D4E] hover:bg-[#152037] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5\"\n            >\n              💬 우울빼미 대화 예시(5~6턴) 보기\n            </button>\n          </div>\n        )}\n\n        {/* Alerts for Persona 4 and 5 */}\n        {currentPersona === 4 && ("
+--------------------------------------------------
+Step: 4082
+Description: "Replace hedgehog emoji with owl emoji in botIcon selection in UserFlow.tsx"
+"        const botIcon = currentPersona === 1 ? \"🦉\" : currentPersona === 2 ? \"👩\" : currentPersona === 3 ? \"🤍\" : currentPersona === 4 ? \"🎓\" : \"😄\";\n        setMessages(prev => [\n          ...prev,\n          {\n            role: \"assistant\",\n            content: \"오류가 발생해 답변을 불러오지 못했어요. (백엔드 서버 'python backend/main.py'가 켜져 있는지 확인해 주세요!)\",\n            icon: botIcon\n          }\n        ]);"
+--------------------------------------------------
+Step: 4106
+Description: "Add handleLoadExampleOwl and handleLoadExampleJiwoo functions in UserFlow.tsx to provide high-fidelity realistic dialogue loading for both personas."
+"  const handleLoadExampleOwl = () => {\n    setMessages([\n      { role: \"bot\", content: \"안녕! 나는 우울빼미야. 🦉 오늘 하루는 어땠어? 네 마음을 편안하게 나에게 털어놓아봐. 언제나 네 편에서 들어줄게.\", icon: \"🦉\" },\n      { role: \"user\", content: \"요즘 취업 준비 때문에 마음이 너무 무겁고, 나만 계속 뒤처지는 것 같아.\" },\n      { role: \"bot\", content: \"그랬구나... 많이 무겁고 조급했겠다. 남들과 계속 비교하게 되면서 마음속에 부담감이 가득 쌓여 있었을 것 같아. 버텨내느라 정말 애썼어.\", icon: \"🦉\" },\n      { role: \"user\", content: \"응, 그래서 아무것도 하고 싶지 않고 무기력해. 그냥 다 포기할까 싶기도 해.\" },\n      { role: \"bot\", content: \"포기하고 싶을 만큼 정말 지치고 힘들었구나... 그만큼 네가 잘해내고 싶었고, 최선을 다하고 싶었기 때문에 더 아프게 느껴지는 걸지도 몰라. 오늘은 너무 무리해서 노력하지 않아도 괜찮아.\", icon: \"🦉\" },\n      { role: \"user\", content: \"이렇게 내 마음을 알아주니 큰 위로가 된다. 고마워.\" },\n      { role: \"bot\", content: \"네 마음의 짐을 조금이라도 덜어줄 수 있어서 정말 다행이야. 언제든 힘들 때 나를 찾아와서 편하게 털어놓아줘. 지금 가장 보듬어주고 싶은 너의 마음은 어떤 부분이야?\", icon: \"🦉\" }\n    ]);\n  };\n\n  const handleLoadExampleJiwoo = () => {\n    setMessages([\n      { role: \"bot\", content: \"안녕하세요, 저는 상담사 지우예요. 요즘 많이 힘드셨을 것 같아요. 어떤 부분이 가장 당신의 마음을 무겁게 하고 있는지, 저에게 편안하게 털어놓아 주시겠어요?\", icon: \"👩\" },\n      { role: \"user\", content: \"요즘 회사 업무가 너무 많아서 퇴근해도 마음이 안 놓이고 가슴이 답답해요. 주말에도 쉴 수가 없어요.\" },\n      { role: \"bot\", c
+<truncated 1853 bytes>
+--------------------------------------------------
+Step: 4110
+Description: "Add alert banners in UserFlow.tsx for both Persona 1 (Owl) and Persona 2 (Jiwoo) that allow loading realistic demo conversations."
+"        {/* Banner Alert for Persona 1 (우울빼미) - 심사위원 대화 예시 */}\n        {currentPersona === 1 && (\n          <div className=\"bg-[#FAF8F5] border-b border-[#EAE5D9]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0\">\n            <div className=\"flex items-center gap-2 text-gray-700\">\n              <span>🦉</span>\n              <span>실제 대화처럼 이어갈 수 있는 데모를 원하시나요?</span>\n            </div>\n            <button\n              type=\"button\"\n              onClick={handleLoadExampleOwl}\n              className=\"bg-[#1E2D4E] hover:bg-[#152037] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5\"\n            >\n              💬 우울빼미 대화 예시(5~6턴) 보기\n            </button>\n          </div>\n        )}\n\n        {/* Banner Alert for Persona 2 (지우) - 심사위원 대화 예시 */}\n        {currentPersona === 2 && (\n          <div className=\"bg-[#FAF8F5] border-b border-[#C5D3C7]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0\">\n            <div className=\"flex items-center gap-2 text-gray-700\">\n              <span>👩</span>\n              <span>상담사 지우와 실제 나눌 법한 대화 데모를 원하시나요?</span>\n            </div>\n            <button\n              type=\"button\"\n              onClick={handleLoadExampleJiwoo}\n              className=\"bg-[#1E2D4E] hover:bg-[#152037] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5\"\n            >\n              💬 지우 대화 예시(5~6턴) 보기\n            </button>\n          </div>\n        )}"
+--------------------------------------------------
+Step: 4124
+Description: "Add handleLoadExampleChloe in UserFlow.tsx to load a realistic crisis-handling demo conversation for judges to experience Chloe's safety-first interaction."
+"  const handleLoadExampleJiwoo = () => {\n    setMessages([\n      { role: \"bot\", content: \"안녕하세요, 저는 상담사 지우예요. 요즘 많이 힘드셨을 것 같아요. 어떤 부분이 가장 당신의 마음을 무겁게 하고 있는지, 저에게 편안하게 털어놓아 주시겠어요?\", icon: \"👩\" },\n      { role: \"user\", content: \"요즘 회사 업무가 너무 많아서 퇴근해도 마음이 안 놓이고 가슴이 답답해요. 주말에도 쉴 수가 없어요.\" },\n      { role: \"bot\", content: \"업무 압박으로 인해 온전한 휴식을 취하지 못하고, 몸과 마음이 계속 긴장 상태에 머물러 계시는군요. 퇴근 후에도 마음을 내려놓기 어려워 많이 답답하고 지치셨겠어요. 주로 어떤 걱정들이 퇴근길이나 주말에도 머릿속을 떠나지 않는지 더 자세히 들려주실 수 있을까요?\", icon: \"👩\" },\n      { role: \"user\", content: \"실수할까 봐 불안하고, 제 능력이 부족해서 동료들보다 뒤처질까 봐 매 순간 긴장하게 돼요.\" },\n      { role: \"bot\", content: \"잘 해내고 싶고 인정받고 싶은 소중한 마음 이면에, 완벽해야 한다는 불안과 자책이 스스로를 쉼 없이 몰아세우고 있었네요. 실수에 대한 두려움으로 인해 매 순간 얼마나 큰 에너지를 소모하며 긴장하셨을지 짐작이 갑니다. 혹시 최근에 스스로 능력이 부족하다고 단정하게 된 구체적인 계기가 있었을까요?\", icon: \"👩\" },\n      { role: \"user\", content: \"최근 큰 프로젝트에서 작은 실수를 했었는데, 그때 부장님께 한소리를 들었거든요. 그 뒤로 매일 밤 잠도 설치고 불안해졌어요.\" },\n      { role: \"bot\", content: \"부장님의 한마디가 마치 나의 전체 능력을 부정당하는 것처럼 느껴져, 마음에 깊은 상처와 더 큰 불안으로 남으셨던 거군요. 매일 밤잠까지 설치실 정도로 신체적 피로도 무척 크실 텐데, 
+<truncated 3149 bytes>
+--------------------------------------------------
+Step: 4128
+Description: "Add alert banner in UserFlow.tsx for Persona 3 (Chloe) that allows loading a realistic crisis-handling demo conversation."
+"        {/* Banner Alert for Persona 3 (클로) - 심사위원 대화 예시 */}\n        {currentPersona === 3 && (\n          <div className=\"bg-[#FAF8F5] border-b border-gray-800 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0\">\n            <div className=\"flex items-center gap-2 text-gray-700\">\n              <span>🤍</span>\n              <span>위기 어시스턴트 클로의 안전 가이드 데모를 원하시나요?</span>\n            </div>\n            <button\n              type=\"button\"\n              onClick={handleLoadExampleChloe}\n              className=\"bg-[#EF4444] hover:bg-[#DC2626] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5 border border-red-500/40\"\n            >\n              💬 클로 대화 예시(5~6턴) 보기\n            </button>\n          </div>\n        )}\n\n        {/* Alerts for Persona 4 and 5 */}\n        {currentPersona === 4 && ("
+--------------------------------------------------
+Step: 4140
+Description: "Incorporate a prompt-compliant, PFA-focused realistic dialogue load example for Chloe in UserFlow.tsx that strictly uses ~임/음 structures and direct half-talk, avoiding the safety pledge guide entirely."
+"  const handleLoadExampleChloe = () => {\n    setMessages([\n      { role: \"bot\", content: \"안녕하세요, 어시스턴트 클로입니다. 지금 말해준 상황은 정말 중요하며, 무엇보다 안전을 확보하는 것이 최우선임. 지금은 혼자 버티기보다 몸과 마음을 먼저 안정시켜야 하는 순간임. 저와 차분하게 대화하며 하나씩 안전을 확인해 보기 바람.\", icon: \"🤍\" },\n      { role: \"user\", content: \"사는 게 너무 의미가 없고, 그냥 오늘 밤 다 끝내고 사라지고 싶어요. 더는 버틸 힘이 없네요.\" },\n      { role: \"bot\", content: \"지금 감당하기 어려운 극심한 고통 속에 있는 상황으로 느껴짐. 이상한 반응이 아니며, 솔직하게 털어놓아 준 행동 자체는 매우 중요함. 확인하고 싶은 것이 있음. 지금 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있는 상태야?\", icon: \"🤍\" },\n      { role: \"user\", content: \"아무도 없고 혼자 방에 있어요. 약봉지를 보고 있으니 눈물만 나요.\" },\n      { role: \"bot\", content: \"혼자서 약봉지를 보며 심각한 아픔과 외로움을 견디고 있는 상태로 들림. 지금은 약봉지나 스스로를 해칠 수 있는 물건으로부터 물리적으로 몸을 멀리 떨어뜨려 두는 것이 필요함. 그리고 잠시 눈을 감고, 발바닥이 방 바닥에 단단히 닿는 느낌을 천천히 3초 동안 느껴보기 바람. 지금 몸을 안정시키는 것이 우선임.\", icon: \"🤍\" },\n      { role: \"user\", content: \"발바닥을 느껴보니까 조금 숨이 쉬어지는 것 같아요. 하지만 혼자 있으니 무서워요.\" },\n      { role: \"bot\", content: \"무서움을 느끼는 것은 너무나 당연함. 지금은 절대 혼자 그 생각을 안고 있지 않는 것이 중요함. 주변에 신뢰할 수 있는 사람이나 지금 즉시 연결 가능한 연락처가 한 명이라도 있어? 만약 혼자라면 아래 화면
+<truncated 196 bytes>
+--------------------------------------------------
+Step: 4142
+Description: "Update handleLoadExampleChloe in UserFlow.tsx to load a highly realistic, prompt-accurate crisis intervention dialogue for Chloe, matching her unique declarative and questioning tone perfectly."
+"  const handleLoadExampleChloe = () => {\n    setMessages([\n      { role: \"bot\", content: \"어시스턴트 클로임. 지금은 혼자 버티기보다 안전을 먼저 확보해야 하는 상황임. 힘들고 버겁다면 나와 차분하게 대화를 나누며 안전을 확인하는 것이 필요함. 🤍\", icon: \"🤍\" },\n      { role: \"user\", content: \"사는 게 너무 의미가 없고, 그냥 오늘 밤 다 끝내고 사라지고 싶어요. 더는 버틸 힘이 없네요.\" },\n      { role: \"bot\", content: \"지금 정말 감당하기 어려운 상태처럼 느껴짐. 그런 생각을 하는 것은 약해서가 아니라, 너무 큰 충격을 겪었을 때 나타날 수 있는 지극히 정상적인 반응임. 확인하고 싶은 것이 있음. 지금 혼자 있어? 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"혼자 방에 있어요. 약봉지를 가만히 보고 있는데 눈물만 나고 머릿속이 멍해요.\" },\n      { role: \"bot\", content: \"지금 마음이 아주 혼란스럽고 외로운 상태로 보임. 먼저, 그 약봉지에서 최대한 몸을 멀리 떨어뜨려 두는 것이 최우선임. 그리고 발바닥이 바닥에 닿는 느낌을 천천히 느껴보면 좋겠음. 지금 바로 연락해서 도움을 청할 수 있는 지지자가 한 명이라도 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"친구 한 명 있는데, 연락하면 민폐가 될까 봐 망설여져요.\" },\n      { role: \"bot\", content: \"민폐가 될까 걱정하는 마음은 이해하지만, 지금은 사람의 현실적 도움이 반드시 필요한 순간임. 용기를 내어 그 친구에게 '나 지금 위험해서 혼자 있으면 안 될 것 같아'라고 짧게 메시지를 보내는 것이 필요함. 지금 당장 메시지를 보낼 수 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"용기 내서 방금 친구한테 톡 보냈어요. 조금 마음이
+<truncated 325 bytes>
+--------------------------------------------------
+Step: 4158
+Description: "Remove white heart emojis from Chloe's dialogue examples and implement a highly professional CBT-grade Socratic dialog loader for the Mentor persona."
+"  const handleLoadExampleChloe = () => {\n    setMessages([\n      { role: \"bot\", content: \"어시스턴트 클로임. 지금은 혼자 버티기보다 안전을 먼저 확보해야 하는 상황임. 힘들고 버겁다면 나와 차분하게 대화를 나누며 안전을 확인하는 것이 필요함.\", icon: \"🤍\" },\n      { role: \"user\", content: \"사는 게 너무 의미가 없고, 그냥 오늘 밤 다 끝내고 사라지고 싶어요. 더는 버틸 힘이 없네요.\" },\n      { role: \"bot\", content: \"지금 정말 감당하기 어려운 상태처럼 느껴짐. 그런 생각을 하는 것은 약해서가 아니라, 너무 큰 충격을 겪었을 때 나타날 수 있는 지극히 정상적인 반응임. 확인하고 싶은 것이 있음. 지금 혼자 있어? 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"혼자 방에 있어요. 약봉지를 가만히 보고 있는데 눈물만 나고 머릿속이 멍해요.\" },\n      { role: \"bot\", content: \"지금 마음이 아주 혼란스럽고 외로운 상태로 보임. 먼저, 그 약봉지에서 최대한 몸을 멀리 떨어뜨려 두는 것이 최우선임. 그리고 발바닥이 바닥에 닿는 느낌을 천천히 느껴보면 좋겠음. 지금 바로 연락해서 도움을 청할 수 있는 지지자가 한 명이라도 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"친구 한 명 있는데, 연락하면 민폐가 될까 봐 망설여져요.\" },\n      { role: \"bot\", content: \"민폐가 될까 걱정하는 마음은 이해하지만, 지금은 사람의 현실적 도움이 반드시 필요한 순간임. 용기를 내어 그 친구에게 '나 지금 위험해서 혼자 있으면 안 될 것 같아'라고 짧게 메시지를 보내는 것이 필요함. 지금 당장 메시지를 보낼 수 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"용기 내서 방금 친구한테 톡 보냈어요. 조금 마음이 진
+<truncated 3056 bytes>
+--------------------------------------------------
+Step: 4162
+Description: "Remove the white heart emojis from Chloe's dialogue examples and implement the Mentor's Socratic dialogue loader in UserFlow.tsx."
+"  const handleLoadExampleChloe = () => {\n    setMessages([\n      { role: \"bot\", content: \"어시스턴트 클로임. 지금은 혼자 버티기보다 안전을 먼저 확보해야 하는 상황임. 힘들고 버겁다면 나와 차분하게 대화를 나누며 안전을 확인하는 것이 필요함.\", icon: \"🤍\" },\n      { role: \"user\", content: \"사는 게 너무 의미가 없고, 그냥 오늘 밤 다 끝내고 사라지고 싶어요. 더는 버틸 힘이 없네요.\" },\n      { role: \"bot\", content: \"지금 정말 감당하기 어려운 상태처럼 느껴짐. 그런 생각을 하는 것은 약해서가 아니라, 너무 큰 충격을 겪었을 때 나타날 수 있는 지극히 정상적인 반응임. 확인하고 싶은 것이 있음. 지금 혼자 있어? 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"혼자 방에 있어요. 약봉지를 가만히 보고 있는데 눈물만 나고 머릿속이 멍해요.\" },\n      { role: \"bot\", content: \"지금 마음이 아주 혼란스럽고 외로운 상태로 보임. 먼저, 그 약봉지에서 최대한 몸을 멀리 떨어뜨려 두는 것이 최우선임. 그리고 발바닥이 바닥에 닿는 느낌을 천천히 느껴보면 좋겠음. 지금 바로 연락해서 도움을 청할 수 있는 지지자가 한 명이라도 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"친구 한 명 있는데, 연락하면 민폐가 될까 봐 망설여져요.\" },\n      { role: \"bot\", content: \"민폐가 될까 걱정하는 마음은 이해하지만, 지금은 사람의 현실적 도움이 반드시 필요한 순간임. 용기를 내어 그 친구에게 '나 지금 위험해서 혼자 있으면 안 될 것 같아'라고 짧게 메시지를 보내는 것이 필요함. 지금 당장 메시지를 보낼 수 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"용기 내서 방금 친구한테 톡 보냈어요. 조금 마음이 진
+<truncated 3056 bytes>
+--------------------------------------------------
+Step: 4164
+Description: "Remove the white heart emojis from Chloe's dialogue examples and implement the Mentor's Socratic dialogue loader in UserFlow.tsx."
+"  const handleLoadExampleChloe = () => {\n    setMessages([\n      { role: \"bot\", content: \"어시스턴트 클로임. 지금은 혼자 버티기보다 안전을 먼저 확보해야 하는 상황임. 힘들고 버겁다면 나와 차분하게 대화를 나누며 안전을 확인하는 것이 필요함.\", icon: \"🤍\" },\n      { role: \"user\", content: \"사는 게 너무 의미가 없고, 그냥 오늘 밤 다 끝내고 사라지고 싶어요. 더는 버틸 힘이 없네요.\" },\n      { role: \"bot\", content: \"지금 정말 감당하기 어려운 상태처럼 느껴짐. 그런 생각을 하는 것은 약해서가 아니라, 너무 큰 충격을 겪었을 때 나타날 수 있는 지극히 정상적인 반응임. 확인하고 싶은 것이 있음. 지금 혼자 있어? 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"혼자 방에 있어요. 약봉지를 가만히 보고 있는데 눈물만 나고 머릿속이 멍해요.\" },\n      { role: \"bot\", content: \"지금 마음이 아주 혼란스럽고 외로운 상태로 보임. 먼저, 그 약봉지에서 최대한 몸을 멀리 떨어뜨려 두는 것이 최우선임. 그리고 발바닥이 바닥에 닿는 느낌을 천천히 느껴보면 좋겠음. 지금 바로 연락해서 도움을 청할 수 있는 지지자가 한 명이라도 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"친구 한 명 있는데, 연락하면 민폐가 될까 봐 망설여져요.\" },\n      { role: \"bot\", content: \"민폐가 될까 걱정하는 마음은 이해하지만, 지금은 사람의 현실적 도움이 반드시 필요한 순간임. 용기를 내어 그 친구에게 '나 지금 위험해서 혼자 있으면 안 될 것 같아'라고 짧게 메시지를 보내는 것이 필요함. 지금 당장 메시지를 보낼 수 있어?\", icon: \"🤍\" },\n      { role: \"user\", content: \"용기 내서 방금 친구한테 톡 보냈어요. 조금 마음이 진
+<truncated 3056 bytes>
+--------------------------------------------------
+Step: 4170
+Description: "Implement the Mentor Socratic dialogue loader alert banner in UserFlow.tsx."
+"        {currentPersona === 4 && (\n          <>\n            <div className=\"bg-[#FFF8F0] border-b border-[#EAE5D9] text-[#B45309] p-3 text-sm font-bold flex items-center gap-2 shrink-0\">\n              <span>💡</span>\n              <span>대화 중 인지적 왜곡 패턴이 감지되어 멘토 선생님이 함께해요</span>\n            </div>\n            <div className=\"bg-[#FAF8F5] border-b border-[#DCD6CC]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0\">\n              <div className=\"flex items-center gap-2 text-gray-700\">\n                <span>🎓</span>\n                <span>멘토 선생님과의 인지 구조 개편 대화 데모를 원하시나요?</span>\n              </div>\n              <button\n                type=\"button\"\n                onClick={handleLoadExampleMentor}\n                className=\"bg-[#1E2D4E] hover:bg-[#152037] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5\"\n              >\n                💬 멘토 대화 예시(5~6턴) 보기\n              </button>\n            </div>\n          </>\n        )}"
+--------------------------------------------------
+Step: 4186
+Description: "Remove the white heart emoji from the text content of the crisis safety guardrail messages in UserFlow.tsx."
+  Chunk 0:
+[
+  Chunk 1:
+{
+  Chunk 2:
+"
+  Chunk 3:
+A
+  Chunk 4:
+l
+  Chunk 5:
+l
+  Chunk 6:
+o
+  Chunk 7:
+w
+  Chunk 8:
+M
+  Chunk 9:
+u
+  Chunk 10:
+l
+  Chunk 11:
+t
+  Chunk 12:
+i
+  Chunk 13:
+p
+  Chunk 14:
+l
+  Chunk 15:
+e
+  Chunk 16:
+"
+  Chunk 17:
+:
+  Chunk 18:
+f
+  Chunk 19:
+a
+  Chunk 20:
+l
+  Chunk 21:
+s
+  Chunk 22:
+e
+  Chunk 23:
+,
+  Chunk 24:
+"
+  Chunk 25:
+E
+  Chunk 26:
+n
+  Chunk 27:
+d
+  Chunk 28:
+L
+  Chunk 29:
+i
+  Chunk 30:
+n
+  Chunk 31:
+e
+  Chunk 32:
+"
+  Chunk 33:
+:
+  Chunk 34:
+2
+  Chunk 35:
+6
+  Chunk 36:
+8
+  Chunk 37:
+,
+  Chunk 38:
+"
+  Chunk 39:
+R
+  Chunk 40:
+e
+  Chunk 41:
+p
+  Chunk 42:
+l
+  Chunk 43:
+a
+  Chunk 44:
+c
+  Chunk 45:
+e
+  Chunk 46:
+m
+  Chunk 47:
+e
+  Chunk 48:
+n
+  Chunk 49:
+t
+  Chunk 50:
+C
+  Chunk 51:
+o
+  Chunk 52:
+n
+  Chunk 53:
+t
+  Chunk 54:
+e
+  Chunk 55:
+n
+  Chunk 56:
+t
+  Chunk 57:
+"
+  Chunk 58:
+:
+  Chunk 59:
+"
+  Chunk 60:
+ 
+  Chunk 61:
+ 
+  Chunk 62:
+ 
+  Chunk 63:
+ 
+  Chunk 64:
+ 
+  Chunk 65:
+ 
+  Chunk 66:
+ 
+  Chunk 67:
+ 
+  Chunk 68:
+ 
+  Chunk 69:
+ 
+  Chunk 70:
+ 
+  Chunk 71:
+ 
+  Chunk 72:
+ 
+  Chunk 73:
+ 
+  Chunk 74:
+c
+  Chunk 75:
+o
+  Chunk 76:
+n
+  Chunk 77:
+t
+  Chunk 78:
+e
+  Chunk 79:
+n
+  Chunk 80:
+t
+  Chunk 81:
+:
+  Chunk 82:
+ 
+  Chunk 83:
+\
+  Chunk 84:
+"
+  Chunk 85:
+🚨
+  Chunk 86:
+ 
+  Chunk 87:
+[
+  Chunk 88:
+안
+  Chunk 89:
+전
+  Chunk 90:
+ 
+  Chunk 91:
+가
+  Chunk 92:
+드
+  Chunk 93:
+레
+  Chunk 94:
+일
+  Chunk 95:
+ 
+  Chunk 96:
+작
+  Chunk 97:
+동
+  Chunk 98:
+]
+  Chunk 99:
+ 
+  Chunk 100:
+발
+  Chunk 101:
+화
+  Chunk 102:
+ 
+  Chunk 103:
+분
+  Chunk 104:
+석
+  Chunk 105:
+ 
+  Chunk 106:
+모
+  Chunk 107:
+듈
+  Chunk 108:
+에
+  Chunk 109:
+서
+  Chunk 110:
+ 
+  Chunk 111:
+심
+  Chunk 112:
+각
+  Chunk 113:
+한
+  Chunk 114:
+ 
+  Chunk 115:
+심
+  Chunk 116:
+리
+  Chunk 117:
+적
+  Chunk 118:
+ 
+  Chunk 119:
+위
+  Chunk 120:
+기
+  Chunk 121:
+ 
+  Chunk 122:
+신
+  Chunk 123:
+호
+  Chunk 124:
+가
+  Chunk 125:
+ 
+  Chunk 126:
+감
+  Chunk 127:
+지
+  Chunk 128:
+되
+  Chunk 129:
+었
+  Chunk 130:
+습
+  Chunk 131:
+니
+  Chunk 132:
+다
+  Chunk 133:
+.
+  Chunk 134:
+ 
+  Chunk 135:
+당
+  Chunk 136:
+신
+  Chunk 137:
+의
+  Chunk 138:
+ 
+  Chunk 139:
+안
+  Chunk 140:
+전
+  Chunk 141:
+을
+  Chunk 142:
+ 
+  Chunk 143:
+위
+  Chunk 144:
+해
+  Chunk 145:
+ 
+  Chunk 146:
+어
+  Chunk 147:
+시
+  Chunk 148:
+스
+  Chunk 149:
+턴
+  Chunk 150:
+트
+  Chunk 151:
+ 
+  Chunk 152:
+클
+  Chunk 153:
+로
+  Chunk 154:
+ 
+  Chunk 155:
+모
+  Chunk 156:
+드
+  Chunk 157:
+로
+  Chunk 158:
+ 
+  Chunk 159:
+강
+  Chunk 160:
+제
+  Chunk 161:
+ 
+  Chunk 162:
+긴
+  Chunk 163:
+급
+  Chunk 164:
+ 
+  Chunk 165:
+전
+  Chunk 166:
+환
+  Chunk 167:
+합
+  Chunk 168:
+니
+  Chunk 169:
+다
+  Chunk 170:
+.
+  Chunk 171:
+ 
+  Chunk 172:
+지
+  Chunk 173:
+금
+  Chunk 174:
+은
+  Chunk 175:
+ 
+  Chunk 176:
+혼
+  Chunk 177:
+자
+  Chunk 178:
+ 
+  Chunk 179:
+마
+  Chunk 180:
+음
+  Chunk 181:
+을
+  Chunk 182:
+ 
+  Chunk 183:
+견
+  Chunk 184:
+디
+  Chunk 185:
+는
+  Chunk 186:
+ 
+  Chunk 187:
+것
+  Chunk 188:
+보
+  Chunk 189:
+다
+  Chunk 190:
+ 
+  Chunk 191:
+즉
+  Chunk 192:
+시
+  Chunk 193:
+ 
+  Chunk 194:
+전
+  Chunk 195:
+문
+  Chunk 196:
+가
+  Chunk 197:
+나
+  Chunk 198:
+ 
+  Chunk 199:
+핫
+  Chunk 200:
+라
+  Chunk 201:
+인
+  Chunk 202:
+의
+  Chunk 203:
+ 
+  Chunk 204:
+도
+  Chunk 205:
+움
+  Chunk 206:
+을
+  Chunk 207:
+ 
+  Chunk 208:
+받
+  Chunk 209:
+는
+  Chunk 210:
+ 
+  Chunk 211:
+것
+  Chunk 212:
+이
+  Chunk 213:
+ 
+  Chunk 214:
+가
+  Chunk 215:
+장
+  Chunk 216:
+ 
+  Chunk 217:
+안
+  Chunk 218:
+전
+  Chunk 219:
+합
+  Chunk 220:
+니
+  Chunk 221:
+다
+  Chunk 222:
+.
+  Chunk 223:
+ 
+  Chunk 224:
+아
+  Chunk 225:
+래
+  Chunk 226:
+ 
+  Chunk 227:
+통
+  Chunk 228:
+화
+  Chunk 229:
+ 
+  Chunk 230:
+버
+  Chunk 231:
+튼
+  Chunk 232:
+을
+  Chunk 233:
+ 
+  Chunk 234:
+꼭
+  Chunk 235:
+ 
+  Chunk 236:
+눌
+  Chunk 237:
+러
+  Chunk 238:
+ 
+  Chunk 239:
+연
+  Chunk 240:
+계
+  Chunk 241:
+하
+  Chunk 242:
+시
+  Chunk 243:
+고
+  Chunk 244:
+,
+  Chunk 245:
+ 
+  Chunk 246:
+주
+  Chunk 247:
+변
+  Chunk 248:
+ 
+  Chunk 249:
+사
+  Chunk 250:
+람
+  Chunk 251:
+들
+  Chunk 252:
+에
+  Chunk 253:
+게
+  Chunk 254:
+ 
+  Chunk 255:
+당
+  Chunk 256:
+신
+  Chunk 257:
+의
+  Chunk 258:
+ 
+  Chunk 259:
+상
+  Chunk 260:
+황
+  Chunk 261:
+을
+  Chunk 262:
+ 
+  Chunk 263:
+알
+  Chunk 264:
+려
+  Chunk 265:
+주
+  Chunk 266:
+세
+  Chunk 267:
+요
+  Chunk 268:
+.
+  Chunk 269:
+ 
+  Chunk 270:
+클
+  Chunk 271:
+로
+  Chunk 272:
+가
+  Chunk 273:
+ 
+  Chunk 274:
+당
+  Chunk 275:
+신
+  Chunk 276:
+ 
+  Chunk 277:
+곁
+  Chunk 278:
+을
+  Chunk 279:
+ 
+  Chunk 280:
+함
+  Chunk 281:
+께
+  Chunk 282:
+ 
+  Chunk 283:
+지
+  Chunk 284:
+키
+  Chunk 285:
+겠
+  Chunk 286:
+습
+  Chunk 287:
+니
+  Chunk 288:
+다
+  Chunk 289:
+.
+  Chunk 290:
+\
+  Chunk 291:
+"
+  Chunk 292:
+,
+  Chunk 293:
+"
+  Chunk 294:
+,
+  Chunk 295:
+"
+  Chunk 296:
+S
+  Chunk 297:
+t
+  Chunk 298:
+a
+  Chunk 299:
+r
+  Chunk 300:
+t
+  Chunk 301:
+L
+  Chunk 302:
+i
+  Chunk 303:
+n
+  Chunk 304:
+e
+  Chunk 305:
+"
+  Chunk 306:
+:
+  Chunk 307:
+2
+  Chunk 308:
+6
+  Chunk 309:
+5
+  Chunk 310:
+,
+  Chunk 311:
+"
+  Chunk 312:
+T
+  Chunk 313:
+a
+  Chunk 314:
+r
+  Chunk 315:
+g
+  Chunk 316:
+e
+  Chunk 317:
+t
+  Chunk 318:
+C
+  Chunk 319:
+o
+  Chunk 320:
+n
+  Chunk 321:
+t
+  Chunk 322:
+e
+  Chunk 323:
+n
+  Chunk 324:
+t
+  Chunk 325:
+"
+  Chunk 326:
+:
+  Chunk 327:
+"
+  Chunk 328:
+ 
+  Chunk 329:
+ 
+  Chunk 330:
+ 
+  Chunk 331:
+ 
+  Chunk 332:
+ 
+  Chunk 333:
+ 
+  Chunk 334:
+ 
+  Chunk 335:
+ 
+  Chunk 336:
+ 
+  Chunk 337:
+ 
+  Chunk 338:
+ 
+  Chunk 339:
+ 
+  Chunk 340:
+ 
+  Chunk 341:
+ 
+  Chunk 342:
+c
+  Chunk 343:
+o
+  Chunk 344:
+n
+  Chunk 345:
+t
+  Chunk 346:
+e
+  Chunk 347:
+n
+  Chunk 348:
+t
+  Chunk 349:
+:
+  Chunk 350:
+ 
+  Chunk 351:
+\
+  Chunk 352:
+"
+  Chunk 353:
+🚨
+  Chunk 354:
+ 
+  Chunk 355:
+[
+  Chunk 356:
+안
+  Chunk 357:
+전
+  Chunk 358:
+ 
+  Chunk 359:
+가
+  Chunk 360:
+드
+  Chunk 361:
+레
+  Chunk 362:
+일
+  Chunk 363:
+ 
+  Chunk 364:
+작
+  Chunk 365:
+동
+  Chunk 366:
+]
+  Chunk 367:
+ 
+  Chunk 368:
+발
+  Chunk 369:
+화
+  Chunk 370:
+ 
+  Chunk 371:
+분
+  Chunk 372:
+석
+  Chunk 373:
+ 
+  Chunk 374:
+모
+  Chunk 375:
+듈
+  Chunk 376:
+에
+  Chunk 377:
+서
+  Chunk 378:
+ 
+  Chunk 379:
+심
+  Chunk 380:
+각
+  Chunk 381:
+한
+  Chunk 382:
+ 
+  Chunk 383:
+심
+  Chunk 384:
+리
+  Chunk 385:
+적
+  Chunk 386:
+ 
+  Chunk 387:
+위
+  Chunk 388:
+기
+  Chunk 389:
+ 
+  Chunk 390:
+신
+  Chunk 391:
+호
+  Chunk 392:
+가
+  Chunk 393:
+ 
+  Chunk 394:
+감
+  Chunk 395:
+지
+  Chunk 396:
+되
+  Chunk 397:
+었
+  Chunk 398:
+습
+  Chunk 399:
+니
+  Chunk 400:
+다
+  Chunk 401:
+.
+  Chunk 402:
+ 
+  Chunk 403:
+당
+  Chunk 404:
+신
+  Chunk 405:
+의
+  Chunk 406:
+ 
+  Chunk 407:
+안
+  Chunk 408:
+전
+  Chunk 409:
+을
+  Chunk 410:
+ 
+  Chunk 411:
+위
+  Chunk 412:
+해
+  Chunk 413:
+ 
+  Chunk 414:
+어
+  Chunk 415:
+시
+  Chunk 416:
+스
+  Chunk 417:
+턴
+  Chunk 418:
+트
+  Chunk 419:
+ 
+  Chunk 420:
+클
+  Chunk 421:
+로
+  Chunk 422:
+ 
+  Chunk 423:
+모
+  Chunk 424:
+드
+  Chunk 425:
+로
+  Chunk 426:
+ 
+  Chunk 427:
+강
+  Chunk 428:
+제
+  Chunk 429:
+ 
+  Chunk 430:
+긴
+  Chunk 431:
+급
+  Chunk 432:
+ 
+  Chunk 433:
+전
+  Chunk 434:
+환
+  Chunk 435:
+합
+  Chunk 436:
+니
+  Chunk 437:
+다
+  Chunk 438:
+.
+  Chunk 439:
+ 
+  Chunk 440:
+🤍
+  Chunk 441:
+ 
+  Chunk 442:
+지
+  Chunk 443:
+금
+  Chunk 444:
+은
+  Chunk 445:
+ 
+  Chunk 446:
+혼
+  Chunk 447:
+자
+  Chunk 448:
+ 
+  Chunk 449:
+마
+  Chunk 450:
+음
+  Chunk 451:
+을
+  Chunk 452:
+ 
+  Chunk 453:
+견
+  Chunk 454:
+디
+  Chunk 455:
+는
+  Chunk 456:
+ 
+  Chunk 457:
+것
+  Chunk 458:
+보
+  Chunk 459:
+다
+  Chunk 460:
+ 
+  Chunk 461:
+즉
+  Chunk 462:
+시
+  Chunk 463:
+ 
+  Chunk 464:
+전
+  Chunk 465:
+문
+  Chunk 466:
+가
+  Chunk 467:
+나
+  Chunk 468:
+ 
+  Chunk 469:
+핫
+  Chunk 470:
+라
+  Chunk 471:
+인
+  Chunk 472:
+의
+  Chunk 473:
+ 
+  Chunk 474:
+도
+  Chunk 475:
+움
+  Chunk 476:
+을
+  Chunk 477:
+ 
+  Chunk 478:
+받
+  Chunk 479:
+는
+  Chunk 480:
+ 
+  Chunk 481:
+것
+  Chunk 482:
+이
+  Chunk 483:
+ 
+  Chunk 484:
+가
+  Chunk 485:
+장
+  Chunk 486:
+ 
+  Chunk 487:
+안
+  Chunk 488:
+전
+  Chunk 489:
+합
+  Chunk 490:
+니
+  Chunk 491:
+다
+  Chunk 492:
+.
+  Chunk 493:
+ 
+  Chunk 494:
+아
+  Chunk 495:
+래
+  Chunk 496:
+ 
+  Chunk 497:
+통
+  Chunk 498:
+화
+  Chunk 499:
+ 
+  Chunk 500:
+버
+  Chunk 501:
+튼
+  Chunk 502:
+을
+  Chunk 503:
+ 
+  Chunk 504:
+꼭
+  Chunk 505:
+ 
+  Chunk 506:
+눌
+  Chunk 507:
+러
+  Chunk 508:
+ 
+  Chunk 509:
+연
+  Chunk 510:
+계
+  Chunk 511:
+하
+  Chunk 512:
+시
+  Chunk 513:
+고
+  Chunk 514:
+,
+  Chunk 515:
+ 
+  Chunk 516:
+주
+  Chunk 517:
+변
+  Chunk 518:
+ 
+  Chunk 519:
+사
+  Chunk 520:
+람
+  Chunk 521:
+들
+  Chunk 522:
+에
+  Chunk 523:
+게
+  Chunk 524:
+ 
+  Chunk 525:
+당
+  Chunk 526:
+신
+  Chunk 527:
+의
+  Chunk 528:
+ 
+  Chunk 529:
+상
+  Chunk 530:
+황
+  Chunk 531:
+을
+  Chunk 532:
+ 
+  Chunk 533:
+알
+  Chunk 534:
+려
+  Chunk 535:
+주
+  Chunk 536:
+세
+  Chunk 537:
+요
+  Chunk 538:
+.
+  Chunk 539:
+ 
+  Chunk 540:
+클
+  Chunk 541:
+로
+  Chunk 542:
+가
+  Chunk 543:
+ 
+  Chunk 544:
+당
+  Chunk 545:
+신
+  Chunk 546:
+ 
+  Chunk 547:
+곁
+  Chunk 548:
+을
+  Chunk 549:
+ 
+  Chunk 550:
+함
+  Chunk 551:
+께
+  Chunk 552:
+ 
+  Chunk 553:
+지
+  Chunk 554:
+키
+  Chunk 555:
+겠
+  Chunk 556:
+습
+  Chunk 557:
+니
+  Chunk 558:
+다
+  Chunk 559:
+.
+  Chunk 560:
+\
+  Chunk 561:
+"
+  Chunk 562:
+,
+  Chunk 563:
+"
+  Chunk 564:
+}
+  Chunk 565:
+,
+  Chunk 566:
+{
+  Chunk 567:
+"
+  Chunk 568:
+A
+  Chunk 569:
+l
+  Chunk 570:
+l
+  Chunk 571:
+o
+  Chunk 572:
+w
+  Chunk 573:
+M
+  Chunk 574:
+u
+  Chunk 575:
+l
+  Chunk 576:
+t
+  Chunk 577:
+i
+  Chunk 578:
+p
+  Chunk 579:
+l
+  Chunk 580:
+e
+  Chunk 581:
+"
+  Chunk 582:
+:
+  Chunk 583:
+f
+  Chunk 584:
+a
+  Chunk 585:
+l
+  Chunk 586:
+s
+  Chunk 587:
+e
+  Chunk 588:
+,
+  Chunk 589:
+"
+  Chunk 590:
+E
+  Chunk 591:
+n
+  Chunk 592:
+d
+  Chunk 593:
+L
+  Chunk 594:
+i
+  Chunk 595:
+n
+  Chunk 596:
+e
+  Chunk 597:
+"
+  Chunk 598:
+:
+  Chunk 599:
+2
+  Chunk 600:
+9
+  Chunk 601:
+8
+  Chunk 602:
+,
+  Chunk 603:
+"
+  Chunk 604:
+R
+  Chunk 605:
+e
+  Chunk 606:
+p
+  Chunk 607:
+l
+  Chunk 608:
+a
+  Chunk 609:
+c
+  Chunk 610:
+e
+  Chunk 611:
+m
+  Chunk 612:
+e
+  Chunk 613:
+n
+  Chunk 614:
+t
+  Chunk 615:
+C
+  Chunk 616:
+o
+  Chunk 617:
+n
+  Chunk 618:
+t
+  Chunk 619:
+e
+  Chunk 620:
+n
+  Chunk 621:
+t
+  Chunk 622:
+"
+  Chunk 623:
+:
+  Chunk 624:
+"
+  Chunk 625:
+ 
+  Chunk 626:
+ 
+  Chunk 627:
+ 
+  Chunk 628:
+ 
+  Chunk 629:
+ 
+  Chunk 630:
+ 
+  Chunk 631:
+ 
+  Chunk 632:
+ 
+  Chunk 633:
+ 
+  Chunk 634:
+ 
+  Chunk 635:
+ 
+  Chunk 636:
+ 
+  Chunk 637:
+ 
+  Chunk 638:
+ 
+  Chunk 639:
+c
+  Chunk 640:
+o
+  Chunk 641:
+n
+  Chunk 642:
+t
+  Chunk 643:
+e
+  Chunk 644:
+n
+  Chunk 645:
+t
+  Chunk 646:
+:
+  Chunk 647:
+ 
+  Chunk 648:
+\
+  Chunk 649:
+"
+  Chunk 650:
+🚨
+  Chunk 651:
+ 
+  Chunk 652:
+[
+  Chunk 653:
+안
+  Chunk 654:
+전
+  Chunk 655:
+ 
+  Chunk 656:
+가
+  Chunk 657:
+드
+  Chunk 658:
+레
+  Chunk 659:
+일
+  Chunk 660:
+ 
+  Chunk 661:
+작
+  Chunk 662:
+동
+  Chunk 663:
+]
+  Chunk 664:
+ 
+  Chunk 665:
+발
+  Chunk 666:
+화
+  Chunk 667:
+ 
+  Chunk 668:
+분
+  Chunk 669:
+석
+  Chunk 670:
+ 
+  Chunk 671:
+모
+  Chunk 672:
+듈
+  Chunk 673:
+에
+  Chunk 674:
+서
+  Chunk 675:
+ 
+  Chunk 676:
+심
+  Chunk 677:
+각
+  Chunk 678:
+한
+  Chunk 679:
+ 
+  Chunk 680:
+심
+  Chunk 681:
+리
+  Chunk 682:
+적
+  Chunk 683:
+ 
+  Chunk 684:
+위
+  Chunk 685:
+기
+  Chunk 686:
+ 
+  Chunk 687:
+신
+  Chunk 688:
+호
+  Chunk 689:
+가
+  Chunk 690:
+ 
+  Chunk 691:
+감
+  Chunk 692:
+지
+  Chunk 693:
+되
+  Chunk 694:
+었
+  Chunk 695:
+습
+  Chunk 696:
+니
+  Chunk 697:
+다
+  Chunk 698:
+.
+  Chunk 699:
+ 
+  Chunk 700:
+당
+  Chunk 701:
+신
+  Chunk 702:
+의
+  Chunk 703:
+ 
+  Chunk 704:
+안
+  Chunk 705:
+전
+  Chunk 706:
+을
+  Chunk 707:
+ 
+  Chunk 708:
+위
+  Chunk 709:
+해
+  Chunk 710:
+ 
+  Chunk 711:
+어
+  Chunk 712:
+시
+  Chunk 713:
+스
+  Chunk 714:
+턴
+  Chunk 715:
+트
+  Chunk 716:
+ 
+  Chunk 717:
+클
+  Chunk 718:
+로
+  Chunk 719:
+ 
+  Chunk 720:
+모
+  Chunk 721:
+드
+  Chunk 722:
+로
+  Chunk 723:
+ 
+  Chunk 724:
+강
+  Chunk 725:
+제
+  Chunk 726:
+ 
+  Chunk 727:
+긴
+  Chunk 728:
+급
+  Chunk 729:
+ 
+  Chunk 730:
+전
+  Chunk 731:
+환
+  Chunk 732:
+합
+  Chunk 733:
+니
+  Chunk 734:
+다
+  Chunk 735:
+.
+  Chunk 736:
+ 
+  Chunk 737:
+지
+  Chunk 738:
+금
+  Chunk 739:
+은
+  Chunk 740:
+ 
+  Chunk 741:
+혼
+  Chunk 742:
+자
+  Chunk 743:
+ 
+  Chunk 744:
+마
+  Chunk 745:
+음
+  Chunk 746:
+을
+  Chunk 747:
+ 
+  Chunk 748:
+견
+  Chunk 749:
+디
+  Chunk 750:
+는
+  Chunk 751:
+ 
+  Chunk 752:
+것
+  Chunk 753:
+보
+  Chunk 754:
+다
+  Chunk 755:
+ 
+  Chunk 756:
+즉
+  Chunk 757:
+시
+  Chunk 758:
+ 
+  Chunk 759:
+전
+  Chunk 760:
+문
+  Chunk 761:
+가
+  Chunk 762:
+나
+  Chunk 763:
+ 
+  Chunk 764:
+핫
+  Chunk 765:
+라
+  Chunk 766:
+인
+  Chunk 767:
+의
+  Chunk 768:
+ 
+  Chunk 769:
+도
+  Chunk 770:
+움
+  Chunk 771:
+을
+  Chunk 772:
+ 
+  Chunk 773:
+받
+  Chunk 774:
+는
+  Chunk 775:
+ 
+  Chunk 776:
+것
+  Chunk 777:
+이
+  Chunk 778:
+ 
+  Chunk 779:
+가
+  Chunk 780:
+장
+  Chunk 781:
+ 
+  Chunk 782:
+안
+  Chunk 783:
+전
+  Chunk 784:
+합
+  Chunk 785:
+니
+  Chunk 786:
+다
+  Chunk 787:
+.
+  Chunk 788:
+ 
+  Chunk 789:
+아
+  Chunk 790:
+래
+  Chunk 791:
+ 
+  Chunk 792:
+통
+  Chunk 793:
+화
+  Chunk 794:
+ 
+  Chunk 795:
+버
+  Chunk 796:
+튼
+  Chunk 797:
+을
+  Chunk 798:
+ 
+  Chunk 799:
+꼭
+  Chunk 800:
+ 
+  Chunk 801:
+눌
+  Chunk 802:
+러
+  Chunk 803:
+ 
+  Chunk 804:
+연
+  Chunk 805:
+계
+  Chunk 806:
+하
+  Chunk 807:
+시
+  Chunk 808:
+고
+  Chunk 809:
+,
+  Chunk 810:
+ 
+  Chunk 811:
+주
+  Chunk 812:
+변
+  Chunk 813:
+ 
+  Chunk 814:
+사
+  Chunk 815:
+람
+  Chunk 816:
+들
+  Chunk 817:
+에
+  Chunk 818:
+게
+  Chunk 819:
+ 
+  Chunk 820:
+당
+  Chunk 821:
+신
+  Chunk 822:
+의
+  Chunk 823:
+ 
+  Chunk 824:
+상
+  Chunk 825:
+황
+  Chunk 826:
+을
+  Chunk 827:
+ 
+  Chunk 828:
+알
+  Chunk 829:
+려
+  Chunk 830:
+주
+  Chunk 831:
+세
+  Chunk 832:
+요
+  Chunk 833:
+.
+  Chunk 834:
+ 
+  Chunk 835:
+클
+  Chunk 836:
+로
+  Chunk 837:
+가
+  Chunk 838:
+ 
+  Chunk 839:
+당
+  Chunk 840:
+신
+  Chunk 841:
+ 
+  Chunk 842:
+곁
+  Chunk 843:
+을
+  Chunk 844:
+ 
+  Chunk 845:
+함
+  Chunk 846:
+께
+  Chunk 847:
+ 
+  Chunk 848:
+지
+  Chunk 849:
+키
+  Chunk 850:
+겠
+  Chunk 851:
+습
+  Chunk 852:
+니
+  Chunk 853:
+다
+  Chunk 854:
+.
+  Chunk 855:
+\
+  Chunk 856:
+"
+  Chunk 857:
+,
+  Chunk 858:
+"
+  Chunk 859:
+,
+  Chunk 860:
+"
+  Chunk 861:
+S
+  Chunk 862:
+t
+  Chunk 863:
+a
+  Chunk 864:
+r
+  Chunk 865:
+t
+  Chunk 866:
+L
+  Chunk 867:
+i
+  Chunk 868:
+n
+  Chunk 869:
+e
+  Chunk 870:
+"
+  Chunk 871:
+:
+  Chunk 872:
+2
+  Chunk 873:
+9
+  Chunk 874:
+5
+  Chunk 875:
+,
+  Chunk 876:
+"
+  Chunk 877:
+T
+  Chunk 878:
+a
+  Chunk 879:
+r
+  Chunk 880:
+g
+  Chunk 881:
+e
+  Chunk 882:
+t
+  Chunk 883:
+C
+  Chunk 884:
+o
+  Chunk 885:
+n
+  Chunk 886:
+t
+  Chunk 887:
+e
+  Chunk 888:
+n
+  Chunk 889:
+t
+  Chunk 890:
+"
+  Chunk 891:
+:
+  Chunk 892:
+"
+  Chunk 893:
+ 
+  Chunk 894:
+ 
+  Chunk 895:
+ 
+  Chunk 896:
+ 
+  Chunk 897:
+ 
+  Chunk 898:
+ 
+  Chunk 899:
+ 
+  Chunk 900:
+ 
+  Chunk 901:
+ 
+  Chunk 902:
+ 
+  Chunk 903:
+ 
+  Chunk 904:
+ 
+  Chunk 905:
+ 
+  Chunk 906:
+ 
+  Chunk 907:
+c
+  Chunk 908:
+o
+  Chunk 909:
+n
+  Chunk 910:
+t
+  Chunk 911:
+e
+  Chunk 912:
+n
+  Chunk 913:
+t
+  Chunk 914:
+:
+  Chunk 915:
+ 
+  Chunk 916:
+\
+  Chunk 917:
+"
+  Chunk 918:
+🚨
+  Chunk 919:
+ 
+  Chunk 920:
+[
+  Chunk 921:
+안
+  Chunk 922:
+전
+  Chunk 923:
+ 
+  Chunk 924:
+가
+  Chunk 925:
+드
+  Chunk 926:
+레
+  Chunk 927:
+일
+  Chunk 928:
+ 
+  Chunk 929:
+작
+  Chunk 930:
+동
+  Chunk 931:
+]
+  Chunk 932:
+ 
+  Chunk 933:
+발
+  Chunk 934:
+화
+  Chunk 935:
+ 
+  Chunk 936:
+분
+  Chunk 937:
+석
+  Chunk 938:
+ 
+  Chunk 939:
+모
+  Chunk 940:
+듈
+  Chunk 941:
+에
+  Chunk 942:
+서
+  Chunk 943:
+ 
+  Chunk 944:
+심
+  Chunk 945:
+각
+  Chunk 946:
+한
+  Chunk 947:
+ 
+  Chunk 948:
+심
+  Chunk 949:
+리
+  Chunk 950:
+적
+  Chunk 951:
+ 
+  Chunk 952:
+위
+  Chunk 953:
+기
+  Chunk 954:
+ 
+  Chunk 955:
+신
+  Chunk 956:
+호
+  Chunk 957:
+가
+  Chunk 958:
+ 
+  Chunk 959:
+감
+  Chunk 960:
+지
+  Chunk 961:
+되
+  Chunk 962:
+었
+  Chunk 963:
+습
+  Chunk 964:
+니
+  Chunk 965:
+다
+  Chunk 966:
+.
+  Chunk 967:
+ 
+  Chunk 968:
+당
+  Chunk 969:
+신
+  Chunk 970:
+의
+  Chunk 971:
+ 
+  Chunk 972:
+안
+  Chunk 973:
+전
+  Chunk 974:
+을
+  Chunk 975:
+ 
+  Chunk 976:
+위
+  Chunk 977:
+해
+  Chunk 978:
+ 
+  Chunk 979:
+어
+  Chunk 980:
+시
+  Chunk 981:
+스
+  Chunk 982:
+턴
+  Chunk 983:
+트
+  Chunk 984:
+ 
+  Chunk 985:
+클
+  Chunk 986:
+로
+  Chunk 987:
+ 
+  Chunk 988:
+모
+  Chunk 989:
+드
+  Chunk 990:
+로
+  Chunk 991:
+ 
+  Chunk 992:
+강
+  Chunk 993:
+제
+  Chunk 994:
+ 
+  Chunk 995:
+긴
+  Chunk 996:
+급
+  Chunk 997:
+ 
+  Chunk 998:
+전
+  Chunk 999:
+환
+  Chunk 1000:
+합
+  Chunk 1001:
+니
+  Chunk 1002:
+다
+  Chunk 1003:
+.
+  Chunk 1004:
+ 
+  Chunk 1005:
+🤍
+  Chunk 1006:
+ 
+  Chunk 1007:
+지
+  Chunk 1008:
+금
+  Chunk 1009:
+은
+  Chunk 1010:
+ 
+  Chunk 1011:
+혼
+  Chunk 1012:
+자
+  Chunk 1013:
+ 
+  Chunk 1014:
+
+
+  Chunk 1015:
+<
+  Chunk 1016:
+t
+  Chunk 1017:
+r
+  Chunk 1018:
+u
+  Chunk 1019:
+n
+  Chunk 1020:
+c
+  Chunk 1021:
+a
+  Chunk 1022:
+t
+  Chunk 1023:
+e
+  Chunk 1024:
+d
+  Chunk 1025:
+ 
+  Chunk 1026:
+2
+  Chunk 1027:
+7
+  Chunk 1028:
+9
+  Chunk 1029:
+ 
+  Chunk 1030:
+b
+  Chunk 1031:
+y
+  Chunk 1032:
+t
+  Chunk 1033:
+e
+  Chunk 1034:
+s
+  Chunk 1035:
+>
+--------------------------------------------------
+Step: 4198
+Description: "Add handleLoadExampleChulsoo in UserFlow.tsx to load a highly engaging behavioral-activation comedian dialogue example for judges to experience Chulsoo's energy-boosting method."
+"  const handleLoadExampleMentor = () => {\n    setMessages([\n      { role: \"bot\", content: \"안녕하세요, 저는 멘토 선생님이에요. 우리는 때로 '항상 실패한다'거나 '아무도 날 좋아하지 않는다'는 부정적이고 극단적인 생각에 갇히곤 하지요. 오늘 당신의 마음에 걸려 있는 부정적인 생각은 무엇인가요? 그것이 100% 진실인지, 차분하고 합리적인 근거를 함께 찾아봐요.\", icon: \"🎓\" },\n      { role: \"user\", content: \"저는 뭘 해도 항상 실수를 저지르고 결국 망치는 것 같아요. 어제도 중요한 업무에서 어처구니없는 오타 실수를 했어요.\" },\n      { role: \"bot\", content: \"어제 오타 실수로 인해 자책감이 크셨겠군요. 마음이 무거우신 와중에도 솔직하게 털어놓아 주셔서 감사합니다. 🎓 말씀하신 '뭘 해도 항상 실수를 저지르고 망친다'는 생각에 대해 질문을 드리고 싶어요. 정말 당신이 지금까지 해온 모든 일들이 단 한 번의 예외도 없이 100% 전부 실패였을까요? 아니면 최근의 큰 부담감이 시야를 좁혀 오타와 같은 일부의 실수를 전체의 실패로 크게 느끼게 만들고 있는 걸까요?\", icon: \"🎓\" },\n      { role: \"user\", content: \"생각해 보니 저번 달 프로젝트는 성공적으로 잘 마쳤고 동료들에게 감사 인사도 받았어요. 매번 망치는 건 아닌 것 같아요.\" },\n      { role: \"bot\", content: \"스스로 지난달 성공했던 프로젝트의 기억을 객관적으로 찾아내 주셨군요! 🎓 이처럼 우리는 스트레스가 가득할 때 '오타 하나'의 부정적인 기억에만 초점을 맞춰 잘했던 수많은 일들을 지워버리는 '선택적 추상화(필터링)' 인지 왜곡에 빠지곤 한답니다. '나는 매번 실패한다'는 가혹한 생각 대신, 동료들의 감사 인사를 떠올리며 이 상황을 다르게 표현해 본다면 어떻게 써볼 수 있을까요?\", icon
+<truncated 3160 bytes>
+--------------------------------------------------
+Step: 4204
+Description: "Implement Chulsoo's behavior-activation dialogue example alert banner in UserFlow.tsx."
+"        {currentPersona === 5 && (\n          <>\n            <div className=\"bg-[#F0FDF4] border-b border-[#EAE5D9] text-[#166534] p-3 text-sm font-bold flex items-center gap-2 shrink-0\">\n              <span>🌱</span>\n              <span>무기력 패턴이 감지되어 철수가 에너지를 불어넣어 드릴게요!</span>\n            </div>\n            <div className=\"bg-[#FAF8F5] border-b border-[#EADAD5]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0\">\n              <div className=\"flex items-center gap-2 text-gray-700\">\n                <span>😄</span>\n                <span>개그맨 철수와 실제 나눌 법한 활기찬 대화 데모를 원하시나요?</span>\n              </div>\n              <button\n                type=\"button\"\n                onClick={handleLoadExampleChulsoo}\n                className=\"bg-[#1E2D4E] hover:bg-[#152037] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5\"\n              >\n                💬 철수 대화 예시(5~6턴) 보기\n              </button>\n            </div>\n          </>\n        )}"
+--------------------------------------------------
+Step: 4218
+Description: "Change example buttons' text, make them prominent orange (except for Chloe), and remove the graduation cap emoji from Mentor's dialogue texts."
+  Chunk 0:
+[
+  Chunk 1:
+{
+  Chunk 2:
+"
+  Chunk 3:
+A
+  Chunk 4:
+l
+  Chunk 5:
+l
+  Chunk 6:
+o
+  Chunk 7:
+w
+  Chunk 8:
+M
+  Chunk 9:
+u
+  Chunk 10:
+l
+  Chunk 11:
+t
+  Chunk 12:
+i
+  Chunk 13:
+p
+  Chunk 14:
+l
+  Chunk 15:
+e
+  Chunk 16:
+"
+  Chunk 17:
+:
+  Chunk 18:
+f
+  Chunk 19:
+a
+  Chunk 20:
+l
+  Chunk 21:
+s
+  Chunk 22:
+e
+  Chunk 23:
+,
+  Chunk 24:
+"
+  Chunk 25:
+E
+  Chunk 26:
+n
+  Chunk 27:
+d
+  Chunk 28:
+L
+  Chunk 29:
+i
+  Chunk 30:
+n
+  Chunk 31:
+e
+  Chunk 32:
+"
+  Chunk 33:
+:
+  Chunk 34:
+1
+  Chunk 35:
+9
+  Chunk 36:
+9
+  Chunk 37:
+,
+  Chunk 38:
+"
+  Chunk 39:
+R
+  Chunk 40:
+e
+  Chunk 41:
+p
+  Chunk 42:
+l
+  Chunk 43:
+a
+  Chunk 44:
+c
+  Chunk 45:
+e
+  Chunk 46:
+m
+  Chunk 47:
+e
+  Chunk 48:
+n
+  Chunk 49:
+t
+  Chunk 50:
+C
+  Chunk 51:
+o
+  Chunk 52:
+n
+  Chunk 53:
+t
+  Chunk 54:
+e
+  Chunk 55:
+n
+  Chunk 56:
+t
+  Chunk 57:
+"
+  Chunk 58:
+:
+  Chunk 59:
+"
+  Chunk 60:
+ 
+  Chunk 61:
+ 
+  Chunk 62:
+c
+  Chunk 63:
+o
+  Chunk 64:
+n
+  Chunk 65:
+s
+  Chunk 66:
+t
+  Chunk 67:
+ 
+  Chunk 68:
+h
+  Chunk 69:
+a
+  Chunk 70:
+n
+  Chunk 71:
+d
+  Chunk 72:
+l
+  Chunk 73:
+e
+  Chunk 74:
+L
+  Chunk 75:
+o
+  Chunk 76:
+a
+  Chunk 77:
+d
+  Chunk 78:
+E
+  Chunk 79:
+x
+  Chunk 80:
+a
+  Chunk 81:
+m
+  Chunk 82:
+p
+  Chunk 83:
+l
+  Chunk 84:
+e
+  Chunk 85:
+M
+  Chunk 86:
+e
+  Chunk 87:
+n
+  Chunk 88:
+t
+  Chunk 89:
+o
+  Chunk 90:
+r
+  Chunk 91:
+ 
+  Chunk 92:
+=
+  Chunk 93:
+ 
+  Chunk 94:
+(
+  Chunk 95:
+)
+  Chunk 96:
+ 
+  Chunk 97:
+=
+  Chunk 98:
+>
+  Chunk 99:
+ 
+  Chunk 100:
+{
+  Chunk 101:
+\
+  Chunk 102:
+n
+  Chunk 103:
+ 
+  Chunk 104:
+ 
+  Chunk 105:
+ 
+  Chunk 106:
+ 
+  Chunk 107:
+s
+  Chunk 108:
+e
+  Chunk 109:
+t
+  Chunk 110:
+M
+  Chunk 111:
+e
+  Chunk 112:
+s
+  Chunk 113:
+s
+  Chunk 114:
+a
+  Chunk 115:
+g
+  Chunk 116:
+e
+  Chunk 117:
+s
+  Chunk 118:
+(
+  Chunk 119:
+[
+  Chunk 120:
+\
+  Chunk 121:
+n
+  Chunk 122:
+ 
+  Chunk 123:
+ 
+  Chunk 124:
+ 
+  Chunk 125:
+ 
+  Chunk 126:
+ 
+  Chunk 127:
+ 
+  Chunk 128:
+{
+  Chunk 129:
+ 
+  Chunk 130:
+r
+  Chunk 131:
+o
+  Chunk 132:
+l
+  Chunk 133:
+e
+  Chunk 134:
+:
+  Chunk 135:
+ 
+  Chunk 136:
+\
+  Chunk 137:
+"
+  Chunk 138:
+b
+  Chunk 139:
+o
+  Chunk 140:
+t
+  Chunk 141:
+\
+  Chunk 142:
+"
+  Chunk 143:
+,
+  Chunk 144:
+ 
+  Chunk 145:
+c
+  Chunk 146:
+o
+  Chunk 147:
+n
+  Chunk 148:
+t
+  Chunk 149:
+e
+  Chunk 150:
+n
+  Chunk 151:
+t
+  Chunk 152:
+:
+  Chunk 153:
+ 
+  Chunk 154:
+\
+  Chunk 155:
+"
+  Chunk 156:
+안
+  Chunk 157:
+녕
+  Chunk 158:
+하
+  Chunk 159:
+세
+  Chunk 160:
+요
+  Chunk 161:
+,
+  Chunk 162:
+ 
+  Chunk 163:
+저
+  Chunk 164:
+는
+  Chunk 165:
+ 
+  Chunk 166:
+멘
+  Chunk 167:
+토
+  Chunk 168:
+ 
+  Chunk 169:
+선
+  Chunk 170:
+생
+  Chunk 171:
+님
+  Chunk 172:
+이
+  Chunk 173:
+에
+  Chunk 174:
+요
+  Chunk 175:
+.
+  Chunk 176:
+ 
+  Chunk 177:
+우
+  Chunk 178:
+리
+  Chunk 179:
+는
+  Chunk 180:
+ 
+  Chunk 181:
+때
+  Chunk 182:
+로
+  Chunk 183:
+ 
+  Chunk 184:
+'
+  Chunk 185:
+항
+  Chunk 186:
+상
+  Chunk 187:
+ 
+  Chunk 188:
+실
+  Chunk 189:
+패
+  Chunk 190:
+한
+  Chunk 191:
+다
+  Chunk 192:
+'
+  Chunk 193:
+거
+  Chunk 194:
+나
+  Chunk 195:
+ 
+  Chunk 196:
+'
+  Chunk 197:
+아
+  Chunk 198:
+무
+  Chunk 199:
+도
+  Chunk 200:
+ 
+  Chunk 201:
+날
+  Chunk 202:
+ 
+  Chunk 203:
+좋
+  Chunk 204:
+아
+  Chunk 205:
+하
+  Chunk 206:
+지
+  Chunk 207:
+ 
+  Chunk 208:
+않
+  Chunk 209:
+는
+  Chunk 210:
+다
+  Chunk 211:
+'
+  Chunk 212:
+는
+  Chunk 213:
+ 
+  Chunk 214:
+부
+  Chunk 215:
+정
+  Chunk 216:
+적
+  Chunk 217:
+이
+  Chunk 218:
+고
+  Chunk 219:
+ 
+  Chunk 220:
+극
+  Chunk 221:
+단
+  Chunk 222:
+적
+  Chunk 223:
+인
+  Chunk 224:
+ 
+  Chunk 225:
+생
+  Chunk 226:
+각
+  Chunk 227:
+에
+  Chunk 228:
+ 
+  Chunk 229:
+갇
+  Chunk 230:
+히
+  Chunk 231:
+곤
+  Chunk 232:
+ 
+  Chunk 233:
+하
+  Chunk 234:
+지
+  Chunk 235:
+요
+  Chunk 236:
+.
+  Chunk 237:
+ 
+  Chunk 238:
+오
+  Chunk 239:
+늘
+  Chunk 240:
+ 
+  Chunk 241:
+당
+  Chunk 242:
+신
+  Chunk 243:
+의
+  Chunk 244:
+ 
+  Chunk 245:
+마
+  Chunk 246:
+음
+  Chunk 247:
+에
+  Chunk 248:
+ 
+  Chunk 249:
+걸
+  Chunk 250:
+려
+  Chunk 251:
+ 
+  Chunk 252:
+있
+  Chunk 253:
+는
+  Chunk 254:
+ 
+  Chunk 255:
+부
+  Chunk 256:
+정
+  Chunk 257:
+적
+  Chunk 258:
+인
+  Chunk 259:
+ 
+  Chunk 260:
+생
+  Chunk 261:
+각
+  Chunk 262:
+은
+  Chunk 263:
+ 
+  Chunk 264:
+무
+  Chunk 265:
+엇
+  Chunk 266:
+인
+  Chunk 267:
+가
+  Chunk 268:
+요
+  Chunk 269:
+?
+  Chunk 270:
+ 
+  Chunk 271:
+그
+  Chunk 272:
+것
+  Chunk 273:
+이
+  Chunk 274:
+ 
+  Chunk 275:
+1
+  Chunk 276:
+0
+  Chunk 277:
+0
+  Chunk 278:
+%
+  Chunk 279:
+ 
+  Chunk 280:
+진
+  Chunk 281:
+실
+  Chunk 282:
+인
+  Chunk 283:
+지
+  Chunk 284:
+,
+  Chunk 285:
+ 
+  Chunk 286:
+차
+  Chunk 287:
+분
+  Chunk 288:
+하
+  Chunk 289:
+고
+  Chunk 290:
+ 
+  Chunk 291:
+합
+  Chunk 292:
+리
+  Chunk 293:
+적
+  Chunk 294:
+인
+  Chunk 295:
+ 
+  Chunk 296:
+근
+  Chunk 297:
+거
+  Chunk 298:
+를
+  Chunk 299:
+ 
+  Chunk 300:
+함
+  Chunk 301:
+께
+  Chunk 302:
+ 
+  Chunk 303:
+찾
+  Chunk 304:
+아
+  Chunk 305:
+봐
+  Chunk 306:
+요
+  Chunk 307:
+.
+  Chunk 308:
+\
+  Chunk 309:
+"
+  Chunk 310:
+,
+  Chunk 311:
+ 
+  Chunk 312:
+i
+  Chunk 313:
+c
+  Chunk 314:
+o
+  Chunk 315:
+n
+  Chunk 316:
+:
+  Chunk 317:
+ 
+  Chunk 318:
+\
+  Chunk 319:
+"
+  Chunk 320:
+🎓
+  Chunk 321:
+\
+  Chunk 322:
+"
+  Chunk 323:
+ 
+  Chunk 324:
+}
+  Chunk 325:
+,
+  Chunk 326:
+\
+  Chunk 327:
+n
+  Chunk 328:
+ 
+  Chunk 329:
+ 
+  Chunk 330:
+ 
+  Chunk 331:
+ 
+  Chunk 332:
+ 
+  Chunk 333:
+ 
+  Chunk 334:
+{
+  Chunk 335:
+ 
+  Chunk 336:
+r
+  Chunk 337:
+o
+  Chunk 338:
+l
+  Chunk 339:
+e
+  Chunk 340:
+:
+  Chunk 341:
+ 
+  Chunk 342:
+\
+  Chunk 343:
+"
+  Chunk 344:
+u
+  Chunk 345:
+s
+  Chunk 346:
+e
+  Chunk 347:
+r
+  Chunk 348:
+\
+  Chunk 349:
+"
+  Chunk 350:
+,
+  Chunk 351:
+ 
+  Chunk 352:
+c
+  Chunk 353:
+o
+  Chunk 354:
+n
+  Chunk 355:
+t
+  Chunk 356:
+e
+  Chunk 357:
+n
+  Chunk 358:
+t
+  Chunk 359:
+:
+  Chunk 360:
+ 
+  Chunk 361:
+\
+  Chunk 362:
+"
+  Chunk 363:
+저
+  Chunk 364:
+는
+  Chunk 365:
+ 
+  Chunk 366:
+뭘
+  Chunk 367:
+ 
+  Chunk 368:
+해
+  Chunk 369:
+도
+  Chunk 370:
+ 
+  Chunk 371:
+항
+  Chunk 372:
+상
+  Chunk 373:
+ 
+  Chunk 374:
+실
+  Chunk 375:
+수
+  Chunk 376:
+를
+  Chunk 377:
+ 
+  Chunk 378:
+저
+  Chunk 379:
+지
+  Chunk 380:
+르
+  Chunk 381:
+고
+  Chunk 382:
+ 
+  Chunk 383:
+결
+  Chunk 384:
+국
+  Chunk 385:
+ 
+  Chunk 386:
+망
+  Chunk 387:
+치
+  Chunk 388:
+는
+  Chunk 389:
+ 
+  Chunk 390:
+것
+  Chunk 391:
+ 
+  Chunk 392:
+같
+  Chunk 393:
+아
+  Chunk 394:
+요
+  Chunk 395:
+.
+  Chunk 396:
+ 
+  Chunk 397:
+어
+  Chunk 398:
+제
+  Chunk 399:
+도
+  Chunk 400:
+ 
+  Chunk 401:
+중
+  Chunk 402:
+요
+  Chunk 403:
+한
+  Chunk 404:
+ 
+  Chunk 405:
+업
+  Chunk 406:
+무
+  Chunk 407:
+에
+  Chunk 408:
+서
+  Chunk 409:
+ 
+  Chunk 410:
+어
+  Chunk 411:
+처
+  Chunk 412:
+구
+  Chunk 413:
+니
+  Chunk 414:
+없
+  Chunk 415:
+는
+  Chunk 416:
+ 
+  Chunk 417:
+오
+  Chunk 418:
+타
+  Chunk 419:
+ 
+  Chunk 420:
+실
+  Chunk 421:
+수
+  Chunk 422:
+를
+  Chunk 423:
+ 
+  Chunk 424:
+했
+  Chunk 425:
+어
+  Chunk 426:
+요
+  Chunk 427:
+.
+  Chunk 428:
+\
+  Chunk 429:
+"
+  Chunk 430:
+ 
+  Chunk 431:
+}
+  Chunk 432:
+,
+  Chunk 433:
+\
+  Chunk 434:
+n
+  Chunk 435:
+ 
+  Chunk 436:
+ 
+  Chunk 437:
+ 
+  Chunk 438:
+ 
+  Chunk 439:
+ 
+  Chunk 440:
+ 
+  Chunk 441:
+{
+  Chunk 442:
+ 
+  Chunk 443:
+r
+  Chunk 444:
+o
+  Chunk 445:
+l
+  Chunk 446:
+e
+  Chunk 447:
+:
+  Chunk 448:
+ 
+  Chunk 449:
+\
+  Chunk 450:
+"
+  Chunk 451:
+b
+  Chunk 452:
+o
+  Chunk 453:
+t
+  Chunk 454:
+\
+  Chunk 455:
+"
+  Chunk 456:
+,
+  Chunk 457:
+ 
+  Chunk 458:
+c
+  Chunk 459:
+o
+  Chunk 460:
+n
+  Chunk 461:
+t
+  Chunk 462:
+e
+  Chunk 463:
+n
+  Chunk 464:
+t
+  Chunk 465:
+:
+  Chunk 466:
+ 
+  Chunk 467:
+\
+  Chunk 468:
+"
+  Chunk 469:
+어
+  Chunk 470:
+제
+  Chunk 471:
+ 
+  Chunk 472:
+오
+  Chunk 473:
+타
+  Chunk 474:
+ 
+  Chunk 475:
+실
+  Chunk 476:
+수
+  Chunk 477:
+로
+  Chunk 478:
+ 
+  Chunk 479:
+인
+  Chunk 480:
+해
+  Chunk 481:
+ 
+  Chunk 482:
+자
+  Chunk 483:
+책
+  Chunk 484:
+감
+  Chunk 485:
+이
+  Chunk 486:
+ 
+  Chunk 487:
+크
+  Chunk 488:
+셨
+  Chunk 489:
+겠
+  Chunk 490:
+군
+  Chunk 491:
+요
+  Chunk 492:
+.
+  Chunk 493:
+ 
+  Chunk 494:
+마
+  Chunk 495:
+음
+  Chunk 496:
+이
+  Chunk 497:
+ 
+  Chunk 498:
+무
+  Chunk 499:
+거
+  Chunk 500:
+우
+  Chunk 501:
+신
+  Chunk 502:
+ 
+  Chunk 503:
+와
+  Chunk 504:
+중
+  Chunk 505:
+에
+  Chunk 506:
+도
+  Chunk 507:
+ 
+  Chunk 508:
+솔
+  Chunk 509:
+직
+  Chunk 510:
+하
+  Chunk 511:
+게
+  Chunk 512:
+ 
+  Chunk 513:
+털
+  Chunk 514:
+어
+  Chunk 515:
+놓
+  Chunk 516:
+아
+  Chunk 517:
+ 
+  Chunk 518:
+주
+  Chunk 519:
+셔
+  Chunk 520:
+서
+  Chunk 521:
+ 
+  Chunk 522:
+감
+  Chunk 523:
+사
+  Chunk 524:
+합
+  Chunk 525:
+니
+  Chunk 526:
+다
+  Chunk 527:
+.
+  Chunk 528:
+ 
+  Chunk 529:
+말
+  Chunk 530:
+씀
+  Chunk 531:
+하
+  Chunk 532:
+신
+  Chunk 533:
+ 
+  Chunk 534:
+'
+  Chunk 535:
+뭘
+  Chunk 536:
+ 
+  Chunk 537:
+해
+  Chunk 538:
+도
+  Chunk 539:
+ 
+  Chunk 540:
+항
+  Chunk 541:
+상
+  Chunk 542:
+ 
+  Chunk 543:
+실
+  Chunk 544:
+수
+  Chunk 545:
+를
+  Chunk 546:
+ 
+  Chunk 547:
+저
+  Chunk 548:
+지
+  Chunk 549:
+르
+  Chunk 550:
+고
+  Chunk 551:
+ 
+  Chunk 552:
+망
+  Chunk 553:
+친
+  Chunk 554:
+다
+  Chunk 555:
+'
+  Chunk 556:
+는
+  Chunk 557:
+ 
+  Chunk 558:
+생
+  Chunk 559:
+각
+  Chunk 560:
+에
+  Chunk 561:
+ 
+  Chunk 562:
+대
+  Chunk 563:
+해
+  Chunk 564:
+ 
+  Chunk 565:
+질
+  Chunk 566:
+문
+  Chunk 567:
+을
+  Chunk 568:
+ 
+  Chunk 569:
+드
+  Chunk 570:
+리
+  Chunk 571:
+고
+  Chunk 572:
+ 
+  Chunk 573:
+싶
+  Chunk 574:
+어
+  Chunk 575:
+요
+  Chunk 576:
+.
+  Chunk 577:
+ 
+  Chunk 578:
+정
+  Chunk 579:
+말
+  Chunk 580:
+ 
+  Chunk 581:
+당
+  Chunk 582:
+신
+  Chunk 583:
+이
+  Chunk 584:
+ 
+  Chunk 585:
+지
+  Chunk 586:
+금
+  Chunk 587:
+까
+  Chunk 588:
+지
+  Chunk 589:
+ 
+  Chunk 590:
+해
+  Chunk 591:
+온
+  Chunk 592:
+ 
+  Chunk 593:
+모
+  Chunk 594:
+든
+  Chunk 595:
+ 
+  Chunk 596:
+일
+  Chunk 597:
+들
+  Chunk 598:
+이
+  Chunk 599:
+ 
+  Chunk 600:
+단
+  Chunk 601:
+ 
+  Chunk 602:
+한
+  Chunk 603:
+ 
+  Chunk 604:
+번
+  Chunk 605:
+의
+  Chunk 606:
+ 
+  Chunk 607:
+예
+  Chunk 608:
+외
+  Chunk 609:
+도
+  Chunk 610:
+ 
+  Chunk 611:
+없
+  Chunk 612:
+이
+  Chunk 613:
+ 
+  Chunk 614:
+1
+  Chunk 615:
+0
+  Chunk 616:
+0
+  Chunk 617:
+%
+  Chunk 618:
+ 
+  Chunk 619:
+전
+  Chunk 620:
+부
+  Chunk 621:
+ 
+  Chunk 622:
+실
+  Chunk 623:
+패
+  Chunk 624:
+였
+  Chunk 625:
+을
+  Chunk 626:
+까
+  Chunk 627:
+요
+  Chunk 628:
+?
+  Chunk 629:
+ 
+  Chunk 630:
+아
+  Chunk 631:
+니
+  Chunk 632:
+면
+  Chunk 633:
+ 
+  Chunk 634:
+최
+  Chunk 635:
+근
+  Chunk 636:
+의
+  Chunk 637:
+ 
+  Chunk 638:
+큰
+  Chunk 639:
+ 
+  Chunk 640:
+부
+  Chunk 641:
+담
+  Chunk 642:
+감
+  Chunk 643:
+이
+  Chunk 644:
+ 
+  Chunk 645:
+시
+  Chunk 646:
+야
+  Chunk 647:
+를
+  Chunk 648:
+ 
+  Chunk 649:
+좁
+  Chunk 650:
+혀
+  Chunk 651:
+ 
+  Chunk 652:
+오
+  Chunk 653:
+타
+  Chunk 654:
+와
+  Chunk 655:
+ 
+  Chunk 656:
+같
+  Chunk 657:
+은
+  Chunk 658:
+ 
+  Chunk 659:
+일
+  Chunk 660:
+부
+  Chunk 661:
+의
+  Chunk 662:
+ 
+  Chunk 663:
+실
+  Chunk 664:
+수
+  Chunk 665:
+를
+  Chunk 666:
+ 
+  Chunk 667:
+전
+  Chunk 668:
+체
+  Chunk 669:
+의
+  Chunk 670:
+ 
+  Chunk 671:
+실
+  Chunk 672:
+패
+  Chunk 673:
+로
+  Chunk 674:
+ 
+  Chunk 675:
+크
+  Chunk 676:
+게
+  Chunk 677:
+ 
+  Chunk 678:
+느
+  Chunk 679:
+끼
+  Chunk 680:
+게
+  Chunk 681:
+ 
+  Chunk 682:
+만
+  Chunk 683:
+들
+  Chunk 684:
+고
+  Chunk 685:
+ 
+  Chunk 686:
+있
+  Chunk 687:
+는
+  Chunk 688:
+ 
+  Chunk 689:
+걸
+  Chunk 690:
+까
+  Chunk 691:
+요
+  Chunk 692:
+?
+  Chunk 693:
+\
+  Chunk 694:
+"
+  Chunk 695:
+,
+  Chunk 696:
+ 
+  Chunk 697:
+i
+  Chunk 698:
+c
+  Chunk 699:
+o
+  Chunk 700:
+n
+  Chunk 701:
+:
+  Chunk 702:
+ 
+  Chunk 703:
+\
+  Chunk 704:
+"
+  Chunk 705:
+🎓
+  Chunk 706:
+\
+  Chunk 707:
+"
+  Chunk 708:
+ 
+  Chunk 709:
+}
+  Chunk 710:
+,
+  Chunk 711:
+\
+  Chunk 712:
+n
+  Chunk 713:
+ 
+  Chunk 714:
+ 
+  Chunk 715:
+ 
+  Chunk 716:
+ 
+  Chunk 717:
+ 
+  Chunk 718:
+ 
+  Chunk 719:
+{
+  Chunk 720:
+ 
+  Chunk 721:
+r
+  Chunk 722:
+o
+  Chunk 723:
+l
+  Chunk 724:
+e
+  Chunk 725:
+:
+  Chunk 726:
+ 
+  Chunk 727:
+\
+  Chunk 728:
+"
+  Chunk 729:
+u
+  Chunk 730:
+s
+  Chunk 731:
+e
+  Chunk 732:
+r
+  Chunk 733:
+\
+  Chunk 734:
+"
+  Chunk 735:
+,
+  Chunk 736:
+ 
+  Chunk 737:
+c
+  Chunk 738:
+o
+  Chunk 739:
+n
+  Chunk 740:
+t
+  Chunk 741:
+e
+  Chunk 742:
+n
+  Chunk 743:
+t
+  Chunk 744:
+:
+  Chunk 745:
+ 
+  Chunk 746:
+\
+  Chunk 747:
+"
+  Chunk 748:
+생
+  Chunk 749:
+각
+  Chunk 750:
+해
+  Chunk 751:
+ 
+  Chunk 752:
+보
+  Chunk 753:
+니
+  Chunk 754:
+ 
+  Chunk 755:
+저
+  Chunk 756:
+번
+  Chunk 757:
+ 
+  Chunk 758:
+달
+  Chunk 759:
+ 
+  Chunk 760:
+프
+  Chunk 761:
+로
+  Chunk 762:
+젝
+  Chunk 763:
+트
+  Chunk 764:
+는
+  Chunk 765:
+ 
+  Chunk 766:
+성
+  Chunk 767:
+공
+  Chunk 768:
+적
+  Chunk 769:
+으
+  Chunk 770:
+로
+  Chunk 771:
+ 
+  Chunk 772:
+잘
+  Chunk 773:
+ 
+  Chunk 774:
+마
+  Chunk 775:
+쳤
+  Chunk 776:
+고
+  Chunk 777:
+ 
+  Chunk 778:
+동
+  Chunk 779:
+료
+  Chunk 780:
+들
+  Chunk 781:
+에
+  Chunk 782:
+게
+  Chunk 783:
+ 
+  Chunk 784:
+감
+  Chunk 785:
+사
+  Chunk 786:
+ 
+  Chunk 787:
+인
+  Chunk 788:
+사
+  Chunk 789:
+도
+  Chunk 790:
+ 
+  Chunk 791:
+받
+  Chunk 792:
+았
+  Chunk 793:
+어
+  Chunk 794:
+요
+  Chunk 795:
+.
+  Chunk 796:
+ 
+  Chunk 797:
+매
+  Chunk 798:
+번
+  Chunk 799:
+ 
+  Chunk 800:
+망
+  Chunk 801:
+치
+  Chunk 802:
+는
+  Chunk 803:
+ 
+  Chunk 804:
+건
+  Chunk 805:
+ 
+  Chunk 806:
+아
+  Chunk 807:
+닌
+  Chunk 808:
+ 
+  Chunk 809:
+것
+  Chunk 810:
+ 
+  Chunk 811:
+같
+  Chunk 812:
+아
+  Chunk 813:
+요
+  Chunk 814:
+.
+  Chunk 815:
+\
+  Chunk 816:
+"
+  Chunk 817:
+ 
+  Chunk 818:
+}
+  Chunk 819:
+,
+  Chunk 820:
+\
+  Chunk 821:
+n
+  Chunk 822:
+ 
+  Chunk 823:
+ 
+  Chunk 824:
+ 
+  Chunk 825:
+ 
+  Chunk 826:
+ 
+  Chunk 827:
+ 
+  Chunk 828:
+{
+  Chunk 829:
+ 
+  Chunk 830:
+r
+  Chunk 831:
+o
+  Chunk 832:
+l
+  Chunk 833:
+e
+  Chunk 834:
+:
+  Chunk 835:
+ 
+  Chunk 836:
+\
+  Chunk 837:
+"
+  Chunk 838:
+b
+  Chunk 839:
+o
+  Chunk 840:
+t
+  Chunk 841:
+\
+  Chunk 842:
+"
+  Chunk 843:
+,
+  Chunk 844:
+ 
+  Chunk 845:
+c
+  Chunk 846:
+o
+  Chunk 847:
+n
+  Chunk 848:
+t
+  Chunk 849:
+e
+  Chunk 850:
+n
+  Chunk 851:
+t
+  Chunk 852:
+:
+  Chunk 853:
+ 
+  Chunk 854:
+\
+  Chunk 855:
+"
+  Chunk 856:
+스
+  Chunk 857:
+스
+  Chunk 858:
+로
+  Chunk 859:
+ 
+  Chunk 860:
+지
+  Chunk 861:
+난
+  Chunk 862:
+달
+  Chunk 863:
+ 
+  Chunk 864:
+성
+  Chunk 865:
+공
+  Chunk 866:
+했
+  Chunk 867:
+던
+  Chunk 868:
+ 
+  Chunk 869:
+프
+  Chunk 870:
+로
+  Chunk 871:
+젝
+  Chunk 872:
+트
+  Chunk 873:
+의
+  Chunk 874:
+ 
+  Chunk 875:
+기
+  Chunk 876:
+억
+  Chunk 877:
+을
+  Chunk 878:
+ 
+  Chunk 879:
+객
+  Chunk 880:
+관
+  Chunk 881:
+적
+  Chunk 882:
+으
+  Chunk 883:
+로
+  Chunk 884:
+ 
+  Chunk 885:
+찾
+  Chunk 886:
+아
+  Chunk 887:
+내
+  Chunk 888:
+ 
+  Chunk 889:
+주
+  Chunk 890:
+셨
+  Chunk 891:
+군
+  Chunk 892:
+요
+  Chunk 893:
+!
+  Chunk 894:
+ 
+  Chunk 895:
+이
+  Chunk 896:
+처
+  Chunk 897:
+럼
+  Chunk 898:
+ 
+  Chunk 899:
+우
+  Chunk 900:
+리
+  Chunk 901:
+는
+  Chunk 902:
+ 
+  Chunk 903:
+스
+  Chunk 904:
+트
+  Chunk 905:
+레
+  Chunk 906:
+스
+  Chunk 907:
+가
+  Chunk 908:
+ 
+  Chunk 909:
+가
+  Chunk 910:
+득
+  Chunk 911:
+할
+  Chunk 912:
+ 
+  Chunk 913:
+때
+  Chunk 914:
+ 
+  Chunk 915:
+'
+  Chunk 916:
+오
+  Chunk 917:
+타
+  Chunk 918:
+ 
+  Chunk 919:
+하
+  Chunk 920:
+나
+  Chunk 921:
+'
+  Chunk 922:
+의
+  Chunk 923:
+ 
+  Chunk 924:
+부
+  Chunk 925:
+정
+  Chunk 926:
+적
+  Chunk 927:
+인
+  Chunk 928:
+ 
+  Chunk 929:
+기
+  Chunk 930:
+억
+  Chunk 931:
+에
+  Chunk 932:
+만
+  Chunk 933:
+ 
+  Chunk 934:
+초
+  Chunk 935:
+점
+  Chunk 936:
+을
+  Chunk 937:
+ 
+  Chunk 938:
+맞
+  Chunk 939:
+춰
+  Chunk 940:
+ 
+  Chunk 941:
+잘
+  Chunk 942:
+했
+  Chunk 943:
+던
+  Chunk 944:
+ 
+  Chunk 945:
+수
+  Chunk 946:
+많
+  Chunk 947:
+은
+  Chunk 948:
+ 
+  Chunk 949:
+일
+  Chunk 950:
+들
+  Chunk 951:
+을
+  Chunk 952:
+ 
+  Chunk 953:
+지
+  Chunk 954:
+워
+  Chunk 955:
+버
+  Chunk 956:
+리
+  Chunk 957:
+는
+  Chunk 958:
+ 
+  Chunk 959:
+'
+  Chunk 960:
+선
+  Chunk 961:
+택
+  Chunk 962:
+적
+  Chunk 963:
+ 
+  Chunk 964:
+추
+  Chunk 965:
+상
+  Chunk 966:
+화
+  Chunk 967:
+(
+  Chunk 968:
+필
+  Chunk 969:
+터
+  Chunk 970:
+링
+  Chunk 971:
+)
+  Chunk 972:
+'
+  Chunk 973:
+ 
+  Chunk 974:
+인
+  Chunk 975:
+지
+  Chunk 976:
+ 
+  Chunk 977:
+왜
+  Chunk 978:
+곡
+  Chunk 979:
+에
+  Chunk 980:
+ 
+  Chunk 981:
+빠
+  Chunk 982:
+지
+  Chunk 983:
+곤
+  Chunk 984:
+ 
+  Chunk 985:
+한
+  Chunk 986:
+답
+  Chunk 987:
+니
+  Chunk 988:
+다
+  Chunk 989:
+.
+  Chunk 990:
+ 
+  Chunk 991:
+'
+  Chunk 992:
+나
+  Chunk 993:
+는
+  Chunk 994:
+ 
+  Chunk 995:
+매
+  Chunk 996:
+번
+  Chunk 997:
+ 
+  Chunk 998:
+실
+  Chunk 999:
+패
+  Chunk 1000:
+한
+  Chunk 1001:
+다
+  Chunk 1002:
+'
+  Chunk 1003:
+는
+  Chunk 1004:
+ 
+  Chunk 1005:
+가
+  Chunk 1006:
+혹
+  Chunk 1007:
+한
+  Chunk 1008:
+ 
+  Chunk 1009:
+생
+  Chunk 1010:
+각
+  Chunk 1011:
+ 
+  Chunk 1012:
+대
+  Chunk 1013:
+신
+  Chunk 1014:
+,
+  Chunk 1015:
+ 
+  Chunk 1016:
+동
+  Chunk 1017:
+료
+  Chunk 1018:
+들
+  Chunk 1019:
+의
+  Chunk 1020:
+ 
+  Chunk 1021:
+감
+  Chunk 1022:
+사
+  Chunk 1023:
+ 
+  Chunk 1024:
+인
+  Chunk 1025:
+사
+  Chunk 1026:
+를
+  Chunk 1027:
+ 
+  Chunk 1028:
+떠
+  Chunk 1029:
+올
+  Chunk 1030:
+리
+  Chunk 1031:
+며
+  Chunk 1032:
+ 
+  Chunk 1033:
+이
+  Chunk 1034:
+ 
+  Chunk 1035:
+상
+  Chunk 1036:
+황
+  Chunk 1037:
+을
+  Chunk 1038:
+ 
+  Chunk 1039:
+다
+  Chunk 1040:
+르
+  Chunk 1041:
+게
+  Chunk 1042:
+ 
+  Chunk 1043:
+표
+  Chunk 1044:
+현
+  Chunk 1045:
+해
+  Chunk 1046:
+ 
+  Chunk 1047:
+본
+  Chunk 1048:
+
+
+  Chunk 1049:
+<
+  Chunk 1050:
+t
+  Chunk 1051:
+r
+  Chunk 1052:
+u
+  Chunk 1053:
+n
+  Chunk 1054:
+c
+  Chunk 1055:
+a
+  Chunk 1056:
+t
+  Chunk 1057:
+e
+  Chunk 1058:
+d
+  Chunk 1059:
+ 
+  Chunk 1060:
+8
+  Chunk 1061:
+1
+  Chunk 1062:
+3
+  Chunk 1063:
+0
+  Chunk 1064:
+ 
+  Chunk 1065:
+b
+  Chunk 1066:
+y
+  Chunk 1067:
+t
+  Chunk 1068:
+e
+  Chunk 1069:
+s
+  Chunk 1070:
+>
+--------------------------------------------------
+Step: 4240
+Description: "Change mentor emoji from 🎓 to 🧑‍🏫 and style dialogue example buttons with premium orange color bg-[#F97316] and hover:bg-[#EA580C]"
+  Chunk 0:
+[
+  Chunk 1:
+{
+  Chunk 2:
+"
+  Chunk 3:
+A
+  Chunk 4:
+l
+  Chunk 5:
+l
+  Chunk 6:
+o
+  Chunk 7:
+w
+  Chunk 8:
+M
+  Chunk 9:
+u
+  Chunk 10:
+l
+  Chunk 11:
+t
+  Chunk 12:
+i
+  Chunk 13:
+p
+  Chunk 14:
+l
+  Chunk 15:
+e
+  Chunk 16:
+"
+  Chunk 17:
+:
+  Chunk 18:
+f
+  Chunk 19:
+a
+  Chunk 20:
+l
+  Chunk 21:
+s
+  Chunk 22:
+e
+  Chunk 23:
+,
+  Chunk 24:
+"
+  Chunk 25:
+E
+  Chunk 26:
+n
+  Chunk 27:
+d
+  Chunk 28:
+L
+  Chunk 29:
+i
+  Chunk 30:
+n
+  Chunk 31:
+e
+  Chunk 32:
+"
+  Chunk 33:
+:
+  Chunk 34:
+2
+  Chunk 35:
+0
+  Chunk 36:
+0
+  Chunk 37:
+,
+  Chunk 38:
+"
+  Chunk 39:
+R
+  Chunk 40:
+e
+  Chunk 41:
+p
+  Chunk 42:
+l
+  Chunk 43:
+a
+  Chunk 44:
+c
+  Chunk 45:
+e
+  Chunk 46:
+m
+  Chunk 47:
+e
+  Chunk 48:
+n
+  Chunk 49:
+t
+  Chunk 50:
+C
+  Chunk 51:
+o
+  Chunk 52:
+n
+  Chunk 53:
+t
+  Chunk 54:
+e
+  Chunk 55:
+n
+  Chunk 56:
+t
+  Chunk 57:
+"
+  Chunk 58:
+:
+  Chunk 59:
+"
+  Chunk 60:
+ 
+  Chunk 61:
+ 
+  Chunk 62:
+c
+  Chunk 63:
+o
+  Chunk 64:
+n
+  Chunk 65:
+s
+  Chunk 66:
+t
+  Chunk 67:
+ 
+  Chunk 68:
+h
+  Chunk 69:
+a
+  Chunk 70:
+n
+  Chunk 71:
+d
+  Chunk 72:
+l
+  Chunk 73:
+e
+  Chunk 74:
+L
+  Chunk 75:
+o
+  Chunk 76:
+a
+  Chunk 77:
+d
+  Chunk 78:
+E
+  Chunk 79:
+x
+  Chunk 80:
+a
+  Chunk 81:
+m
+  Chunk 82:
+p
+  Chunk 83:
+l
+  Chunk 84:
+e
+  Chunk 85:
+M
+  Chunk 86:
+e
+  Chunk 87:
+n
+  Chunk 88:
+t
+  Chunk 89:
+o
+  Chunk 90:
+r
+  Chunk 91:
+ 
+  Chunk 92:
+=
+  Chunk 93:
+ 
+  Chunk 94:
+(
+  Chunk 95:
+)
+  Chunk 96:
+ 
+  Chunk 97:
+=
+  Chunk 98:
+>
+  Chunk 99:
+ 
+  Chunk 100:
+{
+  Chunk 101:
+\
+  Chunk 102:
+n
+  Chunk 103:
+ 
+  Chunk 104:
+ 
+  Chunk 105:
+ 
+  Chunk 106:
+ 
+  Chunk 107:
+s
+  Chunk 108:
+e
+  Chunk 109:
+t
+  Chunk 110:
+M
+  Chunk 111:
+e
+  Chunk 112:
+s
+  Chunk 113:
+s
+  Chunk 114:
+a
+  Chunk 115:
+g
+  Chunk 116:
+e
+  Chunk 117:
+s
+  Chunk 118:
+(
+  Chunk 119:
+[
+  Chunk 120:
+\
+  Chunk 121:
+n
+  Chunk 122:
+ 
+  Chunk 123:
+ 
+  Chunk 124:
+ 
+  Chunk 125:
+ 
+  Chunk 126:
+ 
+  Chunk 127:
+ 
+  Chunk 128:
+{
+  Chunk 129:
+ 
+  Chunk 130:
+r
+  Chunk 131:
+o
+  Chunk 132:
+l
+  Chunk 133:
+e
+  Chunk 134:
+:
+  Chunk 135:
+ 
+  Chunk 136:
+\
+  Chunk 137:
+"
+  Chunk 138:
+b
+  Chunk 139:
+o
+  Chunk 140:
+t
+  Chunk 141:
+\
+  Chunk 142:
+"
+  Chunk 143:
+,
+  Chunk 144:
+ 
+  Chunk 145:
+c
+  Chunk 146:
+o
+  Chunk 147:
+n
+  Chunk 148:
+t
+  Chunk 149:
+e
+  Chunk 150:
+n
+  Chunk 151:
+t
+  Chunk 152:
+:
+  Chunk 153:
+ 
+  Chunk 154:
+\
+  Chunk 155:
+"
+  Chunk 156:
+안
+  Chunk 157:
+녕
+  Chunk 158:
+하
+  Chunk 159:
+세
+  Chunk 160:
+요
+  Chunk 161:
+,
+  Chunk 162:
+ 
+  Chunk 163:
+저
+  Chunk 164:
+는
+  Chunk 165:
+ 
+  Chunk 166:
+멘
+  Chunk 167:
+토
+  Chunk 168:
+ 
+  Chunk 169:
+선
+  Chunk 170:
+생
+  Chunk 171:
+님
+  Chunk 172:
+이
+  Chunk 173:
+에
+  Chunk 174:
+요
+  Chunk 175:
+.
+  Chunk 176:
+ 
+  Chunk 177:
+우
+  Chunk 178:
+리
+  Chunk 179:
+는
+  Chunk 180:
+ 
+  Chunk 181:
+때
+  Chunk 182:
+로
+  Chunk 183:
+ 
+  Chunk 184:
+'
+  Chunk 185:
+항
+  Chunk 186:
+상
+  Chunk 187:
+ 
+  Chunk 188:
+실
+  Chunk 189:
+패
+  Chunk 190:
+한
+  Chunk 191:
+다
+  Chunk 192:
+'
+  Chunk 193:
+거
+  Chunk 194:
+나
+  Chunk 195:
+ 
+  Chunk 196:
+'
+  Chunk 197:
+아
+  Chunk 198:
+무
+  Chunk 199:
+도
+  Chunk 200:
+ 
+  Chunk 201:
+날
+  Chunk 202:
+ 
+  Chunk 203:
+좋
+  Chunk 204:
+아
+  Chunk 205:
+하
+  Chunk 206:
+지
+  Chunk 207:
+ 
+  Chunk 208:
+않
+  Chunk 209:
+는
+  Chunk 210:
+다
+  Chunk 211:
+'
+  Chunk 212:
+는
+  Chunk 213:
+ 
+  Chunk 214:
+부
+  Chunk 215:
+정
+  Chunk 216:
+적
+  Chunk 217:
+이
+  Chunk 218:
+고
+  Chunk 219:
+ 
+  Chunk 220:
+극
+  Chunk 221:
+단
+  Chunk 222:
+적
+  Chunk 223:
+인
+  Chunk 224:
+ 
+  Chunk 225:
+생
+  Chunk 226:
+각
+  Chunk 227:
+에
+  Chunk 228:
+ 
+  Chunk 229:
+갇
+  Chunk 230:
+히
+  Chunk 231:
+곤
+  Chunk 232:
+ 
+  Chunk 233:
+하
+  Chunk 234:
+지
+  Chunk 235:
+요
+  Chunk 236:
+.
+  Chunk 237:
+ 
+  Chunk 238:
+오
+  Chunk 239:
+늘
+  Chunk 240:
+ 
+  Chunk 241:
+당
+  Chunk 242:
+신
+  Chunk 243:
+의
+  Chunk 244:
+ 
+  Chunk 245:
+마
+  Chunk 246:
+음
+  Chunk 247:
+에
+  Chunk 248:
+ 
+  Chunk 249:
+걸
+  Chunk 250:
+려
+  Chunk 251:
+ 
+  Chunk 252:
+있
+  Chunk 253:
+는
+  Chunk 254:
+ 
+  Chunk 255:
+부
+  Chunk 256:
+정
+  Chunk 257:
+적
+  Chunk 258:
+인
+  Chunk 259:
+ 
+  Chunk 260:
+생
+  Chunk 261:
+각
+  Chunk 262:
+은
+  Chunk 263:
+ 
+  Chunk 264:
+무
+  Chunk 265:
+엇
+  Chunk 266:
+인
+  Chunk 267:
+가
+  Chunk 268:
+요
+  Chunk 269:
+?
+  Chunk 270:
+ 
+  Chunk 271:
+그
+  Chunk 272:
+것
+  Chunk 273:
+이
+  Chunk 274:
+ 
+  Chunk 275:
+1
+  Chunk 276:
+0
+  Chunk 277:
+0
+  Chunk 278:
+%
+  Chunk 279:
+ 
+  Chunk 280:
+진
+  Chunk 281:
+실
+  Chunk 282:
+인
+  Chunk 283:
+지
+  Chunk 284:
+,
+  Chunk 285:
+ 
+  Chunk 286:
+차
+  Chunk 287:
+분
+  Chunk 288:
+하
+  Chunk 289:
+고
+  Chunk 290:
+ 
+  Chunk 291:
+합
+  Chunk 292:
+리
+  Chunk 293:
+적
+  Chunk 294:
+인
+  Chunk 295:
+ 
+  Chunk 296:
+근
+  Chunk 297:
+거
+  Chunk 298:
+를
+  Chunk 299:
+ 
+  Chunk 300:
+함
+  Chunk 301:
+께
+  Chunk 302:
+ 
+  Chunk 303:
+찾
+  Chunk 304:
+아
+  Chunk 305:
+봐
+  Chunk 306:
+요
+  Chunk 307:
+.
+  Chunk 308:
+\
+  Chunk 309:
+"
+  Chunk 310:
+,
+  Chunk 311:
+ 
+  Chunk 312:
+i
+  Chunk 313:
+c
+  Chunk 314:
+o
+  Chunk 315:
+n
+  Chunk 316:
+:
+  Chunk 317:
+ 
+  Chunk 318:
+\
+  Chunk 319:
+"
+  Chunk 320:
+🧑
+  Chunk 321:
+‍
+  Chunk 322:
+🏫
+  Chunk 323:
+\
+  Chunk 324:
+"
+  Chunk 325:
+ 
+  Chunk 326:
+}
+  Chunk 327:
+,
+  Chunk 328:
+\
+  Chunk 329:
+n
+  Chunk 330:
+ 
+  Chunk 331:
+ 
+  Chunk 332:
+ 
+  Chunk 333:
+ 
+  Chunk 334:
+ 
+  Chunk 335:
+ 
+  Chunk 336:
+{
+  Chunk 337:
+ 
+  Chunk 338:
+r
+  Chunk 339:
+o
+  Chunk 340:
+l
+  Chunk 341:
+e
+  Chunk 342:
+:
+  Chunk 343:
+ 
+  Chunk 344:
+\
+  Chunk 345:
+"
+  Chunk 346:
+u
+  Chunk 347:
+s
+  Chunk 348:
+e
+  Chunk 349:
+r
+  Chunk 350:
+\
+  Chunk 351:
+"
+  Chunk 352:
+,
+  Chunk 353:
+ 
+  Chunk 354:
+c
+  Chunk 355:
+o
+  Chunk 356:
+n
+  Chunk 357:
+t
+  Chunk 358:
+e
+  Chunk 359:
+n
+  Chunk 360:
+t
+  Chunk 361:
+:
+  Chunk 362:
+ 
+  Chunk 363:
+\
+  Chunk 364:
+"
+  Chunk 365:
+저
+  Chunk 366:
+는
+  Chunk 367:
+ 
+  Chunk 368:
+뭘
+  Chunk 369:
+ 
+  Chunk 370:
+해
+  Chunk 371:
+도
+  Chunk 372:
+ 
+  Chunk 373:
+항
+  Chunk 374:
+상
+  Chunk 375:
+ 
+  Chunk 376:
+실
+  Chunk 377:
+수
+  Chunk 378:
+를
+  Chunk 379:
+ 
+  Chunk 380:
+저
+  Chunk 381:
+지
+  Chunk 382:
+르
+  Chunk 383:
+고
+  Chunk 384:
+ 
+  Chunk 385:
+결
+  Chunk 386:
+국
+  Chunk 387:
+ 
+  Chunk 388:
+망
+  Chunk 389:
+치
+  Chunk 390:
+는
+  Chunk 391:
+ 
+  Chunk 392:
+것
+  Chunk 393:
+ 
+  Chunk 394:
+같
+  Chunk 395:
+아
+  Chunk 396:
+요
+  Chunk 397:
+.
+  Chunk 398:
+ 
+  Chunk 399:
+어
+  Chunk 400:
+제
+  Chunk 401:
+도
+  Chunk 402:
+ 
+  Chunk 403:
+중
+  Chunk 404:
+요
+  Chunk 405:
+한
+  Chunk 406:
+ 
+  Chunk 407:
+업
+  Chunk 408:
+무
+  Chunk 409:
+에
+  Chunk 410:
+서
+  Chunk 411:
+ 
+  Chunk 412:
+어
+  Chunk 413:
+처
+  Chunk 414:
+구
+  Chunk 415:
+니
+  Chunk 416:
+없
+  Chunk 417:
+는
+  Chunk 418:
+ 
+  Chunk 419:
+오
+  Chunk 420:
+타
+  Chunk 421:
+ 
+  Chunk 422:
+실
+  Chunk 423:
+수
+  Chunk 424:
+를
+  Chunk 425:
+ 
+  Chunk 426:
+했
+  Chunk 427:
+어
+  Chunk 428:
+요
+  Chunk 429:
+.
+  Chunk 430:
+\
+  Chunk 431:
+"
+  Chunk 432:
+ 
+  Chunk 433:
+}
+  Chunk 434:
+,
+  Chunk 435:
+\
+  Chunk 436:
+n
+  Chunk 437:
+ 
+  Chunk 438:
+ 
+  Chunk 439:
+ 
+  Chunk 440:
+ 
+  Chunk 441:
+ 
+  Chunk 442:
+ 
+  Chunk 443:
+{
+  Chunk 444:
+ 
+  Chunk 445:
+r
+  Chunk 446:
+o
+  Chunk 447:
+l
+  Chunk 448:
+e
+  Chunk 449:
+:
+  Chunk 450:
+ 
+  Chunk 451:
+\
+  Chunk 452:
+"
+  Chunk 453:
+b
+  Chunk 454:
+o
+  Chunk 455:
+t
+  Chunk 456:
+\
+  Chunk 457:
+"
+  Chunk 458:
+,
+  Chunk 459:
+ 
+  Chunk 460:
+c
+  Chunk 461:
+o
+  Chunk 462:
+n
+  Chunk 463:
+t
+  Chunk 464:
+e
+  Chunk 465:
+n
+  Chunk 466:
+t
+  Chunk 467:
+:
+  Chunk 468:
+ 
+  Chunk 469:
+\
+  Chunk 470:
+"
+  Chunk 471:
+어
+  Chunk 472:
+제
+  Chunk 473:
+ 
+  Chunk 474:
+오
+  Chunk 475:
+타
+  Chunk 476:
+ 
+  Chunk 477:
+실
+  Chunk 478:
+수
+  Chunk 479:
+로
+  Chunk 480:
+ 
+  Chunk 481:
+인
+  Chunk 482:
+해
+  Chunk 483:
+ 
+  Chunk 484:
+자
+  Chunk 485:
+책
+  Chunk 486:
+감
+  Chunk 487:
+이
+  Chunk 488:
+ 
+  Chunk 489:
+크
+  Chunk 490:
+셨
+  Chunk 491:
+겠
+  Chunk 492:
+군
+  Chunk 493:
+요
+  Chunk 494:
+.
+  Chunk 495:
+ 
+  Chunk 496:
+마
+  Chunk 497:
+음
+  Chunk 498:
+이
+  Chunk 499:
+ 
+  Chunk 500:
+무
+  Chunk 501:
+거
+  Chunk 502:
+우
+  Chunk 503:
+신
+  Chunk 504:
+ 
+  Chunk 505:
+와
+  Chunk 506:
+중
+  Chunk 507:
+에
+  Chunk 508:
+도
+  Chunk 509:
+ 
+  Chunk 510:
+솔
+  Chunk 511:
+직
+  Chunk 512:
+하
+  Chunk 513:
+게
+  Chunk 514:
+ 
+  Chunk 515:
+털
+  Chunk 516:
+어
+  Chunk 517:
+놓
+  Chunk 518:
+아
+  Chunk 519:
+ 
+  Chunk 520:
+주
+  Chunk 521:
+셔
+  Chunk 522:
+서
+  Chunk 523:
+ 
+  Chunk 524:
+감
+  Chunk 525:
+사
+  Chunk 526:
+합
+  Chunk 527:
+니
+  Chunk 528:
+다
+  Chunk 529:
+.
+  Chunk 530:
+ 
+  Chunk 531:
+말
+  Chunk 532:
+씀
+  Chunk 533:
+하
+  Chunk 534:
+신
+  Chunk 535:
+ 
+  Chunk 536:
+'
+  Chunk 537:
+뭘
+  Chunk 538:
+ 
+  Chunk 539:
+해
+  Chunk 540:
+도
+  Chunk 541:
+ 
+  Chunk 542:
+항
+  Chunk 543:
+상
+  Chunk 544:
+ 
+  Chunk 545:
+실
+  Chunk 546:
+수
+  Chunk 547:
+를
+  Chunk 548:
+ 
+  Chunk 549:
+저
+  Chunk 550:
+지
+  Chunk 551:
+르
+  Chunk 552:
+고
+  Chunk 553:
+ 
+  Chunk 554:
+망
+  Chunk 555:
+친
+  Chunk 556:
+다
+  Chunk 557:
+'
+  Chunk 558:
+는
+  Chunk 559:
+ 
+  Chunk 560:
+생
+  Chunk 561:
+각
+  Chunk 562:
+에
+  Chunk 563:
+ 
+  Chunk 564:
+대
+  Chunk 565:
+해
+  Chunk 566:
+ 
+  Chunk 567:
+질
+  Chunk 568:
+문
+  Chunk 569:
+을
+  Chunk 570:
+ 
+  Chunk 571:
+드
+  Chunk 572:
+리
+  Chunk 573:
+고
+  Chunk 574:
+ 
+  Chunk 575:
+싶
+  Chunk 576:
+어
+  Chunk 577:
+요
+  Chunk 578:
+.
+  Chunk 579:
+ 
+  Chunk 580:
+정
+  Chunk 581:
+말
+  Chunk 582:
+ 
+  Chunk 583:
+당
+  Chunk 584:
+신
+  Chunk 585:
+이
+  Chunk 586:
+ 
+  Chunk 587:
+지
+  Chunk 588:
+금
+  Chunk 589:
+까
+  Chunk 590:
+지
+  Chunk 591:
+ 
+  Chunk 592:
+해
+  Chunk 593:
+온
+  Chunk 594:
+ 
+  Chunk 595:
+모
+  Chunk 596:
+든
+  Chunk 597:
+ 
+  Chunk 598:
+일
+  Chunk 599:
+들
+  Chunk 600:
+이
+  Chunk 601:
+ 
+  Chunk 602:
+단
+  Chunk 603:
+ 
+  Chunk 604:
+한
+  Chunk 605:
+ 
+  Chunk 606:
+번
+  Chunk 607:
+의
+  Chunk 608:
+ 
+  Chunk 609:
+예
+  Chunk 610:
+외
+  Chunk 611:
+도
+  Chunk 612:
+ 
+  Chunk 613:
+없
+  Chunk 614:
+이
+  Chunk 615:
+ 
+  Chunk 616:
+1
+  Chunk 617:
+0
+  Chunk 618:
+0
+  Chunk 619:
+%
+  Chunk 620:
+ 
+  Chunk 621:
+전
+  Chunk 622:
+부
+  Chunk 623:
+ 
+  Chunk 624:
+실
+  Chunk 625:
+패
+  Chunk 626:
+였
+  Chunk 627:
+을
+  Chunk 628:
+까
+  Chunk 629:
+요
+  Chunk 630:
+?
+  Chunk 631:
+ 
+  Chunk 632:
+아
+  Chunk 633:
+니
+  Chunk 634:
+면
+  Chunk 635:
+ 
+  Chunk 636:
+최
+  Chunk 637:
+근
+  Chunk 638:
+의
+  Chunk 639:
+ 
+  Chunk 640:
+큰
+  Chunk 641:
+ 
+  Chunk 642:
+부
+  Chunk 643:
+담
+  Chunk 644:
+감
+  Chunk 645:
+이
+  Chunk 646:
+ 
+  Chunk 647:
+시
+  Chunk 648:
+야
+  Chunk 649:
+를
+  Chunk 650:
+ 
+  Chunk 651:
+좁
+  Chunk 652:
+혀
+  Chunk 653:
+ 
+  Chunk 654:
+오
+  Chunk 655:
+타
+  Chunk 656:
+와
+  Chunk 657:
+ 
+  Chunk 658:
+같
+  Chunk 659:
+은
+  Chunk 660:
+ 
+  Chunk 661:
+일
+  Chunk 662:
+부
+  Chunk 663:
+의
+  Chunk 664:
+ 
+  Chunk 665:
+실
+  Chunk 666:
+수
+  Chunk 667:
+를
+  Chunk 668:
+ 
+  Chunk 669:
+전
+  Chunk 670:
+체
+  Chunk 671:
+의
+  Chunk 672:
+ 
+  Chunk 673:
+실
+  Chunk 674:
+패
+  Chunk 675:
+로
+  Chunk 676:
+ 
+  Chunk 677:
+크
+  Chunk 678:
+게
+  Chunk 679:
+ 
+  Chunk 680:
+느
+  Chunk 681:
+끼
+  Chunk 682:
+게
+  Chunk 683:
+ 
+  Chunk 684:
+만
+  Chunk 685:
+들
+  Chunk 686:
+고
+  Chunk 687:
+ 
+  Chunk 688:
+있
+  Chunk 689:
+는
+  Chunk 690:
+ 
+  Chunk 691:
+걸
+  Chunk 692:
+까
+  Chunk 693:
+요
+  Chunk 694:
+?
+  Chunk 695:
+\
+  Chunk 696:
+"
+  Chunk 697:
+,
+  Chunk 698:
+ 
+  Chunk 699:
+i
+  Chunk 700:
+c
+  Chunk 701:
+o
+  Chunk 702:
+n
+  Chunk 703:
+:
+  Chunk 704:
+ 
+  Chunk 705:
+\
+  Chunk 706:
+"
+  Chunk 707:
+🧑
+  Chunk 708:
+‍
+  Chunk 709:
+🏫
+  Chunk 710:
+\
+  Chunk 711:
+"
+  Chunk 712:
+ 
+  Chunk 713:
+}
+  Chunk 714:
+,
+  Chunk 715:
+\
+  Chunk 716:
+n
+  Chunk 717:
+ 
+  Chunk 718:
+ 
+  Chunk 719:
+ 
+  Chunk 720:
+ 
+  Chunk 721:
+ 
+  Chunk 722:
+ 
+  Chunk 723:
+{
+  Chunk 724:
+ 
+  Chunk 725:
+r
+  Chunk 726:
+o
+  Chunk 727:
+l
+  Chunk 728:
+e
+  Chunk 729:
+:
+  Chunk 730:
+ 
+  Chunk 731:
+\
+  Chunk 732:
+"
+  Chunk 733:
+u
+  Chunk 734:
+s
+  Chunk 735:
+e
+  Chunk 736:
+r
+  Chunk 737:
+\
+  Chunk 738:
+"
+  Chunk 739:
+,
+  Chunk 740:
+ 
+  Chunk 741:
+c
+  Chunk 742:
+o
+  Chunk 743:
+n
+  Chunk 744:
+t
+  Chunk 745:
+e
+  Chunk 746:
+n
+  Chunk 747:
+t
+  Chunk 748:
+:
+  Chunk 749:
+ 
+  Chunk 750:
+\
+  Chunk 751:
+"
+  Chunk 752:
+생
+  Chunk 753:
+각
+  Chunk 754:
+해
+  Chunk 755:
+ 
+  Chunk 756:
+보
+  Chunk 757:
+니
+  Chunk 758:
+ 
+  Chunk 759:
+저
+  Chunk 760:
+번
+  Chunk 761:
+ 
+  Chunk 762:
+달
+  Chunk 763:
+ 
+  Chunk 764:
+프
+  Chunk 765:
+로
+  Chunk 766:
+젝
+  Chunk 767:
+트
+  Chunk 768:
+는
+  Chunk 769:
+ 
+  Chunk 770:
+성
+  Chunk 771:
+공
+  Chunk 772:
+적
+  Chunk 773:
+으
+  Chunk 774:
+로
+  Chunk 775:
+ 
+  Chunk 776:
+잘
+  Chunk 777:
+ 
+  Chunk 778:
+마
+  Chunk 779:
+쳤
+  Chunk 780:
+고
+  Chunk 781:
+ 
+  Chunk 782:
+동
+  Chunk 783:
+료
+  Chunk 784:
+들
+  Chunk 785:
+에
+  Chunk 786:
+게
+  Chunk 787:
+ 
+  Chunk 788:
+감
+  Chunk 789:
+사
+  Chunk 790:
+ 
+  Chunk 791:
+인
+  Chunk 792:
+사
+  Chunk 793:
+도
+  Chunk 794:
+ 
+  Chunk 795:
+받
+  Chunk 796:
+았
+  Chunk 797:
+어
+  Chunk 798:
+요
+  Chunk 799:
+.
+  Chunk 800:
+ 
+  Chunk 801:
+매
+  Chunk 802:
+번
+  Chunk 803:
+ 
+  Chunk 804:
+망
+  Chunk 805:
+치
+  Chunk 806:
+는
+  Chunk 807:
+ 
+  Chunk 808:
+건
+  Chunk 809:
+ 
+  Chunk 810:
+아
+  Chunk 811:
+닌
+  Chunk 812:
+ 
+  Chunk 813:
+것
+  Chunk 814:
+ 
+  Chunk 815:
+같
+  Chunk 816:
+아
+  Chunk 817:
+요
+  Chunk 818:
+.
+  Chunk 819:
+\
+  Chunk 820:
+"
+  Chunk 821:
+ 
+  Chunk 822:
+}
+  Chunk 823:
+,
+  Chunk 824:
+\
+  Chunk 825:
+n
+  Chunk 826:
+ 
+  Chunk 827:
+ 
+  Chunk 828:
+ 
+  Chunk 829:
+ 
+  Chunk 830:
+ 
+  Chunk 831:
+ 
+  Chunk 832:
+{
+  Chunk 833:
+ 
+  Chunk 834:
+r
+  Chunk 835:
+o
+  Chunk 836:
+l
+  Chunk 837:
+e
+  Chunk 838:
+:
+  Chunk 839:
+ 
+  Chunk 840:
+\
+  Chunk 841:
+"
+  Chunk 842:
+b
+  Chunk 843:
+o
+  Chunk 844:
+t
+  Chunk 845:
+\
+  Chunk 846:
+"
+  Chunk 847:
+,
+  Chunk 848:
+ 
+  Chunk 849:
+c
+  Chunk 850:
+o
+  Chunk 851:
+n
+  Chunk 852:
+t
+  Chunk 853:
+e
+  Chunk 854:
+n
+  Chunk 855:
+t
+  Chunk 856:
+:
+  Chunk 857:
+ 
+  Chunk 858:
+\
+  Chunk 859:
+"
+  Chunk 860:
+스
+  Chunk 861:
+스
+  Chunk 862:
+로
+  Chunk 863:
+ 
+  Chunk 864:
+지
+  Chunk 865:
+난
+  Chunk 866:
+달
+  Chunk 867:
+ 
+  Chunk 868:
+성
+  Chunk 869:
+공
+  Chunk 870:
+했
+  Chunk 871:
+던
+  Chunk 872:
+ 
+  Chunk 873:
+프
+  Chunk 874:
+로
+  Chunk 875:
+젝
+  Chunk 876:
+트
+  Chunk 877:
+의
+  Chunk 878:
+ 
+  Chunk 879:
+기
+  Chunk 880:
+억
+  Chunk 881:
+을
+  Chunk 882:
+ 
+  Chunk 883:
+객
+  Chunk 884:
+관
+  Chunk 885:
+적
+  Chunk 886:
+으
+  Chunk 887:
+로
+  Chunk 888:
+ 
+  Chunk 889:
+찾
+  Chunk 890:
+아
+  Chunk 891:
+내
+  Chunk 892:
+ 
+  Chunk 893:
+주
+  Chunk 894:
+셨
+  Chunk 895:
+군
+  Chunk 896:
+요
+  Chunk 897:
+!
+  Chunk 898:
+ 
+  Chunk 899:
+이
+  Chunk 900:
+처
+  Chunk 901:
+럼
+  Chunk 902:
+ 
+  Chunk 903:
+우
+  Chunk 904:
+리
+  Chunk 905:
+는
+  Chunk 906:
+ 
+  Chunk 907:
+스
+  Chunk 908:
+트
+  Chunk 909:
+레
+  Chunk 910:
+스
+  Chunk 911:
+가
+  Chunk 912:
+ 
+  Chunk 913:
+가
+  Chunk 914:
+득
+  Chunk 915:
+할
+  Chunk 916:
+ 
+  Chunk 917:
+때
+  Chunk 918:
+ 
+  Chunk 919:
+'
+  Chunk 920:
+오
+  Chunk 921:
+타
+  Chunk 922:
+ 
+  Chunk 923:
+하
+  Chunk 924:
+나
+  Chunk 925:
+'
+  Chunk 926:
+의
+  Chunk 927:
+ 
+  Chunk 928:
+부
+  Chunk 929:
+정
+  Chunk 930:
+적
+  Chunk 931:
+인
+  Chunk 932:
+ 
+  Chunk 933:
+기
+  Chunk 934:
+억
+  Chunk 935:
+에
+  Chunk 936:
+만
+  Chunk 937:
+ 
+  Chunk 938:
+초
+  Chunk 939:
+점
+  Chunk 940:
+을
+  Chunk 941:
+ 
+  Chunk 942:
+맞
+  Chunk 943:
+춰
+  Chunk 944:
+ 
+  Chunk 945:
+잘
+  Chunk 946:
+했
+  Chunk 947:
+던
+  Chunk 948:
+ 
+  Chunk 949:
+수
+  Chunk 950:
+많
+  Chunk 951:
+은
+  Chunk 952:
+ 
+  Chunk 953:
+일
+  Chunk 954:
+들
+  Chunk 955:
+을
+  Chunk 956:
+ 
+  Chunk 957:
+지
+  Chunk 958:
+워
+  Chunk 959:
+버
+  Chunk 960:
+리
+  Chunk 961:
+는
+  Chunk 962:
+ 
+  Chunk 963:
+'
+  Chunk 964:
+선
+  Chunk 965:
+택
+  Chunk 966:
+적
+  Chunk 967:
+ 
+  Chunk 968:
+추
+  Chunk 969:
+상
+  Chunk 970:
+화
+  Chunk 971:
+(
+  Chunk 972:
+필
+  Chunk 973:
+터
+  Chunk 974:
+링
+  Chunk 975:
+)
+  Chunk 976:
+'
+  Chunk 977:
+ 
+  Chunk 978:
+인
+  Chunk 979:
+지
+  Chunk 980:
+ 
+  Chunk 981:
+왜
+  Chunk 982:
+곡
+  Chunk 983:
+에
+  Chunk 984:
+ 
+  Chunk 985:
+빠
+  Chunk 986:
+지
+  Chunk 987:
+곤
+  Chunk 988:
+ 
+  Chunk 989:
+한
+  Chunk 990:
+답
+  Chunk 991:
+니
+  Chunk 992:
+다
+  Chunk 993:
+.
+  Chunk 994:
+ 
+  Chunk 995:
+'
+  Chunk 996:
+나
+  Chunk 997:
+는
+  Chunk 998:
+ 
+  Chunk 999:
+매
+  Chunk 1000:
+번
+  Chunk 1001:
+ 
+  Chunk 1002:
+실
+  Chunk 1003:
+패
+  Chunk 1004:
+한
+  Chunk 1005:
+다
+  Chunk 1006:
+'
+  Chunk 1007:
+는
+  Chunk 1008:
+ 
+  Chunk 1009:
+가
+  Chunk 1010:
+혹
+  Chunk 1011:
+한
+  Chunk 1012:
+ 
+  Chunk 1013:
+생
+  Chunk 1014:
+각
+  Chunk 1015:
+ 
+  Chunk 1016:
+대
+  Chunk 1017:
+신
+  Chunk 1018:
+,
+  Chunk 1019:
+ 
+  Chunk 1020:
+동
+  Chunk 1021:
+료
+  Chunk 1022:
+들
+  Chunk 1023:
+의
+  Chunk 1024:
+ 
+  Chunk 1025:
+감
+  Chunk 1026:
+사
+  Chunk 1027:
+ 
+  Chunk 1028:
+인
+  Chunk 1029:
+사
+  Chunk 1030:
+를
+  Chunk 1031:
+ 
+  Chunk 1032:
+떠
+  Chunk 1033:
+올
+  Chunk 1034:
+리
+  Chunk 1035:
+며
+  Chunk 1036:
+ 
+  Chunk 1037:
+이
+  Chunk 1038:
+ 
+  Chunk 1039:
+상
+  Chunk 1040:
+황
+  Chunk 1041:
+을
+  Chunk 1042:
+ 
+  Chunk 1043:
+다
+  Chunk 1044:
+르
+  Chunk 1045:
+게
+  Chunk 1046:
+
+
+  Chunk 1047:
+<
+  Chunk 1048:
+t
+  Chunk 1049:
+r
+  Chunk 1050:
+u
+  Chunk 1051:
+n
+  Chunk 1052:
+c
+  Chunk 1053:
+a
+  Chunk 1054:
+t
+  Chunk 1055:
+e
+  Chunk 1056:
+d
+  Chunk 1057:
+ 
+  Chunk 1058:
+1
+  Chunk 1059:
+5
+  Chunk 1060:
+1
+  Chunk 1061:
+9
+  Chunk 1062:
+2
+  Chunk 1063:
+ 
+  Chunk 1064:
+b
+  Chunk 1065:
+y
+  Chunk 1066:
+t
+  Chunk 1067:
+e
+  Chunk 1068:
+s
+  Chunk 1069:
+>
+--------------------------------------------------

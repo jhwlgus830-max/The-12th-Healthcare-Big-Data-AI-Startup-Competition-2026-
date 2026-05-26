@@ -215,5 +215,47 @@
     "status": "active",
     "id": "6e2a6df5-5528-4dc2-9808-19d3ab38eb72",
     "created_at": "2026-05-21T15:01:25.584049Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "initial_persona": 1,
+    "status": "active",
+    "id": "aa1dce65-d269-43c2-986a-0b9033c9bcf5",
+    "created_at": "2026-05-25T07:12:22.021069Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "initial_persona": 1,
+    "status": "active",
+    "id": "49b649e9-55df-495e-8f06-26c266ab329f",
+    "created_at": "2026-05-25T07:14:49.656378Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "initial_persona": 1,
+    "status": "active",
+    "id": "7cad38db-4de4-434d-8715-71ec61a8bd57",
+    "created_at": "2026-05-25T08:27:44.339290Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "initial_persona": 2,
+    "status": "active",
+    "id": "feaa29fc-6aca-4798-a13c-60114a717bbc",
+    "created_at": "2026-05-25T22:20:54.072277Z"
+  },
+  {
+    "user_id": "user-ee310c69",
+    "initial_persona": 5,
+    "status": "active",
+    "id": "bb03d229-0caf-48d7-b510-d5a820570dae",
+    "created_at": "2026-05-26T00:16:35.080837Z"
+  },
+  {
+    "user_id": "user-developer",
+    "initial_persona": 2,
+    "status": "active",
+    "id": "e1e43509-7a24-4859-bcde-a50fe23b5db1",
+    "created_at": "2026-05-26T01:09:13.088010Z"
   }
 ]
