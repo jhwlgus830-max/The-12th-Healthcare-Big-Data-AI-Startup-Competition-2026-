@@ -70,7 +70,8 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
     if (!isRealUser || !clientId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/counselor/client/${clientId}/report`);
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}/api/counselor/client/${clientId}/report`);
       if (res.ok) {
         const data = await res.json();
         setReportState(data);
@@ -95,7 +96,8 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
     if (!noteContent.trim() || !clientId) return;
     setSubmittingNote(true);
     try {
-      const res = await fetch("http://localhost:8000/api/counselor/notes", {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}/api/counselor/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

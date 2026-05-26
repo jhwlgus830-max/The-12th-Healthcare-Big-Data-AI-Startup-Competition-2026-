@@ -336,7 +336,8 @@ export default function EmotionReport({
     const fetchSessionData = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch(`http://localhost:8000/api/chat/history/${sessionId}`);
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${apiBase}/api/chat/history/${sessionId}`);
         if (!res.ok) throw new Error("Failed to fetch session history");
         const history = await res.json();
         

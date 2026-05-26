@@ -226,7 +226,8 @@ export default function UserFlow({
     setMessages(prev => [...prev, { role: "user", content: userText, icon: "👤" }]);
 
     try {
-      const res = await fetch("http://localhost:8000/api/chat/send", {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}/api/chat/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

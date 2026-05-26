@@ -33,7 +33,8 @@ export default function CounselorPortal({ onSelectClient }: { onSelectClient?: (
   async function fetchRealClients() {
     setIsRefreshing(true);
     try {
-      const res = await fetch("http://localhost:8000/api/counselor/clients");
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}/api/counselor/clients`);
       if (res.ok) {
         const data = await res.json();
         setRealClients(data);

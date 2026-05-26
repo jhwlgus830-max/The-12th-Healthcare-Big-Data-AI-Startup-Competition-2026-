@@ -240,7 +240,8 @@ export default function Home() {
       const endpoint = isSignUp ? "/api/auth/signup" : "/api/auth/login";
       const payload = isSignUp ? { email, password, nickname } : { email, password };
 
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -385,7 +386,8 @@ export default function Home() {
 
   const handleUpdateProfile = async (updatedProfile: typeof profile) => {
     try {
-      const res = await fetch("http://localhost:8000/api/user/update_profile", {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiBase}/api/user/update_profile`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1719,7 +1721,8 @@ export default function Home() {
                     const filteredPhq9 = phq9Answers.filter((a) => a !== null) as number[];
                     const p4List = [p4Answers.q1, p4Answers.q2, p4Answers.q3, p4Answers.q4];
                     
-                    const res = await fetch("http://localhost:8000/api/survey/save", {
+                    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+                    const res = await fetch(`${apiBase}/api/survey/save`, {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
@@ -2133,7 +2136,8 @@ export default function Home() {
                   if (diaryText.trim().length === 0) return;
 
                   try {
-                    const res = await fetch("http://localhost:8000/api/journal/save", {
+                    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+                    const res = await fetch(`${apiBase}/api/journal/save`, {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({

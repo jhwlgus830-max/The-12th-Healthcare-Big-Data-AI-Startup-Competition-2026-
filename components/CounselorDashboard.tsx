@@ -22,7 +22,8 @@ export default function CounselorDashboard({ onSelectClient }: { onSelectClient?
   useEffect(() => {
     async function fetchRealClients() {
       try {
-        const res = await fetch("http://localhost:8000/api/counselor/clients");
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${apiBase}/api/counselor/clients`);
         if (res.ok) {
           const data: RealClient[] = await res.json();
           // Filter only High-risk clients
