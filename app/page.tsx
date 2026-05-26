@@ -19,6 +19,11 @@ import { Heart, UserCheck, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
+  
+  useEffect(() => {
+    console.log("[말랑해도돼 디버거] NEXT_PUBLIC_API_URL 현재 설정값:", process.env.NEXT_PUBLIC_API_URL);
+  }, []);
+
   const [step, setStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "counselor_crisis" | "map">("onboarding");
   const [prevStep, setPrevStep] = useState<"onboarding" | "select" | "login" | "consent" | "profile" | "phq9" | "p4" | "pledge" | "result" | "report" | "chat" | "journal" | "counselor_dashboard" | "counselor_clients" | "counselor_report" | "counselor_guide" | "counselor_settings" | "counselor_crisis" | "map">("onboarding");
   const [role, setRole] = useState<"user" | "counselor" | null>(null);
