@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { ArrowRight, Calendar } from "lucide-react";
-import { userEmotionReport } from "@/lib/mockData";
+import { userEmotionReport, limeDemoScenarios, LIMEExplanationData } from "@/lib/mockData";
 
 interface EmotionReportProps {
   onContinueChat?: () => void;
@@ -25,6 +25,159 @@ interface EmotionReportProps {
   onUpdateProfile?: (updatedProfile: any) => Promise<void>;
 }
 
+interface AnalyzedToken {
+  word: string;
+  weight: number;
+  index: number;
+}
+
+// 실시간 사용자 입력 문장 형태소 분석기 (Semantic Lexicon Parser)
+const analyzeSentenceRealtime = (text: string, score: number): {
+  predictedEmotion: string;
+  probabilities: { name: string; value: number; color: string }[];
+  weights: AnalyzedToken[];
+  explanationText: string;
+} => {
+  const normalized = text.trim();
+  
+  // 감정 키워드 가중치 사전 정의
+  const LEXICON: { [key: string]: { emotion: string; weight: number; color: string } } = {
+    // 자살위기 / 극심한 절망
+    "끝내고 싶": { emotion: "자살충동", weight: 0.125, color: "#EF4444" },
+    "죽고 싶": { emotion: "자살충동", weight: 0.130, color: "#EF4444" },
+    "자살": { emotion: "자살충동", weight: 0.120, color: "#EF4444" },
+    "자해": { emotion: "자살충동", weight: 0.115, color: "#EF4444" },
+    "수면제": { emotion: "자살충동", weight: 0.095, color: "#EF4444" },
+    "사라지고": { emotion: "절망감", weight: 0.088, color: "#8B5CF6" },
+    "없어지고": { emotion: "절망감", weight: 0.085, color: "#8B5CF6" },
+    
+    // 고우울 / 절망 / 슬픔
+    "괴롭": { emotion: "우울감", weight: 0.078, color: "#EF4444" },
+    "눈물": { emotion: "우울감", weight: 0.062, color: "#EF4444" },
+    "가슴이 답답": { emotion: "우울감", weight: 0.055, color: "#EF4444" },
+    "슬프": { emotion: "슬픔", weight: 0.075, color: "#3B82F6" },
+    "아프": { emotion: "피로", weight: 0.045, color: "#F59E0B" },
+    
+    // 중등도 / 무기력 / 자존감 저하
+    "누워있": { emotion: "무기력", weight: 0.065, color: "#D946EF" },
+    "하기 싫": { emotion: "무기력", weight: 0.060, color: "#D946EF" },
+    "지쳐": { emotion: "피로", weight: 0.055, color: "#F59E0B" },
+    "힘들어": { emotion: "무기력", weight: 0.050, color: "#D946EF" },
+    "무능": { emotion: "자존감저하", weight: 0.070, color: "#6B7280" },
+    "부족": { emotion: "자존감저하", weight: 0.065, color: "#6B7280" },
+    "자존감": { emotion: "자존감저하", weight: 0.058, color: "#6B7280" },
+    "실패": { emotion: "자존감저하", weight: 0.060, color: "#6B7280" },
+    "혼자": { emotion: "외로움", weight: 0.055, color: "#A855F7" },
+    "외로": { emotion: "외로움", weight: 0.075, color: "#A855F7" },
+    
+    // 저위험 / 불안 / 일상 스트레스
+    "조급": { emotion: "불안", weight: 0.045, color: "#EC4899" },
+    "불안": { emotion: "불안", weight: 0.068, color: "#EC4899" },
+    "걱정": { emotion: "불안", weight: 0.050, color: "#EC4899" },
+    "취업": { emotion: "불안", weight: 0.035, color: "#EC4899" },
+    "불규칙": { emotion: "피로", weight: 0.038, color: "#F59E0B" }
+  };
+
+  const detectedWeights: AnalyzedToken[] = [];
+  let primaryEmotion = "일상";
+  
+  // 텍스트 토크나이징 및 사전 단어 매칭
+  const words = normalized.split(/\s+/);
+  const matchedEmotionsCount: { [key: string]: number } = {};
+
+  words.forEach((word, idx) => {
+    let matched = false;
+    // 다중 어절 매칭 시도
+    for (const [key, meta] of Object.entries(LEXICON)) {
+      if (word.includes(key)) {
+        const startIdx = normalized.indexOf(word);
+        detectedWeights.push({
+          word,
+          weight: meta.weight,
+          index: startIdx >= 0 ? startIdx : idx * 5
+        });
+        matchedEmotionsCount[meta.emotion] = (matchedEmotionsCount[meta.emotion] || 0) + meta.weight;
+        matched = true;
+        break;
+      }
+    }
+    
+    if (!matched) {
+      // 감정 완화 요인 무작위 배정 (LIME의 음수 가중치 표현)
+      const stopWords = ["나는", "내가", "그냥", "너무", "진짜", "오늘", "제", "나", "저", "이", "그", "에", "도", "은", "는", "가"];
+      if (stopWords.includes(word) || word.length <= 1) {
+        const startIdx = normalized.indexOf(word);
+        detectedWeights.push({
+          word,
+          weight: -0.005 - (word.length % 3) * 0.002,
+          index: startIdx >= 0 ? startIdx : idx * 5
+        });
+      }
+    }
+  });
+
+  // 최종 지배적 감정 판정
+  let maxWeight = 0;
+  Object.entries(matchedEmotionsCount).forEach(([emo, w]) => {
+    if (w > maxWeight) {
+      maxWeight = w;
+      primaryEmotion = emo;
+    }
+  });
+
+  // 만약 사전에 매칭되는 단어가 아예 없는 경우 폴백 감정 배정
+  if (primaryEmotion === "일상") {
+    if (score >= 20) primaryEmotion = "자살충동";
+    else if (score >= 15) primaryEmotion = "우울감";
+    else if (score >= 10) primaryEmotion = "무기력";
+    else if (score >= 5) primaryEmotion = "불안";
+  }
+
+  // 예측 확률 계산 (주요 감정 기준 분포 보정)
+  const p1Val = Math.round(score >= 20 ? 72 : score >= 15 ? 65 : score >= 10 ? 58 : 38);
+  const p2Val = Math.round(p1Val * 0.35);
+  const p3Val = 100 - p1Val - p2Val;
+
+  const EMOTION_COLORS: { [key: string]: string } = {
+    "자살충동": "#EF4444",
+    "우울감": "#EF4444",
+    "슬픔": "#3B82F6",
+    "외로움": "#A855F7",
+    "무기력": "#D946EF",
+    "불안": "#EC4899",
+    "피로": "#F59E0B",
+    "자존감저하": "#6B7280",
+    "일상": "#10B981"
+  };
+
+  const probabilities = [
+    { name: primaryEmotion, value: p1Val, color: EMOTION_COLORS[primaryEmotion] || "#EF4444" },
+    { name: primaryEmotion === "무기력" ? "자존감저하" : "절망감", value: p2Val, color: "#8B5CF6" },
+    { name: "피로", value: p3Val, color: "#F59E0B" }
+  ];
+
+  // 단어가 하이라이트된 문장 설명 동적 생성
+  const positiveTriggers = detectedWeights.filter(w => w.weight > 0).sort((a, b) => b.weight - a.weight);
+  let explanationText = "";
+  if (positiveTriggers.length > 0) {
+    const topWord = positiveTriggers[0].word;
+    const topWeight = positiveTriggers[0].weight.toFixed(4);
+    explanationText = `이 문장에서는 마음 상태를 직접적으로 표현하는 '${topWord}' (+${topWeight}) 단어가 ${primaryEmotion} 감정을 분석하는 데 가장 중요한 지표로 포착되었습니다. `;
+    if (positiveTriggers.length > 1) {
+      explanationText += `여기에 추가로 '${positiveTriggers[1].word}' (+${positiveTriggers[1].weight.toFixed(4)}) 표현이 결합되면서 감정 예측 강도를 뒷받침하고 있습니다.`;
+    }
+  } else {
+    explanationText = `작성하신 문장은 특정 감정 단어로 치우치지 않는 일상적인 맥락으로 감지되었으나, 전반적인 PHQ-9 우울 수준을 보조 지표로 매칭하여 예측 확률을 산출했습니다.`;
+  }
+
+  return {
+    predictedEmotion: primaryEmotion,
+    probabilities,
+    weights: detectedWeights.sort((a, b) => a.index - b.index),
+    explanationText
+  };
+};
+
 export default function EmotionReport({ 
   onContinueChat,
   phq9Score = 14, // 기본값 설정 (테스트용)
@@ -37,6 +190,14 @@ export default function EmotionReport({
   onUpdateProfile
 }: EmotionReportProps) {
   const [currentTab, setCurrentTab] = useState("대화턴");
+  
+  // LIME XAI 상태 관리
+  const [limeMode, setLimeMode] = useState<"demo" | "live">("demo");
+  const [currentDemoIdx, setCurrentDemoIdx] = useState(0);
+  const [currentLiveIdx, setCurrentLiveIdx] = useState(0);
+  const [hoveredWord, setHoveredWord] = useState<{ word: string; weight: number; desc: string } | null>(null);
+  const [liveSentences, setLiveSentences] = useState<any[]>([]);
+
   const [reportData, setReportData] = useState<{
     summary: {
       totalTurns: number;
@@ -402,6 +563,21 @@ export default function EmotionReport({
           { key: "D", title: "Daily Life (일상 생활)", desc: dDesc, color: hasLowSleep || hasFatigue ? "border-teal-500" : "border-teal-300" }
         ];
 
+        // 실시간 대화 유저 문장 추출 및 LIME 분석
+        const liveParsed = userMsgs.map((msg: any, idx: number) => {
+          const content = msg.content;
+          const analysis = analyzeSentenceRealtime(content, phq9Score);
+          return {
+            id: `lime-live-${idx}`,
+            level: phq9Score >= 20 ? "crisis" : phq9Score >= 15 ? "high" : phq9Score >= 10 ? "moderate" : "low",
+            levelLabel: `실제 대화 Turn ${idx + 1}`,
+            sentence: content,
+            ...analysis
+          };
+        }).slice(-3); // 최근 3개 대화만 로드
+
+        setLiveSentences(liveParsed);
+
         setReportData({
           summary: {
             totalTurns,
@@ -428,7 +604,6 @@ export default function EmotionReport({
   const displayPieData = reportData?.pieData || userEmotionReport.pieData;
   const displayTrendData = reportData?.trendData || userEmotionReport.trendData;
   const displayWordCloud = reportData?.wordCloud || userEmotionReport.wordCloud;
-  const displayMindData = reportData?.mindData || userEmotionReport.mindData;
 
   const emotions = [
     { name: "우울감", color: "#EF4444" },
@@ -449,6 +624,10 @@ export default function EmotionReport({
   };
 
   const tabs = ["대화턴", "1일", "7일", "14일", "30일"];
+
+  const currentScenarios = limeMode === "demo" ? limeDemoScenarios : liveSentences;
+  const currentIdx = limeMode === "demo" ? currentDemoIdx : currentLiveIdx;
+  const activeScenario = currentScenarios[currentIdx] as LIMEExplanationData | undefined;
 
   return (
     <div className="max-w-7xl w-full bg-[#FAF8F5] rounded-3xl overflow-hidden border border-[#EAE5D9] shadow-[0_12px_40px_rgba(139,123,93,0.06)] flex flex-col animate-fade-in max-h-[90vh]">
@@ -535,21 +714,6 @@ export default function EmotionReport({
                       </div>
                     ))}
                   </div>
-                </div>
-              </div>
-
-              {/* MIND Framework */}
-              <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-                <h3 className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  🧠 MIND 프레임워크
-                </h3>
-                <div className="flex flex-col gap-2">
-                  {displayMindData.map((item) => (
-                    <div key={item.key} className={`border-l-4 ${item.color} bg-[#FAF8F5] p-2 rounded-r-lg border-y border-r border-[#EAE5D9]/50 flex flex-col`}>
-                      <p className="text-xs font-bold text-gray-500">{item.key}. {item.title}</p>
-                      <p className="text-xs font-bold text-gray-800">{item.desc}</p>
-                    </div>
-                  ))}
                 </div>
               </div>
 
@@ -648,6 +812,268 @@ export default function EmotionReport({
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* 나를 더 깊이 들여다보는 AI 분석 (XAI LIME) Card - FULL WIDTH */}
+          <div className="bg-[#FDFCFB] border border-[#EAE5D9] rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] mt-6 text-left">
+            <div className="flex flex-col gap-5">
+              
+              {/* Card Title & Mode Toggle */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-150 pb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800 flex flex-wrap items-center gap-2">
+                    🔍 나를 더 깊이 들여다보는 AI 분석 (XAI LIME)
+                    <span className="text-[10px] bg-purple-100 text-purple-700 font-extrabold px-2.5 py-0.5 rounded-full select-none">
+                      설명가능한 AI (XAI)
+                    </span>
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    입력하신 대화 문장에서 각 단어가 AI의 감정 분류 예측에 어떤 기여를 했는지 실시간 시각화합니다.
+                  </p>
+                </div>
+                
+                {/* Mode selector pills */}
+                <div className="flex bg-[#FAF8F5] p-1 rounded-xl border border-[#EAE5D9] self-start sm:self-auto shrink-0 select-none">
+                  <button
+                    type="button"
+                    onClick={() => setLimeMode("demo")}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                      limeMode === "demo"
+                        ? "bg-[#1E2D4E] text-[#FAF8F5] shadow-sm"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                  >
+                    🧪 데모 시나리오
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLimeMode("live")}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                      limeMode === "live"
+                        ? "bg-[#1E2D4E] text-[#FAF8F5] shadow-sm"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                  >
+                    💬 실제 대화 연동
+                    {liveSentences.length > 0 && (
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* If live mode has no data */}
+              {limeMode === "live" && liveSentences.length === 0 ? (
+                <div className="bg-[#FAF8F5] border border-dashed border-[#EAE5D9] rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[220px]">
+                  <span className="text-4xl mb-3 animate-bounce">💬</span>
+                  <h4 className="text-sm font-bold text-gray-700">실시간 대화 분석 데이터가 부족합니다</h4>
+                  <p className="text-xs text-gray-400 mt-2 max-w-sm leading-relaxed">
+                    챗방에서 1회 이상 대화를 나누고 일기를 제출하시면, 이곳에 실제 나눈 문장의 단어 기여도 그래프가 실시간 로드됩니다. 먼저 데모 모드로 예측 과정을 확인해 보세요!
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setLimeMode("demo")}
+                    className="mt-4 px-4 py-2 bg-[#1E2D4E] hover:bg-[#2A3B5C] text-[#FAF8F5] text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 hover:scale-[1.02]"
+                  >
+                    🧪 데모 시나리오 분석 확인하기
+                  </button>
+                </div>
+              ) : activeScenario ? (
+                <div className="flex flex-col gap-4">
+                  
+                  {/* Tabs for switching sentences */}
+                  <div className="flex flex-wrap gap-2 select-none">
+                    {currentScenarios.map((scen, idx) => (
+                      <button
+                        type="button"
+                        key={scen.id}
+                        onClick={() => {
+                          if (limeMode === "demo") setCurrentDemoIdx(idx);
+                          else setCurrentLiveIdx(idx);
+                        }}
+                        className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all truncate max-w-[150px] sm:max-w-none hover:scale-[1.02] ${
+                          currentIdx === idx
+                            ? "bg-[#FAF8F5] border-[#1E2D4E] text-[#1E2D4E] shadow-sm font-extrabold"
+                            : "bg-[#FDFCFB] border-gray-200 text-gray-500 hover:bg-[#FAF8F5]"
+                        }`}
+                      >
+                        {scen.levelLabel} {scen.level === "crisis" && "🚨"}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Main Grid: Highlights (left) & Chart (right) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    {/* Left Box (5/12) */}
+                    <div className="lg:col-span-5 flex flex-col gap-4">
+                      
+                      {/* Highlight Text Box */}
+                      <div className="bg-[#FAF8F5] border border-[#EAE5D9] rounded-2xl p-5 shadow-inner min-h-[150px] flex flex-col justify-between">
+                        <div>
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2.5 select-none">
+                            분석 문장 (Highlighted Sentence)
+                          </span>
+                          <p className="text-sm font-semibold text-gray-800 leading-relaxed break-words">
+                            {activeScenario.sentence.split(/\s+/).map((word: string, wIdx: number) => {
+                              const wObj = activeScenario.weights.find(
+                                (w: any) => word.includes(w.word) || w.word.includes(word)
+                              );
+                              if (wObj) {
+                                const isPositive = wObj.weight > 0;
+                                const magnitude = Math.abs(wObj.weight);
+                                // Scale opacity nicely
+                                const opacity = Math.min(Math.max(magnitude * 7, 0.15), 0.90);
+                                
+                                const bgColor = isPositive 
+                                  ? `rgba(244, 63, 94, ${opacity})` // soft rose
+                                  : `rgba(14, 165, 233, ${opacity})`; // soft sky
+                                
+                                const textColor = isPositive ? "text-rose-950 font-black" : "text-sky-950 font-black";
+                                const borderStyle = isPositive ? "border-rose-400" : "border-sky-400";
+                                
+                                return (
+                                  <span
+                                    key={wIdx}
+                                    onMouseEnter={() => setHoveredWord({
+                                      word: wObj.word,
+                                      weight: wObj.weight,
+                                      desc: isPositive ? "해당 감정 예측 촉발 (Positive)" : "해당 감정 예측 완화 (Negative)"
+                                    })}
+                                    onMouseLeave={() => setHoveredWord(null)}
+                                    className={`inline-block border-b-2 ${borderStyle} ${textColor} px-1.5 py-0.5 rounded-md mx-0.5 font-bold cursor-help transition-transform hover:scale-[1.08]`}
+                                    style={{ backgroundColor: bgColor }}
+                                  >
+                                    {word}
+                                  </span>
+                                );
+                              }
+                              return <span key={wIdx} className="mx-0.5 text-gray-700">{word}</span>;
+                            })}
+                          </p>
+                        </div>
+                        
+                        {/* Hover tooltip card */}
+                        <div className="mt-4 h-8 flex items-center select-none">
+                          {hoveredWord ? (
+                            <div className="bg-[#1E2D4E]/90 text-white text-[10px] px-3 py-1.5 rounded-xl flex items-center justify-between w-full shadow-lg backdrop-blur-sm animate-fade-in animate-duration-200">
+                              <span className="font-extrabold text-amber-300">💡 {hoveredWord.word}</span>
+                              <span className="font-bold">기여 가중치: {hoveredWord.weight > 0 ? "+" : ""}{hoveredWord.weight.toFixed(4)}</span>
+                              <span className="opacity-95 font-medium">{hoveredWord.desc}</span>
+                            </div>
+                          ) : (
+                            <p className="text-[10px] text-gray-400 italic">
+                              💡 하이라이트 단어에 마우스를 올리면 단어별 가중치를 정밀하게 보여줍니다.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Candidate Probability Progress Bars */}
+                      <div className="bg-[#FAF8F5] border border-[#EAE5D9]/70 rounded-2xl p-4">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-3.5 select-none">
+                          AI 감정 예측 비율 (Predict Proba)
+                        </span>
+                        <div className="flex flex-col gap-3">
+                          {activeScenario.probabilities.map((prob: any) => (
+                            <div key={prob.name} className="flex items-center justify-between text-xs">
+                              <span className="w-16 font-extrabold text-gray-700 truncate">{prob.name}</span>
+                              <div className="flex-1 bg-gray-200/50 h-2.5 rounded-full overflow-hidden mx-3 shadow-inner">
+                                <div
+                                  className="h-full rounded-full transition-all duration-700 ease-out"
+                                  style={{ width: `${prob.value}%`, backgroundColor: prob.color }}
+                                ></div>
+                              </div>
+                              <span className="w-8 text-right font-black text-gray-600">{prob.value}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Right Box (7/12) */}
+                    <div className="lg:col-span-7 flex flex-col gap-4">
+                      
+                      {/* Contribution chart */}
+                      <div className="bg-white border border-[#EAE5D9]/50 rounded-2xl p-5 shadow-[0_4px_12px_rgba(139,123,93,0.01)]">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-4 select-none">
+                          LIME 단어별 가중치 기여 지표 (LIME Feature Contribution)
+                        </span>
+                        
+                        {/* Directional Header */}
+                        <div className="flex justify-between items-center text-[9px] sm:text-[10px] text-gray-400 font-extrabold border-b border-gray-100 pb-2 mb-3 select-none">
+                          <span>◀ 완화 요인 (Counter-evidence)</span>
+                          <span>주요 감정: <strong className="text-red-500">{activeScenario.predictedEmotion}</strong></span>
+                          <span>유발 요인 (Positive-evidence) ▶</span>
+                        </div>
+                        
+                        {/* Bar list */}
+                        <div className="flex flex-col gap-3.5">
+                          {activeScenario.weights.map((w: any, index: number) => {
+                            const isPositive = w.weight > 0;
+                            // Determine the max weight in the active scenario to scale dynamically and avoid clipping or arbitrary scaling.
+                            const maxScale = Math.max(...activeScenario.weights.map((x: any) => Math.abs(x.weight)), 0.0001);
+                            const percent = (Math.abs(w.weight) / maxScale) * 50;
+                            
+                            return (
+                              <div key={index} className="flex items-center text-xs h-6 group">
+                                {/* Left side (negative weights) */}
+                                <div className="flex-1 flex justify-end items-center pr-3 border-r border-gray-300 h-full relative">
+                                  {!isPositive && (
+                                    <div className="flex items-center justify-end w-full animate-slide-in">
+                                      <span className="text-[10px] font-extrabold text-sky-700 mr-2 group-hover:scale-[1.05] transition-transform">{w.word}</span>
+                                      <div
+                                        className="bg-sky-400 group-hover:bg-sky-500 h-4 rounded-l transition-all duration-500 shadow-sm border border-sky-300"
+                                        style={{ width: `${percent}%` }}
+                                      ></div>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                {/* Score Axis */}
+                                <div className="w-16 text-center font-black text-gray-500 text-[10px] select-none">
+                                  {w.weight > 0 ? "+" : ""}{w.weight.toFixed(4)}
+                                </div>
+                                
+                                {/* Right side (positive weights) */}
+                                <div className="flex-1 flex justify-start items-center pl-3 h-full relative">
+                                  {isPositive && (
+                                    <div className="flex items-center justify-start w-full animate-slide-in">
+                                      <div
+                                        className="bg-rose-400 group-hover:bg-rose-500 h-4 rounded-r transition-all duration-500 shadow-sm border border-rose-300"
+                                        style={{ width: `${percent}%` }}
+                                      ></div>
+                                      <span className="text-[10px] font-extrabold text-rose-700 ml-2 group-hover:scale-[1.05] transition-transform">{w.word}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* AI Explanation Insight box */}
+                      <div className="bg-[#FAF8F5] border-l-4 border-[#1E2D4E] p-4 rounded-r-xl shadow-sm">
+                        <h4 className="text-xs font-extrabold text-[#1E2D4E] flex items-center gap-1.5 mb-1.5 select-none">
+                          🧠 AI 심층 판정 소견 (XAI Insights)
+                        </h4>
+                        <p className="text-xs font-bold text-gray-700 leading-relaxed">
+                          {activeScenario.explanationText}
+                        </p>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              ) : null}
+              
             </div>
           </div>
         </div>

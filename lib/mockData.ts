@@ -1353,3 +1353,158 @@ export const phq9ResultConfig = {
     textColor: "text-white"
   }
 };
+
+// ==========================================
+// 6. XAI LIME 시각화용 데이터 모델 및 데모 데이터셋
+// ==========================================
+
+export interface LIMETokenWeight {
+  word: string;
+  weight: number;
+  index: number; // 문장 내에서의 시작 위치 (하이라이팅 순서 보장 및 매칭용)
+}
+
+export interface LIMEExplanationData {
+  id: string;
+  level: "low" | "moderate" | "high" | "crisis";
+  levelLabel: string;
+  sentence: string;
+  predictedEmotion: string;
+  probabilities: { name: string; value: number; color: string }[];
+  weights: LIMETokenWeight[];
+  explanationText: string;
+}
+
+export const limeDemoScenarios: LIMEExplanationData[] = [
+  {
+    id: "lime-demo-low",
+    level: "low",
+    levelLabel: "🟢 저위험",
+    sentence: "최근에 새로운 프로젝트를 맡게 되면서 일시적으로 스트레스가 심해졌어요. 잠도 잘 안 오고 밥맛도 없어서 몸이 좀 피곤하네요. 하지만 주말에 푹 쉬고 친구들이랑 맛있는 걸 먹으면 기분이 조금 풀릴 것 같기도 해요. 혼자 해결하려고 너무 끙끙대지 말고 극복해보려고요.",
+    predictedEmotion: "불안",
+    probabilities: [
+      { name: "불안", value: 38, color: "#EC4899" },
+      { name: "피로", value: 24, color: "#F59E0B" },
+      { name: "일상", value: 15, color: "#10B981" }
+    ],
+    weights: [
+      { word: "스트레스가", weight: 0.2451300941847163, index: 33 },
+      { word: "피곤하네요", weight: 0.1568293758392178, index: 65 },
+      { word: "안 오고", weight: 0.0823947291839178, index: 48 },
+      { word: "주말에", weight: -0.0928374829103982, index: 78 },
+      { word: "친구들이랑", weight: -0.1245892019487563, index: 88 },
+      { word: "풀릴", weight: -0.0652839281749203, index: 106 }
+    ],
+    explanationText: "이 문장에서는 새로운 프로젝트로 인한 단기적인 압박감을 의미하는 '스트레스가' (+0.2451)와 생리적 불안 반응인 '피곤하네요' (+0.1568) 단어가 불안 감정을 예측하는 가장 유력한 유발 요인으로 작동했습니다. 반면, 지지체계와 정서 완화를 나타내는 '친구들이랑' (-0.1246)과 '주말에' (-0.0928) 단어는 예측 강도를 상쇄하는 강력한 완화 요인으로 해석되었습니다."
+  },
+  {
+    id: "lime-demo-moderate",
+    level: "moderate",
+    levelLabel: "🟡 중위험",
+    sentence: "아침에 일어날 때마다 온몸이 무겁고 아무것도 하고 싶지 않아요. 최근에 회사 면접에서 연이어 떨어진 이후로 제 자신이 쓸모없는 사람처럼 느껴집니다. 하루 종일 침대에 누워서 천장만 보고 있으면 그냥 이대로 제 커리어가 영영 끝나는 것은 아닐까 두렵고 심장이 마구 뜁니다.",
+    predictedEmotion: "무기력",
+    probabilities: [
+      { name: "무기력", value: 58, color: "#D946EF" },
+      { name: "자존감저하", value: 22, color: "#6B7280" },
+      { name: "슬픔", value: 12, color: "#3B82F6" }
+    ],
+    weights: [
+      { word: "쓸모없는", weight: 0.2981749102847163, index: 59 },
+      { word: "하고 싶지", weight: 0.2104829184716382, index: 21 },
+      { word: "떨어진", weight: 0.1458291847291847, index: 44 },
+      { word: "끝나는", weight: 0.0958172937194852, index: 111 },
+      { word: "침대에", weight: 0.0528471928471628, index: 80 },
+      { word: "일어날", weight: -0.0482910384729183, index: 4 }
+    ],
+    explanationText: "구직 실패로 인한 심각한 내적 자책 표현인 '쓸모없는' (+0.2982) 단어와 행동적 고립 상태를 뜻하는 '하고 싶지' (+0.2105) 단어가 무기력을 예측하는 주된 가중치 요인으로 꼽혔습니다. 특히 부정적 인지 왜곡이 무기력 상태를 유의미하게 심화시키는 것으로 분석되었습니다."
+  },
+  {
+    id: "lime-demo-high",
+    level: "high",
+    levelLabel: "🟠 고위험",
+    sentence: "가슴이 턱 막힌 것처럼 답답하고 주체할 수 없이 눈물만 흘러내립니다. 제 정서나 기분을 스스로 통제할 수 없다는 비참함이 저를 지배하고 있어요. 주변 사람들에게 제 고통을 털어놓아 봤자 결국 저를 귀찮아하고 멀리할 것 같아서 아무 말도 못한 채 혼자 앓고 있습니다.",
+    predictedEmotion: "우울감",
+    probabilities: [
+      { name: "우울감", value: 65, color: "#EF4444" },
+      { name: "절망감", value: 21, color: "#EF4444" },
+      { name: "슬픔", value: 10, color: "#3B82F6" }
+    ],
+    weights: [
+      { word: "눈물만", weight: 0.3458291847291837, index: 23 },
+      { word: "통제할", weight: 0.2458193857291847, index: 44 },
+      { word: "고통을", weight: 0.2158291847291847, index: 76 },
+      { word: "답답하고", weight: 0.1248291038472918, index: 10 },
+      { word: "멀리할", weight: 0.0892837194729103, index: 96 },
+      { word: "털어놓아", weight: -0.0782910384729182, index: 80 }
+    ],
+    explanationText: "억제되지 않는 강한 우울 정서를 직접적으로 시사하는 '눈물만' (+0.3458)과 통제감 상실을 시사하는 '통제할' (+0.2458) 단어가 임상적 우울 상태를 지시하는 가장 결정적인 요인으로 식별되었습니다. 정서적 지지를 모색하려는 시도인 '털어놓아' (-0.0783) 단어는 미미하게나마 부정적 우울 예측을 경감하는 요인으로 반영되었습니다."
+  },
+  {
+    id: "lime-demo-crisis",
+    level: "crisis",
+    levelLabel: "🔴 자살/자해 위험",
+    sentence: "나라는 존재 자체가 가족들의 삶과 행복에 커다란 짐이자 민폐인 것만 같아요. 매일 밤 어둠 속에서 혼자 끙끙대며 버티다 보니 몸과 마음이 갈기갈기 찢겨나간 느낌이에요. 서랍 깊숙이 모아둔 수면제를 바라보며 그냥 이 모든 괴로움을 한 번에 영원히 끝내고 싶다는 생각만 듭니다.",
+    predictedEmotion: "자살충동",
+    probabilities: [
+      { name: "자살충동", value: 72, color: "#EF4444" },
+      { name: "절망감", value: 20, color: "#8B5CF6" },
+      { name: "피로", value: 5, color: "#F59E0B" }
+    ],
+    weights: [
+      { word: "끝내고", weight: 0.3958291847291847, index: 133 },
+      { word: "수면제를", weight: 0.3248193857291847, index: 111 },
+      { word: "짐이자", weight: 0.2658291847291847, index: 29 },
+      { word: "찢겨나간", weight: 0.1982910384729183, index: 78 },
+      { word: "어둠", weight: 0.0892837194729103, index: 40 },
+      { word: "가족들의", weight: -0.0528471928471628, index: 10 }
+    ],
+    explanationText: "자살 완수의 강한 내적 의지를 뜻하는 '끝내고' (+0.3958)와 자살을 위한 구체적인 수단(Means) 접근성을 지시하는 '수면제를' (+0.3248) 단어가 위험 지수를 즉각적으로 폭증시키는 치명적 요인으로 감지되었습니다. 대인관계적인 중압감을 표현하는 대인관계 부채감 요인인 '짐이자' (+0.2658) 역시 자살 충동의 세번째로 강력한 가중치로 작용했습니다."
+  },
+  {
+    id: "lime-demo-test-friends",
+    level: "moderate",
+    levelLabel: "🧪 테스트용 (친구들)",
+    sentence: "제 친구들 앞에서만 저를 유독 낮춰 말하는 연인 때문에 서운해요. 둘이 있을 때는 다정한데 사람들만 있으면 농담처럼 저를 깎아내립니다. 기분이 상한다고 말해도 예민하다는 반응이라 더 혼란스럽습니다. 상황을 조금 더 설명하면, 당장 큰 문제가 아니라고 스스로 달래 보지만, 비슷한 일이 반복되니 마음이 점점 지칩니다.",
+    predictedEmotion: "감정조절이상",
+    probabilities: [
+      { name: "감정조절이상", value: 72.3, color: "#D946EF" },
+      { name: "죄책감", value: 5.7, color: "#6B7280" },
+      { name: "슬픔", value: 6.4, color: "#3B82F6" }
+    ],
+    weights: [
+      { word: "깎아내립니다", weight: 0.3701300147395763, index: 68 },
+      { word: "저를", weight: 0.22231856877392459, index: 11 },
+      { word: "예민하다는", weight: -0.10209661957568701, index: 89 },
+      { word: "낮춰", weight: 0.0768523464674038, index: 17 },
+      { word: "때문에", weight: -0.06287793056142862, index: 27 },
+      { word: "서운해요", weight: -0.058338015760060404, index: 31 },
+      { word: "상한다고", weight: 0.050548500155513765, index: 80 },
+      { word: "달래", weight: 0.03826421429044861, index: 144 }
+    ],
+    explanationText: "타인 앞에서 본인을 부정적으로 대하는 언어 자극인 '깎아내립니다' (+0.3701)와 '낮춰' (+0.0769) 표현이 관계에서의 깊은 감정조절이상 및 우울 정서를 예측하는 데 압도적인 유발 인자로 검출되었습니다. 한편, '예민하다는' (-0.1021), '서운해요' (-0.0583) 등의 정서 표명 및 해석 단어들은 직접적인 자아 파괴 요인은 아니기에 예측에 대한 완화 증거로 감지되었습니다."
+  },
+  {
+    id: "lime-demo-test-helplessness",
+    level: "moderate",
+    levelLabel: "🧪 테스트용 (무력감)",
+    sentence: "삶의 무력감이 정말 큰것같아요. 제가 사실 대학에 목숨을 걸고 살아왔는데 sky 입학은 했는데 저는 여기만 오면 다 될줄 알았어요. 근데 여기서도 결국 또 살아남기 위해 뭔가를 노력하고 해야한다는게 너무 힘들고 지쳤어요.",
+    predictedEmotion: "감정조절이상",
+    probabilities: [
+      { name: "감정조절이상", value: 67.0, color: "#D946EF" },
+      { name: "무기력", value: 19.2, color: "#EC4899" },
+      { name: "죄책감", value: 1.2, color: "#6B7280" }
+    ],
+    weights: [
+      { word: "무력감이", weight: 0.643738568428704, index: 3 },
+      { word: "제가", weight: 0.09188518856987239, index: 18 },
+      { word: "노력하고", weight: 0.06129351533764926, index: 99 },
+      { word: "살아왔는데", weight: 0.042773235853757426, index: 35 },
+      { word: "삶의", weight: -0.04570288204893922, index: 0 },
+      { word: "살아남기", weight: -0.08563628288291683, index: 87 },
+      { word: "지쳤어요", weight: -0.09392155188492048, index: 118 },
+      { word: "힘들고", weight: -0.11092715408571904, index: 114 }
+    ],
+    explanationText: "대학 입학 이후 겪게 된 기대와 다른 학업적 고착 상태 및 번아웃을 지칭하는 '무력감이' (+0.6437) 단어가 전체 정서의 조절이상 및 무력감 상태를 예측하는 압도적인 유발 인자로 검출되었습니다. 한편, 일반적인 육체 피로 표현인 '힘들고' (-0.1109)나 '지쳤어요' (-0.0939) 단어들은 특정 임상 상태를 유도하기보다는 상대적인 완화 요인으로 분류되었습니다."
+  }
+];
+
