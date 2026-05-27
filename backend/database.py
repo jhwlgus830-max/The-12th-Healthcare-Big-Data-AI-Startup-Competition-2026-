@@ -55,8 +55,6 @@ class MockTable:
             records = {} if self.name == "custom_users" else []
 
         if self.name == "custom_users":
-            # custom_users insert logic (mapping to local users.json format)
-            # data is a dict: {"id": user_id, "email": ..., "password": ..., "nickname": ...}
             uid = data.get("id", f"user-{uuid.uuid4().hex[:8]}")
             records[uid] = {
                 "email": data.get("email"),
@@ -65,7 +63,6 @@ class MockTable:
             }
             inserted_data = [{"id": uid, **data}]
         else:
-            # General records (list)
             if isinstance(data, list):
                 new_records = []
                 for item in data:
@@ -94,6 +91,100 @@ class MockTable:
 
         return MockResponse(inserted_data)
 
+    def update(self, data):
+        file_path = os.path.join(os.path.dirname(__file__), f"{self.name}.json")
+        if self.name == "custom_users":
+            file_path = os.path.join(os.path.dirname(__file__), "users.json")
+            
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as f:
+                    records = json.load(f)
+            else:
+                records = {} if self.name == "custom_users" else []
+        except Exception:
+            records = {} if self.name == "custom_users" else []
+
+        updated_records = []
+        if self.name == "custom_users":
+            for uid in list(records.keys()):
+                match = True
+                for field, value in self.filters:
+                    if records[uid].get(field) != value:
+                        match = False
+                        break
+                if match:
+                    records[uid].update(data)
+                    updated_records.append({"id": uid, **records[uid]})
+        else:
+            for r in records:
+                match = True
+                for field, value in self.filters:
+                    if r.get(field) != value:
+                        match = False
+                        break
+                if match:
+                    r.update(data)
+                    updated_records.append(r)
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(records, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"[Mock DB Error] Failed to write {self.name}.json during update: {e}")
+
+        return MockResponse(updated_records)
+
+    def upsert(self, data):
+        items = data if isinstance(data, list) else [data]
+        file_path = os.path.join(os.path.dirname(__file__), f"{self.name}.json")
+        if self.name == "custom_users":
+            file_path = os.path.join(os.path.dirname(__file__), "users.json")
+            
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as f:
+                    records = json.load(f)
+            else:
+                records = {} if self.name == "custom_users" else []
+        except Exception:
+            records = {} if self.name == "custom_users" else []
+
+        upserted_records = []
+        for item in items:
+            item_copy = dict(item)
+            if self.name == "custom_users":
+                uid = item_copy.get("id") or str(uuid.uuid4())
+                if uid not in records:
+                    records[uid] = {}
+                records[uid].update(item_copy)
+                upserted_records.append({"id": uid, **records[uid]})
+            else:
+                match_idx = -1
+                for idx, r in enumerate(records):
+                    if ("id" in item_copy and r.get("id") == item_copy["id"]) or \
+                       ("user_id" in item_copy and r.get("user_id") == item_copy["user_id"]):
+                        match_idx = idx
+                        break
+                if match_idx != -1:
+                    records[match_idx].update(item_copy)
+                    upserted_records.append(records[match_idx])
+                else:
+                    if "id" not in item_copy:
+                        item_copy["id"] = str(uuid.uuid4())
+                    if "created_at" not in item_copy:
+                        item_copy["created_at"] = datetime.utcnow().isoformat() + "Z"
+                    records.append(item_copy)
+                    upserted_records.append(item_copy)
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(records, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"[Mock DB Error] Failed to write {self.name}.json during upsert: {e}")
+
+        return MockResponse(upserted_records)
+
     def execute(self):
         file_path = os.path.join(os.path.dirname(__file__), f"{self.name}.json")
         if self.name == "custom_users":
@@ -108,7 +199,6 @@ class MockTable:
         except Exception:
             raw_records = {} if self.name == "custom_users" else []
 
-        # Convert custom_users to standard list form
         if self.name == "custom_users":
             records = []
             for uid, u in raw_records.items():
@@ -121,7 +211,6 @@ class MockTable:
         else:
             records = raw_records
 
-        # Apply filters
         filtered_records = []
         for r in records:
             match = True
@@ -132,12 +221,10 @@ class MockTable:
             if match:
                 filtered_records.append(r)
 
-        # Apply order
         if self.order_by:
             field, desc = self.order_by
             filtered_records.sort(key=lambda x: x.get(field, ""), reverse=desc)
 
-        # Apply limit
         if self.limit_val:
             filtered_records = filtered_records[:self.limit_val]
 
@@ -162,6 +249,8 @@ class SafeTable:
         self.order_by = None
         self.limit_val = None
         self.insert_data = None
+        self.update_data = None
+        self.upsert_data = None
 
     def select(self, *args, **kwargs):
         return self
@@ -182,10 +271,17 @@ class SafeTable:
         self.insert_data = data
         return self
 
+    def update(self, data):
+        self.update_data = data
+        return self
+
+    def upsert(self, data):
+        self.upsert_data = data
+        return self
+
     def execute(self):
         global FORCE_LOCAL_MOCK
         if FORCE_LOCAL_MOCK or self.real_client is None:
-            # 즉시 Mock DB 사용
             mock_table = self.mock_client.table(self.name)
             for field, value in self.filters:
                 mock_table = mock_table.eq(field, value)
@@ -196,11 +292,14 @@ class SafeTable:
             
             if self.insert_data is not None:
                 return mock_table.insert(self.insert_data).execute()
+            elif self.update_data is not None:
+                return mock_table.update(self.update_data).execute()
+            elif self.upsert_data is not None:
+                return mock_table.upsert(self.upsert_data).execute()
             else:
                 return mock_table.execute()
 
         try:
-            # 실제 Supabase 호출 시도
             real_table = self.real_client.table(self.name)
             for field, value in self.filters:
                 real_table = real_table.eq(field, value)
@@ -211,13 +310,16 @@ class SafeTable:
             
             if self.insert_data is not None:
                 res = real_table.insert(self.insert_data).execute()
+            elif self.update_data is not None:
+                res = real_table.update(self.update_data).execute()
+            elif self.upsert_data is not None:
+                res = real_table.upsert(self.upsert_data).execute()
             else:
                 res = real_table.execute()
             return res
         except Exception as e:
             print(f"[Supabase Fallback Activated] Error on table '{self.name}': {e}. Enforcing global Mock database from now on...")
             FORCE_LOCAL_MOCK = True
-            # 실패 시 Mock DB 사용
             mock_table = self.mock_client.table(self.name)
             for field, value in self.filters:
                 mock_table = mock_table.eq(field, value)
@@ -228,6 +330,10 @@ class SafeTable:
             
             if self.insert_data is not None:
                 return mock_table.insert(self.insert_data).execute()
+            elif self.update_data is not None:
+                return mock_table.update(self.update_data).execute()
+            elif self.upsert_data is not None:
+                return mock_table.upsert(self.upsert_data).execute()
             else:
                 return mock_table.execute()
 
@@ -235,7 +341,6 @@ class MockSupabaseClient:
     def table(self, name):
         return MockTable(name)
 
-# Supabase 클라이언트 초기화 및 Fallback 처리
 supabase = None
 if SUPABASE_URL and SUPABASE_KEY:
     try:
@@ -249,5 +354,3 @@ if SUPABASE_URL and SUPABASE_KEY:
 if supabase is None:
     print("[DB Server Warning] Supabase credentials missing or invalid. Initializing Local Mock Database Client...")
     supabase = MockSupabaseClient()
-
-

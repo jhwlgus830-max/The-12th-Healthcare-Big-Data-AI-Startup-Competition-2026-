@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { 
   User, Phone, FileText, Edit, BarChart2, PieChart, TrendingUp, AlertTriangle, 
-  ChevronRight, Download, Plus, MessageSquare, Info, CheckCircle, Activity, X
+  ChevronRight, Download, Plus, MessageSquare, Info, CheckCircle, Activity, X,
+  ShieldAlert, Lock, Clock
 } from "lucide-react";
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -43,6 +44,16 @@ interface ReportState {
   }> | null;
   journals: Array<{ id: string; content: string; createdAt: string }>;
   counselorNotes: Array<{ id: string; conductedAt: string; detail: string; interventionType: string; status: string }>;
+  safetyPlan?: {
+    user_id: string;
+    current_step: number;
+    step1_warning_signs: string;
+    step2_coping_strategies: string;
+    step3_social_distraction: string;
+    step4_social_support: string;
+    step5_professional_agencies: string;
+    step6_safe_environment: string;
+  } | null;
 }
 
 export default function CounselorReport({ clientId }: { clientId?: string | null }) {
@@ -50,6 +61,7 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
   const [conceptualizationTab, setConceptualizationTab] = useState<"CBT" | "DBT">("CBT");
   const [selectedDistortionType, setSelectedDistortionType] = useState("흑백논리");
   const [reportState, setReportState] = useState<ReportState | null>(null);
+  const [safetyPlan, setSafetyPlan] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   
   // Note Modal state
@@ -76,6 +88,15 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
         const data = await res.json();
         setReportState(data);
       }
+      
+      // 6단계 안전계획 실시간 패칭
+      const planRes = await fetch(`${apiBase}/api/counselor/client/${clientId}/safety_plan`);
+      if (planRes.ok) {
+        const planData = await planRes.json();
+        if (planData.status === "success") {
+          setSafetyPlan(planData.data);
+        }
+      }
     } catch (err) {
       console.error("실시간 리포트 상세조회 실패:", err);
     } finally {
@@ -88,6 +109,21 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
       fetchReportData();
     } else {
       setReportState(null);
+      // user-003(최서연) 예시인 경우, 더미 safetyPlan을 셋팅해 줍니다.
+      if (clientId === "user-003") {
+        setSafetyPlan({
+          user_id: "user-003",
+          current_step: 5,
+          step1_warning_signs: "밤마다 가슴이 답답하고 눈물이 나며 극심한 고립감이 밀려옴. '다 끝내고 싶다'는 생각이 꼬리를 물 때.",
+          step2_coping_strategies: "잔잔한 어쿠스틱 음악 틀기, 침대에서 내려와 발가락 꼼지락하며 바닥 접지하기, 따뜻한 차 한 모금 마시기",
+          step3_social_distraction: "집 근처 경의선 숲길을 10분 동안 산책하기, 단골 북카페에 가서 책 냄새 맡으며 앉아있기",
+          step4_social_support: "대학 동창 단짝 이소희 (010-3333-4444) - 내 우울과 아픔을 편견 없이 들어주는 소중한 친구",
+          step5_professional_agencies: "마포구 정신건강복지센터 (02-716-0600), 자살예방 상담전화 109 (대화 진행 중)",
+          step6_safe_environment: "방 안의 커터칼과 보관 중인 다량의 약봉지를 어머니께 전부 전달해 내 시야와 접근성에서 격리하기"
+        });
+      } else {
+        setSafetyPlan(null);
+      }
     }
     setSubStep("overview");
   }, [clientId]);

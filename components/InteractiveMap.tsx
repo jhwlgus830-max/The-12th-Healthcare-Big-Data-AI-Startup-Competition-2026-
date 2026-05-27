@@ -103,7 +103,7 @@ function getCoordsFromAddress(geocoder: any, address: string, cache: Record<stri
 }
 
 
-export default function InteractiveMap({ userRegion, onBack, showBackBtn = true }: { userRegion: string; onBack?: () => void; showBackBtn?: boolean }) {
+export default function InteractiveMap({ userRegion, onBack, showBackBtn = true, title }: { userRegion: string; onBack?: () => void; showBackBtn?: boolean; title?: string }) {
   const [selectedRegion, setSelectedRegion] = useState(userRegion || "서울");
   const [resources, setResources] = useState<Resource[]>([]);
   const [subRegions, setSubRegions] = useState<string[]>([]);
@@ -460,7 +460,7 @@ export default function InteractiveMap({ userRegion, onBack, showBackBtn = true 
           <OwlLogo size={36} variant="ivory" />
           <div>
             <h2 className="text-xl font-bold flex items-center gap-2">
-              📍 내 주변 심리상담센터 찾기
+              {title || "📍 내 주변 심리상담센터 찾기"}
             </h2>
             <p className="text-xs opacity-90 mt-1">사용자의 거주지를 중심으로 인근의 우수한 지자체 복지센터 및 병원 정보를 보여줍니다.</p>
           </div>

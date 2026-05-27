@@ -5,7 +5,7 @@ import uuid
 import numpy as np
 from datetime import datetime
 from typing import Optional, List
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -128,7 +128,7 @@ def cosine_similarity(v1, v2):
     return dot_product / (norm_a * norm_b)
 
 @app.post("/api/chat/send", response_model=ChatSendResponse)
-async def send_chat(request: ChatSendRequest):
+async def send_chat(request: ChatSendRequest, background_tasks: BackgroundTasks):
     global electra_model, tokenizer, inv_map, run_cfg, device
     
     # Lite Mode 혹은 Full Mode 상관없이 inv_map만 준비되어 있으면 구동 가능합니다 (OOM 방지용 Lite Mode 대응)
@@ -191,13 +191,13 @@ async def send_chat(request: ChatSendRequest):
         
     routed_persona_name = route_persona(phq9_score, p4_answers_dict)
     
-    # persona_id 매핑 (프론트엔드 호환용: 1우울빼미, 2지우, 3클로, 4멘토, 5철수)
+    # persona_id 매핑 (프론트엔드 호환용: 1우울빼미, 2지우, 3구조봇, 4멘토, 5우활동)
     persona_map = {
         "🦉 우울빼미": 1,
         "🧑‍⚕️ 상담사 지우": 2,
-        "🤖 AI 어시스턴트 클로": 3,
-        "🧑‍⚕️ 멘토 선생님": 4,
-        "😄 개그맨 철수": 5
+        "🤖 구조봇": 3,
+        "🧑‍⚕️ 우사고": 4,
+        "🏃 우활동": 5
     }
     persona_id = persona_map.get(routed_persona_name, 1)
     
@@ -226,10 +226,12 @@ async def send_chat(request: ChatSendRequest):
     if any(ckw in normalized_content for ckw in crisis_keywords):
         is_realtime_high_risk = True
 
-    # 최종 위험 분류 기준 (설문 점수 고위험군 또는 실시간 입력 메시지 고위험 감지 시 클로 배정)
+    # 최종 위험 분류 기준 (설문 점수 고위험군 또는 실시간 입력 메시지 고위험 감지 시 구조봇 배정)
     if phq9_score >= 20 or is_p4_high_risk or is_realtime_high_risk:
         persona_id = 3
-        routed_persona_name = "🤖 AI 어시스턴트 클로"
+        routed_persona_name = "🤖 구조봇"
+        analysis["phq9_score"] = phq9_score
+        analysis["is_p4_high_risk"] = is_p4_high_risk
     else:
         # 비위기 상황일 때는 사용자가 프론트엔드에서 수동 선택한 페르소나(initial_persona)를 최우선으로 일관되게 보장!
         if request.initial_persona in [1, 2, 3, 4, 5]:
@@ -237,9 +239,9 @@ async def send_chat(request: ChatSendRequest):
             rev_persona_map = {
                 1: "🦉 우울빼미",
                 2: "🧑‍⚕️ 상담사 지우",
-                3: "🤖 AI 어시스턴트 클로",
-                4: "🧑‍⚕️ 멘토 선생님",
-                5: "😄 개그맨 철수"
+                3: "🤖 구조봇",
+                4: "🧑‍⚕️ 우사고",
+                5: "🏃 우활동"
             }
             routed_persona_name = rev_persona_map[persona_id]
         else:
@@ -254,7 +256,7 @@ async def send_chat(request: ChatSendRequest):
                 persona_id = 1
                 routed_persona_name = "🦉 우울빼미"
         
-    is_high_risk_flag = (persona_id == 3)  # 클로 배정 시 고위험 플래그 True
+    is_high_risk_flag = (persona_id == 3)  # 구조봇 배정 시 고위험 플래그 True
         
     # 4. 이전 대화 기록 로드 (Supabase) - 대화 맥락용
     history_res = supabase.table("messages")\
@@ -323,39 +325,39 @@ async def send_chat(request: ChatSendRequest):
     except Exception as pf_err:
       print(f"[Persona Prompt Loader Warning] 우울빼미 프롬프트 파일 로드 실패: {pf_err}")
 
-    mentor_prompt_text = "당신은 현명하고 따뜻하게 인지 왜곡을 짚어주는 '멘토 선생님'입니다. 생각을 전환할 수 있는 소크라테스식 질문을 던져주세요."
+    mentor_prompt_text = "당신은 현명하고 따뜻하게 인지 왜곡을 짚어주는 '우사고'입니다. 생각을 전환할 수 있는 소크라테스식 질문을 던져주세요."
     try:
-      mentor_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "mentor_prompt_fixed.txt")
+      mentor_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "woosago_prompt_fixed.txt")
       if os.path.exists(mentor_path):
         with open(mentor_path, "r", encoding="utf-8") as pf:
           mentor_prompt_text = pf.read().strip()
     except Exception as pf_err:
-      print(f"[Persona Prompt Loader Warning] 멘토 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 우사고 프롬프트 파일 로드 실패: {pf_err}")
 
-    chulsoo_prompt_text = "당신은 유머러스하고 긍정적인 에너지를 불어넣는 '개그맨 철수'입니다. 활기차고 가벼운 기분 전환 이야기를 나눠주세요."
+    woohwaldong_prompt_text = "당신은 무기력을 돕는 행동 활성화 친구 '우활동'입니다. 아주 구체적이고 부담 없는 아주 작은 첫 행동을 제안해 주세요."
     try:
-      chulsoo_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chulsoo_prompt_fixed.txt")
-      if os.path.exists(chulsoo_path):
-        with open(chulsoo_path, "r", encoding="utf-8") as pf:
-          chulsoo_prompt_text = pf.read().strip()
+      woohwaldong_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "woohwaldong_prompt_fixed.txt")
+      if os.path.exists(woohwaldong_path):
+        with open(woohwaldong_path, "r", encoding="utf-8") as pf:
+          woohwaldong_prompt_text = pf.read().strip()
     except Exception as pf_err:
-      print(f"[Persona Prompt Loader Warning] 철수 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 우활동 프롬프트 파일 로드 실패: {pf_err}")
 
-    chloe_prompt_text = "당신은 위기 극복 안전 가이드 '클로'입니다. 침착하고 안전한 대응을 돕기 위해 차분하게 위기상담 전화를 권장해 주세요."
+    gujobot_prompt_text = "당신은 위기 극복 안전 가이드 '구조봇'입니다. 침착하고 안전한 대응을 돕기 위해 차분하게 위기상담 전화를 권장해 주세요."
     try:
-      chloe_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "chloe_prompt_fixed.txt")
-      if os.path.exists(chloe_path):
-        with open(chloe_path, "r", encoding="utf-8") as pf:
-          chloe_prompt_text = pf.read().strip()
+      gujobot_path = os.path.join(os.path.dirname(__file__), "..", "persona_prompt", "gujobot_prompt_fixed.txt")
+      if os.path.exists(gujobot_path):
+        with open(gujobot_path, "r", encoding="utf-8") as pf:
+          gujobot_prompt_text = pf.read().strip()
     except Exception as pf_err:
-      print(f"[Persona Prompt Loader Warning] 클로 프롬프트 파일 로드 실패: {pf_err}")
+      print(f"[Persona Prompt Loader Warning] 구조봇 프롬프트 파일 로드 실패: {pf_err}")
 
     persona_prompts = {
       1: wooulppaemi_prompt_text,
         2: "당신은 10년 차 경력의 따뜻하고 전문적인 심리 상담사 '지우'입니다. 경청과 긍정적 존중을 담아 정중한 어조로 조언해 주세요.",
-        3: chloe_prompt_text,
+        3: gujobot_prompt_text,
         4: mentor_prompt_text,
-        5: chulsoo_prompt_text
+        5: woohwaldong_prompt_text
     }
     
     # ── [로그인한 사용자의 거주지(region), 성별(gender), 연령대(age_group) 조회] ──
@@ -415,7 +417,7 @@ async def send_chat(request: ChatSendRequest):
     user_msg_data = user_msg.data[0]
     
     # 8. 봇 메시지 DB 저장 (Supabase)
-    bot_icon = "🦉" if persona_id == 1 else "👩" if persona_id == 2 else "🤖" if persona_id == 3 else "🎓" if persona_id == 4 else "😄"
+    bot_icon = "🦉" if persona_id == 1 else "👩" if persona_id == 2 else "🚨" if persona_id == 3 else "🎓" if persona_id == 4 else "🏃"
     bot_msg = supabase.table("messages").insert({
         "session_id": session_id,
         "role": "assistant",
@@ -447,7 +449,21 @@ async def send_chat(request: ChatSendRequest):
     except Exception as ve:
         print(f"[AI Server] Vector indexing failed: {ve}")
         
-    # 10. 응답 구성
+    # 10. 실시간 6단계 안전계획 AI 추출 및 업데이트 등록 (구조봇 3번 세션인 경우)
+    if persona_id == 3:
+        try:
+            background_tasks.add_task(
+                extract_and_update_safety_plan,
+                user_id,
+                conversation_history + [
+                    {"role": "user", "content": content},
+                    {"role": "assistant", "content": bot_reply}
+                ]
+            )
+        except Exception as e_task:
+            print(f"[AI Safety Plan Task Register Warning] {e_task}")
+
+    # 11. 응답 구성
     return ChatSendResponse(
         session_id=session_id,
         persona=routed_persona_name,
@@ -1387,4 +1403,186 @@ async def search_resources(region: str = "서울"):
     except Exception as e:
         print(f"[API Search Error] {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+def extract_and_update_safety_plan(user_id: str, conversation_history: list):
+    try:
+        from openai import OpenAI
+        client = OpenAI()
+        
+        system_prompt = """당신은 정신건강 임상 인공지능 요약기입니다.
+제공되는 사용자(내담자)와 구조봇 간의 대화 내역을 분석하여, Stanley-Brown 자살 위기 대응 6단계 안전 계획(Stanley-Brown 6-Step Safety Protocol)에 해당하는 구체적 내용이 논의되었는지 확인하고 이를 요약 및 추출하십시오.
+
+[안전계획 6단계 정의]
+- 1단계: 경고 신호 (Warning signs — 마음이 위험해질 때 떠오르는 부정적 생각, 기분, 신체 반응)
+- 2단계: 내적 대처 방법 (Internal coping strategies — 타인의 개입 없이 주의를 분산하기 위해 스스로 할 수 있는 활동)
+- 3단계: 사회적 주의 (Social contacts/settings — 위기 상황에서 기분 환기를 위해 방문하거나 접촉할 수 있는 사회적 환경/사람)
+- 4단계: 사회적 지원 (Family members or friends — 실제로 위기 상황을 털어놓고 도움을 구할 수 있는 신뢰하는 지인의 이름이나 연락처)
+- 5단계: 전문 기관 (Professionals or agencies — 위기 시 전화할 109, 1393 및 담당 상담사/병원 연락처)
+- 6단계: 환경 안전 (Making the environment safe — 자신을 해칠 수 있는 수단/위험 도구를 시야에서 차단하거나 치우는 행동)
+
+[중요 지침]
+1. 대화 중에서 명확하게 수립되거나 언급된 대처 방안/대상을 찾아서 각 단계별로 핵심만 간결하고 명확하게 한 문장 수준(한글)으로 추출하십시오.
+2. 대화에서 아직 논의되지 않았거나 언급되지 않은 단계는 빈 문자열("")로 반환해야 합니다. 절대 임의로 지어내지 마십시오!
+3. 현재까지 완성/진행된 가장 높은 단계 번호를 current_step(1~6, 전혀 없으면 1)으로 반환하십시오. 만약 1단계라도 내용이 채워졌다면 완성된 단계를 기준으로 1~6을 책정합니다.
+4. 반드시 아래의 JSON 포맷으로만 답변하십시오. JSON 외에 어떤 사설이나 주석도 달지 마십시오.
+
+{
+  "current_step": 3,
+  "step1_warning_signs": "...",
+  "step2_coping_strategies": "...",
+  "step3_social_distraction": "...",
+  "step4_social_support": "...",
+  "step5_professional_agencies": "...",
+  "step6_safe_environment": "..."
+}"""
+
+        truncated_history = conversation_history[-12:]
+        formatted_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in truncated_history])
+        
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"다음 대화 내역을 바탕으로 6단계 안전계획을 실시간으로 요약 및 추출하십시오:\n\n{formatted_history}"}
+            ],
+            temperature=0.0,
+            response_format={"type": "json_object"}
+        )
+        
+        raw_json = response.choices[0].message.content.strip()
+        data = json.loads(raw_json)
+        
+        insert_data = {
+            "user_id": user_id,
+            "current_step": int(data.get("current_step", 1)),
+            "step1_warning_signs": data.get("step1_warning_signs", ""),
+            "step2_coping_strategies": data.get("step2_coping_strategies", ""),
+            "step3_social_distraction": data.get("step3_social_distraction", ""),
+            "step4_social_support": data.get("step4_social_support", ""),
+            "step5_professional_agencies": data.get("step5_professional_agencies", ""),
+            "step6_safe_environment": data.get("step6_safe_environment", "")
+        }
+        
+        supabase.table("safety_plans").upsert(insert_data).execute()
+        print(f"[AI Safety Plan Extractor] Real-time safety plan extracted and saved successfully for user: {user_id}")
+    except Exception as ex:
+        print(f"[AI Safety Plan Extractor Error] Failed to extract safety plan: {ex}")
+
+
+@app.get("/api/counselor/client/{user_id}/safety_plan")
+async def get_safety_plan(user_id: str):
+    try:
+        res = supabase.table("safety_plans").select("*").eq("user_id", user_id).execute()
+        if res.data:
+            return {"status": "success", "data": res.data[0]}
+    except Exception as e:
+        print(f"[Supabase Fallback GET Safety Plan] Error: {e}")
+        
+    file_path = os.path.join(os.path.dirname(__file__), "safety_plans.json")
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                plans = json.load(f)
+                for p in plans:
+                    if p.get("user_id") == user_id:
+                        return {"status": "success", "data": p}
+        except:
+            pass
+            
+    if user_id == "user-003":
+        dummy_plan = {
+            "user_id": "user-003",
+            "current_step": 5,
+            "step1_warning_signs": "밤마다 가슴이 답답하고 눈물이 나며 극심한 고립감이 밀려옴. '다 끝내고 싶다'는 생각이 꼬리를 물 때.",
+            "step2_coping_strategies": "잔잔한 어쿠스틱 음악 틀기, 침대에서 내려와 발가락 꼼지락하며 바닥 접지하기, 따뜻한 차 한 모금 마시기",
+            "step3_social_distraction": "집 근처 경의선 숲길을 10분 동안 산책하기, 단골 북카페에 가서 책 냄새 맡으며 앉아있기",
+            "step4_social_support": "대학 동창 단짝 이소희 (010-3333-4444) - 내 우울과 아픔을 편견 없이 들어주는 소중한 친구",
+            "step5_professional_agencies": "마포구 정신건강복지센터 (02-716-0600), 자살예방 상담전화 109 (대화 진행 중)",
+            "step6_safe_environment": "방 안의 커터칼과 보관 중인 다량의 약봉지를 어머니께 전부 전달해 내 시야와 접근성에서 격리하기"
+        }
+        return {"status": "success", "data": dummy_plan}
+        
+    default_plan = {
+        "user_id": user_id,
+        "current_step": 1,
+        "step1_warning_signs": "",
+        "step2_coping_strategies": "",
+        "step3_social_distraction": "",
+        "step4_social_support": "",
+        "step5_professional_agencies": "",
+        "step6_safe_environment": ""
+    }
+    return {"status": "success", "data": default_plan}
+
+
+def migrate_dummy_crisis_data():
+    try:
+        users_res = supabase.table("custom_users").select("*").eq("id", "user-003").execute()
+        if not users_res.data:
+            supabase.table("custom_users").insert({
+                "id": "user-003",
+                "email": "seoyeon@daum.net",
+                "nickname": "최서연"
+            }).execute()
+            print("[Migration] 최서연 예시 사용자 계정 마이그레이션 완료!")
+
+        surveys_res = supabase.table("surveys").select("*").eq("user_id", "user-003").execute()
+        if not surveys_res.data:
+            supabase.table("surveys").insert({
+                "user_id": "user-003",
+                "phq9_score": 22,
+                "p4_score": 3,
+                "p4_answers": ["있음", "있음", "부분적", "약함"],
+                "gender": "여",
+                "age_group": "20대",
+                "region": "서울",
+                "created_at": datetime.utcnow().isoformat() + "Z"
+            }).execute()
+            print("[Migration] 최서연 자가검진 설문 기록 마이그레이션 완료!")
+
+        plans_res = supabase.table("safety_plans").select("*").eq("user_id", "user-003").execute()
+        if not plans_res.data:
+            supabase.table("safety_plans").insert({
+                "user_id": "user-003",
+                "current_step": 5,
+                "step1_warning_signs": "밤마다 가슴이 답답하고 눈물이 나며 극심한 고립감이 밀려옴. '다 끝내고 싶다'는 생각이 꼬리를 물 때.",
+                "step2_coping_strategies": "잔잔한 어쿠스틱 음악 틀기, 침대에서 내려와 발가락 꼼지락하며 바닥 접지하기, 따뜻한 차 한 모금 마시기",
+                "step3_social_distraction": "집 근처 경의선 숲길을 10분 동안 산책하기, 단골 북카페에 가서 책 냄새 맡으며 앉아있기",
+                "step4_social_support": "대학 동창 단짝 이소희 (010-3333-4444) - 내 우울과 아픔을 편견 없이 들어주는 소중한 친구",
+                "step5_professional_agencies": "마포구 정신건강복지센터 (02-716-0600), 자살예방 상담전화 109 (대화 진행 중)",
+                "step6_safe_environment": "방 안의 커터칼과 보관 중인 다량의 약봉지를 어머니께 전부 전달해 내 시야와 접근성에서 격리하기"
+            }).execute()
+            print("[Migration] 최서연 6단계 안전 계획 예시 데이터 마이그레이션 완료!")
+            
+        users_res6 = supabase.table("custom_users").select("*").eq("id", "user-006").execute()
+        if not users_res6.data:
+            supabase.table("custom_users").insert({
+                "id": "user-006",
+                "email": "jiwon@naver.com",
+                "nickname": "강지원"
+            }).execute()
+            
+        surveys_res6 = supabase.table("surveys").select("*").eq("user_id", "user-006").execute()
+        if not surveys_res6.data:
+            supabase.table("surveys").insert({
+                "user_id": "user-006",
+                "phq9_score": 24,
+                "p4_score": 0,
+                "p4_answers": ["없음", "없음", "없음", "강함"],
+                "gender": "여",
+                "age_group": "30대",
+                "region": "경기",
+                "created_at": datetime.utcnow().isoformat() + "Z"
+            }).execute()
+            print("[Migration] 강지원 예시 사용자 마이그레이션 완료!")
+    except Exception as e:
+        print(f"[Migration Warning] Failed to run dummy crisis data migration: {e}")
+
+
+@app.on_event("startup")
+async def startup_event():
+    # 기동 시 예시 극단위기군 내담자 데이터 마이그레이션 일괄 실행
+    migrate_dummy_crisis_data()
+
 

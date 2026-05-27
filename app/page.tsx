@@ -1831,10 +1831,10 @@ export default function Home() {
               <button onClick={() => { setPhq9Answers(Array(9).fill(0)); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟢 0~4점 (저위험 우울빼미)</button>
               <button onClick={() => { setPhq9Answers([1,2,1,2,0,0,1,0,0]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🟡 5~9점 (자율 선택)</button>
               <button onClick={() => { setPhq9Answers([2,2,2,2,2,2,0,0,2]); setP4Answers({ q1: "없음", q2: "없음", q2_text: "", q3: "전혀 아니다", q4: "있음", q4_text: "" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔵 10~19점 (지우 상담)</button>
-              <button onClick={() => { setPhq9Answers(Array(9).fill(3)); setP4Answers({ q1: "있음", q2: "있음", q2_text: "위기", q3: "매우 그렇다", q4: "없음", q4_text: "없음" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔴 P4 1+ 또는 PHQ 20+ (고위험 클로)</button>
+              <button onClick={() => { setPhq9Answers(Array(9).fill(3)); setP4Answers({ q1: "있음", q2: "있음", q2_text: "위기", q3: "매우 그렇다", q4: "없음", q4_text: "없음" }); }} className="px-2.5 py-1 bg-white border border-[#EAE5D9] text-gray-700 rounded-lg shadow-sm hover:bg-[#F8F5F0] hover:scale-[1.05] transition-all font-semibold">🔴 P4 1+ 또는 PHQ 20+ (고위험 구조봇)</button>
             </div>
 
-            {/* 1. 고위험군 (High Risk - Cloe) */}
+            {/* 1. 고위험군 (High Risk - Gujobot) */}
             {isHighRisk && (
               <div className="bg-[#111A2E]/50 border border-red-900/30 rounded-2xl p-6 flex flex-col items-center text-center gap-5 shadow-lg">
                 <span className="bg-[#EF4444] text-white px-4 py-1.5 rounded-full text-xs font-black animate-pulse shadow-md">
@@ -1844,10 +1844,10 @@ export default function Home() {
                   <h3 className="text-2xl font-black">PHQ-9 {totalScore}점 · P4 {p4Score}점</h3>
                   <p className="text-sm text-gray-300 mt-2 leading-relaxed">
                     당신의 안전을 위해 위기 대응 안전 모드로 즉각 전환합니다.<br />
-                    어시스턴트 클로가 긴급 지원 절차를 안내하고 안전대처 계획 수립을 도울 것입니다.
+                    구조봇이 긴급 지원 절차를 안내하고 안전대처 계획 수립을 도울 것입니다.
                   </p>
                 </div>
-                <img src="/어시스턴트 클로.png" alt="어시스턴트 클로" className="w-32 h-32 object-contain my-1 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
+                <img src="/어시스턴트 클로.png" alt="구조봇" className="w-32 h-32 object-contain my-1 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
 
                 {/* Crisis Emergency Contact Hotline Buttons */}
                 <div className="flex flex-col gap-2.5 w-full mt-2">
@@ -1866,7 +1866,7 @@ export default function Home() {
                 </div>
 
                 <div className="bg-red-950/20 border border-red-900/30 rounded-xl p-4 w-full text-left mt-2">
-                  <h4 className="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">🛡️ 어시스턴트 클로 위기 개입 프로토콜</h4>
+                  <h4 className="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">🛡️ 구조봇 위기 개입 프로토콜</h4>
                   <ul className="text-xs text-gray-200 space-y-1.5 list-disc list-inside">
                     <li>심리적 응급처치(Psychological First Aid) 대화 진행</li>
                     <li>사용자 안전 서약서 작성 및 긴급 안전망 재구축</li>
@@ -1879,7 +1879,7 @@ export default function Home() {
                   onClick={() => { setInitialPersona(3); setStep("chat"); }}
                   className="font-bold py-4 px-8 rounded-xl transition-all duration-300 w-full mt-4 shadow-lg bg-white text-[#1E2D4E] hover:bg-[#FAF8F5] hover:scale-[1.01]"
                 >
-                  클로와 안전 가이드 대화 시작하기
+                  구조봇과 안전 가이드 대화 시작하기
                 </button>
               </div>
             )}
@@ -1903,7 +1903,7 @@ export default function Home() {
                   <span>💡</span>
                   <p>
                     성찰과 치유를 목적으로 하는 CBT-ACT(인지행동치료/수용전념치료) 기반의 대화를 진행합니다.<br />
-                    상태에 따라 멘토 선생님이 추가적으로 지원을 도울 수 있습니다.
+                    상태에 따라 우사고가 추가적으로 지원을 도울 수 있습니다.
                   </p>
                 </div>
 
@@ -1951,9 +1951,9 @@ export default function Home() {
 
                   {/* Card B: Mentor */}
                   <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
-                    <img src="/멘토 선생님.png" alt="멘토 선생님" className="w-16 h-16 object-contain" />
+                    <img src="/멘토 선생님.png" alt="우사고" className="w-16 h-16 object-contain" />
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm">멘토 선생님</h4>
+                      <h4 className="font-bold text-gray-900 text-sm">우사고</h4>
                       <p className="text-[11px] text-[#065F46] font-semibold mt-1">인지 왜곡 및 부정 생각 정리</p>
                       <p className="text-xs text-gray-500 mt-2 leading-relaxed">
                         생각 오류를 소크라테스식 문답으로 스스로 고치도록 유도합니다.
@@ -1963,25 +1963,25 @@ export default function Home() {
                       onClick={() => { setInitialPersona(4); setStep("chat"); }}
                       className="w-full bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
-                      멘토 선생님 선택
+                      우사고 선택
                     </button>
                   </div>
 
-                  {/* Card C: Chulsoo */}
+                  {/* Card C: Woohwaldong */}
                   <div className="bg-white border border-[#EAE5D9] rounded-2xl p-5 flex flex-col items-center justify-between gap-3 shadow-[0_2px_8px_rgba(139,123,93,0.01)] hover:shadow-md hover:scale-[1.03] transition-all duration-300">
                     <img src="/개그맨 철수.png" alt="개그맨 철수" className="w-16 h-16 object-contain" />
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm">개그맨 철수</h4>
-                      <p className="text-[11px] text-[#86198F] font-semibold mt-1">웰니스 가이드 및 명상</p>
+                      <h4 className="font-bold text-gray-900 text-sm">우활동</h4>
+                      <p className="text-[11px] text-[#86198F] font-semibold mt-1">행동 활성화 (BA)</p>
                       <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-                        스트레스를 완화하고 차분하게 감정 일기 작성을 지원합니다.
+                        무기력증을 깨우는 아주 작고 구체적인 실천 미션을 제안합니다.
                       </p>
                     </div>
                     <button
                       onClick={() => { setInitialPersona(5); setStep("chat"); }}
                       className="w-full bg-[#D946EF] hover:bg-[#C084FC] text-white text-xs font-bold py-2.5 rounded-xl mt-2 transition-colors shadow-sm"
                     >
-                      개그맨 철수 선택
+                      우활동 선택
                     </button>
                   </div>
                 </div>
@@ -2161,10 +2161,10 @@ export default function Home() {
                   const hasRisk = riskKeywords.some(kw => diaryText.includes(kw));
 
                   if (hasRisk) {
-                    setJournalWarning("작성하신 내용에서 안전이 깊이 우려되는 위험 단어 또는 표현이 포착되었습니다. 지금은 혼자 글을 쓰는 것보다, 당신의 안전을 절대적으로 수호해 주는 어시스턴트 클로와의 안전 가이드 대화로 즉시 전환합니다.");
+                    setJournalWarning("작성하신 내용에서 안전이 깊이 우려되는 위험 단어 또는 표현이 포착되었습니다. 지금은 혼자 글을 쓰는 것보다, 당신의 안전을 절대적으로 수호해 주는 구조봇과의 안전 가이드 대화로 즉시 전환합니다.");
                     setTimeout(() => {
                       setJournalWarning("");
-                      setInitialPersona(3); // 클로 강제 전환
+                      setInitialPersona(3); // 구조봇 강제 전환
                       setStep("chat");
                     }, 5000);
                   } else {

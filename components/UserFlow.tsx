@@ -174,23 +174,23 @@ export default function UserFlow({
     ]);
   };
 
-  const handleLoadExampleChloe = () => {
+  const handleLoadExampleGujobot = () => {
     setMessages([
-      { role: "bot", content: "어시스턴트 클로임. 지금은 혼자 버티기보다 안전을 먼저 확보해야 하는 상황임. 힘들고 버겁다면 나와 차분하게 대화를 나누며 안전을 확인하는 것이 필요함.", icon: "🤍" },
+      { role: "bot", content: "구조봇임. 지금은 혼자 버티기보다 안전을 먼저 확보해야 하는 상황임. 힘들고 버겁다면 나와 차분하게 대화를 나누며 안전을 확인하는 것이 필요함.", icon: "🚨" },
       { role: "user", content: "사는 게 너무 의미가 없고, 그냥 오늘 밤 다 끝내고 사라지고 싶어요. 더는 버틸 힘이 없네요.", icon: "👤" },
-      { role: "bot", content: "지금 정말 감당하기 어려운 상태처럼 느껴짐. 그런 생각을 하는 것은 약해서가 아니라, 너무 큰 충격을 겪었을 때 나타날 수 있는 지극히 정상적인 반응임. 확인하고 싶은 것이 있음. 지금 혼자 있어? 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있어?", icon: "🤍" },
+      { role: "bot", content: "지금 정말 감당하기 어려운 상태처럼 느껴짐. 그런 생각을 하는 것은 약해서가 아니라, 너무 큰 충격을 겪었을 때 나타날 수 있는 지극히 정상적인 반응임. 확인하고 싶은 것이 있음. 지금 혼자 있어? 스스로를 해치고 싶은 구체적인 계획이나 수단이 가까이에 있어?", icon: "🚨" },
       { role: "user", content: "혼자 방에 있어요. 약봉지를 가만히 보고 있는데 눈물만 나고 머릿속이 멍해요.", icon: "👤" },
-      { role: "bot", content: "지금 마음이 아주 혼란스럽고 외로운 상태로 보임. 먼저, 그 약봉지에서 최대한 몸을 멀리 떨어뜨려 두는 것이 최우선임. 그리고 발바닥이 바닥에 닿는 느낌을 천천히 느껴보면 좋겠음. 지금 바로 연락해서 도움을 청할 수 있는 지지자가 한 명이라도 있어?", icon: "🤍" },
+      { role: "bot", content: "지금 마음이 아주 혼란스럽고 외로운 상태로 보임. 먼저, 그 약봉지에서 최대한 몸을 멀리 떨어뜨려 두는 것이 최우선임. 그리고 발바닥이 바닥에 닿는 느낌을 천천히 느껴보면 좋겠음. 지금 바로 연락해서 도움을 청할 수 있는 지지자가 한 명이라도 있어?", icon: "🚨" },
       { role: "user", content: "친구 한 명 있는데, 연락하면 민폐가 될까 봐 망설여져요.", icon: "👤" },
-      { role: "bot", content: "민폐가 될까 걱정하는 마음은 이해하지만, 지금은 사람의 현실적 도움이 반드시 필요한 순간임. 용기를 내어 그 친구에게 '나 지금 위험해서 혼자 있으면 안 될 것 같아'라고 짧게 메시지를 보내는 것이 필요함. 지금 당장 메시지를 보낼 수 있어?", icon: "🤍" },
+      { role: "bot", content: "민폐가 될까 걱정하는 마음은 이해하지만, 지금은 사람의 현실적 도움이 반드시 필요한 순간임. 용기를 내어 그 친구에게 '나 지금 위험해서 혼자 있으면 안 될 것 같아'라고 짧게 메시지를 보내는 것이 필요함. 지금 당장 메시지를 보낼 수 있어?", icon: "🚨" },
       { role: "user", content: "용기 내서 방금 친구한테 톡 보냈어요. 조금 마음이 진정되는 것 같아요.", icon: "👤" },
-      { role: "bot", content: "메시지를 보낸 것 자체가 도움을 요청한 매우 용기 있고 중요한 행동임. 잘했음. 친구의 답장을 기다리는 동안 깊은 호흡을 유지하며 나와 계속 머물러 주길 바람.", icon: "🤍" }
+      { role: "bot", content: "메시지를 보낸 것 자체가 도움을 요청한 매우 용기 있고 중요한 행동임. 잘했음. 친구의 답장을 기다리는 동안 깊은 호흡을 유지하며 나와 계속 머물러 주길 바람.", icon: "🚨" }
     ]);
   };
 
   const handleLoadExampleMentor = () => {
     setMessages([
-      { role: "bot", content: "안녕하세요, 저는 멘토 선생님이에요. 우리는 때로 '항상 실패한다'거나 '아무도 날 좋아하지 않는다'는 부정적이고 극단적인 생각에 갇히곤 하지요. 오늘 당신의 마음에 걸려 있는 부정적인 생각은 무엇인가요? 그것이 100% 진실인지, 차분하고 합리적인 근거를 함께 찾아봐요.", icon: "🎓" },
+      { role: "bot", content: "안녕하세요, 저는 우사고예요. 우리는 때로 '항상 실패한다'거나 '아무도 날 좋아하지 않는다'는 부정적이고 극단적인 생각에 갇히곤 하지요. 오늘 당신의 마음에 걸려 있는 부정적인 생각은 무엇인가요? 그것이 100% 진실인지, 차분하고 합리적인 근거를 함께 찾아봐요.", icon: "🎓" },
       { role: "user", content: "저는 뭘 해도 항상 실수를 저지르고 결국 망치는 것 같아요. 어제도 중요한 업무에서 어처구니없는 오타 실수를 했어요.", icon: "👤" },
       { role: "bot", content: "어제 오타 실수로 인해 자책감이 크셨겠군요. 마음이 무거우신 와중에도 솔직하게 털어놓아 주셔서 감사합니다. 말씀하신 '뭘 해도 항상 실수를 저지르고 망친다'는 생각에 대해 질문을 드리고 싶어요. 정말 당신이 지금까지 해온 모든 일들이 단 한 번의 예외도 없이 100% 전부 실패였을까요? 아니면 최근의 큰 부담감이 시야를 좁혀 오타와 같은 일부의 실수를 전체의 실패로 크게 느끼게 만들고 있는 걸까요?", icon: "🎓" },
       { role: "user", content: "생각해 보니 저번 달 프로젝트는 성공적으로 잘 마쳤고 동료들에게 감사 인사도 받았어요. 매번 망치는 건 아닌 것 같아요.", icon: "👤" },
@@ -200,15 +200,15 @@ export default function UserFlow({
     ]);
   };
 
-  const handleLoadExampleChulsoo = () => {
+  const handleLoadExampleWoohwaldong = () => {
     setMessages([
-      { role: "bot", content: "왔구나! 반가워, 나는 너의 텐션을 책임질 개그맨 철수야! 😄 오늘 마음이 좀 무겁고 축 처져 있었지? 나랑 가벼운 수다 좀 떨면서 몸도 마음도 찌뿌둥한 거 훌훌 털어내 보자. 지금 기분은 10점 만점에 몇 점이야?", icon: "😄" },
+      { role: "bot", content: "안녕! 나는 무기력 극복을 도울 행동 활성화 친구 우활동이야! 🏃 오늘 몸과 마음이 축 처져서 아무것도 하기 싫었지? 억지로 힘낼 필요는 전혀 없어. 지금 네 에너지 수준은 0(방전)부터 10(충전 완료) 중에 몇 점 정도인 것 같아?", icon: "🏃" },
       { role: "user", content: "솔직히 2점 정도요... 아무 의욕이 없고 몸이 무거워서 계속 침대에 누워만 있어요.", icon: "👤" },
-      { role: "bot", content: "아이구, 2점이라니 몸에 에너지가 완전히 방전된 상태네! 무기력할 땐 침대가 자석처럼 널 끌어당기는 거 다 안다구. ㅠㅠ 하지만 이대로 누워만 있으면 기분이 침대 스프링 속으로 더 파고들 뿐이야! 자, 개그맨 철수랑 딱 하나만 약속하자. 지금 당장 누운 채로 팔다리를 허공에 올리고 탈탈탈 흔드는 '모기 털기 춤'을 딱 5초만 해봐! 준비, 시작! 하고 왔으면 알려줘! 😄", icon: "😄" },
-      { role: "user", content: "아 웃기네요 ㅋㅋ 누워서 탈탈 흔들고 왔어요.", icon: "👤" },
-      { role: "bot", content: "하하하! 대박! ㅋㅋㅋ 거봐, 누워만 있던 네가 몸을 움직였잖아! 방금 네 뇌에서 엔도르핀이 '어? 주인님이 움직이네?' 하면서 살짝 기지개 켰을걸? 벌써 2점에서 4점으로는 올라온 거야, 아주 잘했어! 👍 자, 모기까지 털었으니 다음 보너스 스테이지! 지금 자리에서 일어나서 창문 딱 10cm만 열고 시원한 바깥바람 크게 세 번만 들이마셔 봐. 이거 하면 진짜 뇌가 깨어난다니까? 갔다 와서 말해줘!", icon: "😄" },
-      { role: "user", content: "창문 열고 시원한 바람 마시고 오니까 머리가 좀 맑아지는 것 같아요.", icon: "👤" },
-      { role: "bot", content: "크으! 완전 대성공! 👍 바깥공기 쐬니까 가슴속 찌꺼기들이 싹 쓸려 내려가는 것 같지? 하루 종일 누워 있던 네가 모기 춤추고, 자리에서 일어나 창문까지 열다니... 너 진짜 행동력 대단한 사람이라니까! 이제 침대 자석은 완전히 고장 난 거야. 지금 여세를 몰아 시원한 물 한 컵 딱 마시면서 기분 좋게 5점 돌파해 보자! 물 한 잔 마시고 나면 기분이 좀 어떨 것 같아? 😄", icon: "😄" }
+      { role: "bot", content: "에너지가 2점이라니 정말 방전된 상태구나. 이럴 땐 손가락 하나 까딱하기 힘든 게 당연해. 하지만 억지로 움직이려 하지 말고 누운 채로 딱 5초 동안 발가락 꼼지락거리기만 해보는 건 어떨까? 힘들이지 않고 할 수 있는 가장 작은 행동이야. 준비, 시작! 하고 왔으면 알려줘! 🏃", icon: "🏃" },
+      { role: "user", content: "발가락 꼼지락하고 왔어요. 조금 움직이게 되네요.", icon: "👤" },
+      { role: "bot", content: "와, 정말 멋져! 👏 누워만 있던 몸에 시동을 건 첫 단추를 끼운 셈이야. '하고 나면 힘이 나는 게 아니라, 작은 행동을 해야 에너지가 도는 법'이거든. 벌써 에너지가 2점에서 3점으로 쑥 올라갔어! 이제 다음 단계로, 누운 채로 팔다리를 허공에 올리고 가볍게 흔드는 '탈탈 털기'를 딱 5초만 더 해볼까? 조금 더 기지개가 켜질 거야. 하고 와서 말해줘!", icon: "🏃" },
+      { role: "user", content: "팔다리 탈탈 흔들고 왔더니 조금 개운해졌어요.", icon: "👤" },
+      { role: "bot", content: "대단해! 👍 침대가 자석처럼 널 붙잡고 있었을 텐데, 벌써 두 번째 미션까지 해냈네! 방금 네 뇌가 '오, 주인이 움직이네?' 하면서 활성화 에너지를 보내기 시작했을 거야. 이제 침대에서 스르륵 빠져나와 컵에 시원한 물 딱 한 모금만 축이고 오는 건 어떨까? 한 잔 다 안 마셔도 돼. 딱 한 모금만! 물 마시고 오면 기분이 좀 어떨 것 같아? 🏃", icon: "🏃" }
     ]);
   };
 
@@ -278,8 +278,8 @@ export default function UserFlow({
             ...prev,
             {
               role: "assistant",
-              content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 어시스턴트 클로 모드로 강제 긴급 전환합니다. 🤍 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 클로가 당신 곁을 함께 지키겠습니다.",
-              icon: "🤍"
+              content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 구조봇 모드로 강제 긴급 전환합니다. 🚨 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 구조봇이 당신 곁을 함께 지키겠습니다.",
+              icon: "🚨"
             }
           ]);
         }, 3500);
@@ -308,13 +308,13 @@ export default function UserFlow({
             ...prev,
             {
               role: "assistant",
-              content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 어시스턴트 클로 모드로 강제 긴급 전환합니다. 🤍 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 클로가 당신 곁을 함께 지키겠습니다.",
-              icon: "🤍"
+              content: "🚨 [안전 가드레일 작동] 발화 분석 모듈에서 심각한 심리적 위기 신호가 감지되었습니다. 당신의 안전을 위해 구조봇 모드로 강제 긴급 전환합니다. 🚨 지금은 혼자 마음을 견디는 것보다 즉시 전문가나 핫라인의 도움을 받는 것이 가장 안전합니다. 아래 통화 버튼을 꼭 눌러 연계하시고, 주변 사람들에게 당신의 상황을 알려주세요. 구조봇이 당신 곁을 함께 지키겠습니다.",
+              icon: "🚨"
             }
           ]);
         }, 3500);
       } else {
-        const botIcon = currentPersona === 1 ? "🦉" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🤍" : currentPersona === 4 ? "🎓" : "😄";
+        const botIcon = currentPersona === 1 ? "🦉" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🚨" : currentPersona === 4 ? "🎓" : "🏃";
         setMessages(prev => [
           ...prev,
           {
@@ -334,9 +334,9 @@ export default function UserFlow({
     switch (currentPersona) {
       case 1: return "bg-[#F4ECE1] text-[#3E3A35] border-b border-[#EAE5D9]";
       case 2: return "bg-[#E5ECE7] text-[#2C3E35] border-b border-[#C5D3C7]";
-      case 3: return "bg-[#1A2744] text-white border-b border-gray-800";     // 클로 (고위험 대응)
+      case 3: return "bg-[#1A2744] text-white border-b border-gray-800";     // 구조봇 (고위험 대응)
       case 4: return "bg-[#EBE7E0] text-[#3D3A35] border-b border-[#DCD6CC]"; // 멘토 (소크라테스)
-      case 5: return "bg-[#F5ECE8] text-[#4A3835] border-b border-[#EADAD5]"; // 철수 (유머)
+      case 5: return "bg-[#F5ECE8] text-[#4A3835] border-b border-[#EADAD5]"; // 우활동 (행동)
     }
   };
 
@@ -347,15 +347,15 @@ export default function UserFlow({
     switch (currentPersona) {
       case 1: return "bg-[#F5EFE6] text-[#3E3A35] rounded-tl-sm border border-[#EAE5D9]/40";
       case 2: return "bg-[#E3EAE5] text-[#2C3E35] rounded-tl-sm border border-[#C5D3C7]/40";
-      case 3: return "bg-[#2A3B5C] text-white rounded-tl-sm border border-gray-700"; // 클로
+      case 3: return "bg-[#2A3B5C] text-white rounded-tl-sm border border-gray-700"; // 구조봇
       case 4: return "bg-[#EAE6DF] text-[#3E3A35] rounded-tl-sm border border-[#DCD6CC]/40"; // 멘토
-      case 5: return "bg-[#F3EBE7] text-[#4A3835] rounded-tl-sm border border-[#EADAD5]/40"; // 철수
+      case 5: return "bg-[#F3EBE7] text-[#4A3835] rounded-tl-sm border border-[#EADAD5]/40"; // 우활동
     }
   };
 
   const getPlaceholder = () => {
     if (currentPersona === 3) {
-      return "이곳은 안전 가이드 모드입니다. 클로에게 당신의 상태를 짧게 알려주세요...";
+      return "이곳은 안전 가이드 모드입니다. 구조봇에게 당신의 상태를 짧게 알려주세요...";
     }
     return "오늘 어떤 마음인지 자유롭게 적어보세요...";
   };
@@ -369,11 +369,11 @@ export default function UserFlow({
         {/* Test Panel */}
         <div className="bg-white border-b border-[#EAE5D9] p-2 flex gap-2 text-xs justify-center items-center overflow-x-auto">
           <span className="font-bold text-[#8C7862] shrink-0">테스트용 페르소나:</span>
-          <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 1 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>1. 또치 (경증)</button>
+          <button onClick={() => handlePersonaChange(1)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 1 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>1. 우울빼미 (경증)</button>
           <button onClick={() => handlePersonaChange(2)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 2 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>2. 지우 (중등도)</button>
-          <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 3 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>3. 클로 (고위험)</button>
-          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 4 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>4. 멘토 (소크라테스식 질문)</button>
-          <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 5 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>5. 철수 (행동)</button>
+          <button onClick={() => handlePersonaChange(3)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 3 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>3. 구조봇 (고위험)</button>
+          <button onClick={() => handlePersonaChange(4)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 4 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>4. 우사고 (소크라테스식 질문)</button>
+          <button onClick={() => handlePersonaChange(5)} className={`px-2 py-1 rounded border border-[#EAE5D9] shadow-sm transition-all ${currentPersona === 5 ? "bg-[#1E2D4E] text-white border-[#1E2D4E]" : "bg-white text-gray-800 hover:bg-[#F8F5F0]"}`}>5. 우활동 (행동)</button>
         </div>
 
         {/* Banner */}
@@ -383,15 +383,15 @@ export default function UserFlow({
               {currentPersona === 1 && "🦉 우울빼미와 대화 중"}
               {currentPersona === 2 && "👩 상담사 지우와 대화 중"}
               {currentPersona === 3 && "🚨 지금은 앱보다 사람과 직접 통화하는 것이 더 안전해요."}
-              {currentPersona === 4 && "🎓 멘토 선생님과 대화 중"}
-              {currentPersona === 5 && "😄 개그맨 철수와 대화 중"}
+              {currentPersona === 4 && "🎓 우사고와 대화 중"}
+              {currentPersona === 5 && "🏃 우활동과 대화 중"}
             </h2>
             <p className="text-xs opacity-80">
               {currentPersona === 1 && "경도 · 일상 케어 모드"}
               {currentPersona === 2 && "중등도 · 전문 상담 모드"}
               {currentPersona === 3 && "혼자 감당하지 않아도 됩니다 · 위기 대응 모드"}
               {currentPersona === 4 && "소크라테스식 질문을 통한 인지 재구조화 모드"}
-              {currentPersona === 5 && "행동 활성화 (유머) 모드"}
+              {currentPersona === 5 && "행동 활성화 (BA) 모드"}
             </p>
           </div>
           <div className="flex gap-2 shrink-0 items-center">
@@ -466,19 +466,19 @@ export default function UserFlow({
           </div>
         )}
 
-        {/* Banner Alert for Persona 3 (클로) - 심사위원 대화 예시 */}
+        {/* Banner Alert for Persona 3 (구조봇) - 심사위원 대화 예시 */}
         {currentPersona === 3 && (
           <div className="bg-[#FAF8F5] border-b border-gray-800 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0">
             <div className="flex items-center gap-2 text-gray-700">
-              <span>🤍</span>
-              <span>위기 어시스턴트 클로의 안전 가이드 데모를 원하시나요?</span>
+              <span>🚨</span>
+              <span>위기 구조봇의 안전 가이드 데모를 원하시나요?</span>
             </div>
             <button
               type="button"
-              onClick={handleLoadExampleChloe}
+              onClick={handleLoadExampleGujobot}
               className="bg-[#EF4444] hover:bg-[#DC2626] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5 border border-red-500/40"
             >
-              💬 클로 대화 예시 보기
+              💬 구조봇 대화 예시 보기
             </button>
           </div>
         )}
@@ -488,19 +488,19 @@ export default function UserFlow({
           <>
             <div className="bg-[#FFF8F0] border-b border-[#EAE5D9] text-[#B45309] p-3 text-sm font-bold flex items-center gap-2 shrink-0">
               <span>💡</span>
-              <span>대화 중 인지적 왜곡 패턴이 감지되어 멘토 선생님이 함께해요</span>
+              <span>대화 중 인지적 왜곡 패턴이 감지되어 우사고가 함께해요</span>
             </div>
             <div className="bg-[#FAF8F5] border-b border-[#DCD6CC]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0">
               <div className="flex items-center gap-2 text-gray-700">
                 <span>🎓</span>
-                <span>멘토 선생님과의 인지 구조 개편 대화 데모를 원하시나요?</span>
+                <span>우사고와의 인지 구조 개편 대화 데모를 원하시나요?</span>
               </div>
               <button
                 type="button"
                 onClick={handleLoadExampleMentor}
                 className="bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5"
               >
-                💬 멘토 대화 예시 보기
+                💬 우사고 대화 예시 보기
               </button>
             </div>
           </>
@@ -509,25 +509,25 @@ export default function UserFlow({
           <>
             <div className="bg-[#F0FDF4] border-b border-[#EAE5D9] text-[#166534] p-3 text-sm font-bold flex items-center gap-2 shrink-0">
               <span>🌱</span>
-              <span>무기력 패턴이 감지되어 철수가 에너지를 불어넣어 드릴게요!</span>
+              <span>무기력 패턴이 감지되어 우활동이 에너지를 불어넣어 드릴게요!</span>
             </div>
             <div className="bg-[#FAF8F5] border-b border-[#EADAD5]/60 px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm font-bold shadow-sm shrink-0">
               <div className="flex items-center gap-2 text-gray-700">
-                <span>😄</span>
-                <span>개그맨 철수와 실제 나눌 법한 활기찬 대화 데모를 원하시나요?</span>
+                <span>🏃</span>
+                <span>우활동과 실제 나눌 법한 활기찬 대화 데모를 원하시나요?</span>
               </div>
               <button
                 type="button"
-                onClick={handleLoadExampleChulsoo}
+                onClick={handleLoadExampleWoohwaldong}
                 className="bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transform hover:translate-y-[-1px] transition-all flex items-center gap-1.5"
               >
-                💬 철수 대화 예시 보기
+                💬 우활동 대화 예시 보기
               </button>
             </div>
           </>
         )}
 
-        {/* Fixed Crisis Buttons for Persona 3 (클로) */}
+        {/* Fixed Crisis Buttons for Persona 3 (구조봇) */}
         {currentPersona === 3 && (
           <div className="bg-[#2A3B5C] p-4 flex flex-col gap-2">
             <a href="tel:1393" className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-2.5 px-4 rounded-lg text-sm flex items-center justify-between shadow-md">
@@ -568,15 +568,15 @@ export default function UserFlow({
               <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 shrink-0 ${
                 currentPersona === 3 ? "bg-[#2A3B5C] text-white" : "bg-[#EAE5D9] text-[#3E3A35]"
               }`}>
-                {currentPersona === 1 ? "🦉" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🤍" : currentPersona === 4 ? "🎓" : "😄"}
+                {currentPersona === 1 ? "🦉" : currentPersona === 2 ? "👩" : currentPersona === 3 ? "🚨" : currentPersona === 4 ? "🎓" : "🏃"}
               </div>
               <div className={`px-4 py-3.5 rounded-2xl shadow-[0_2px_8px_rgba(139,123,93,0.01)] flex items-center gap-1.5 ${getBubbleStyle("assistant")}`}>
                 <span className="text-xs font-semibold mr-1.5 opacity-90">
                   {currentPersona === 1 && "우울빼미가 답변을 생각하는 중..."}
                   {currentPersona === 2 && "상담사 지우가 마음을 가다듬는 중..."}
-                  {currentPersona === 3 && "어시스턴트 클로가 안전망을 연결하는 중..."}
-                  {currentPersona === 4 && "멘토 선생님이 지혜로운 질문을 고민하는 중..."}
-                  {currentPersona === 5 && "개그맨 철수가 텐션을 올리는 중..."}
+                  {currentPersona === 3 && "구조봇이 안전망을 연결하는 중..."}
+                  {currentPersona === 4 && "우사고가 지혜로운 질문을 고민하는 중..."}
+                  {currentPersona === 5 && "우활동이 무기력을 깨우는 중..."}
                 </span>
                 <span className="flex gap-1 items-center">
                   <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
@@ -632,7 +632,7 @@ export default function UserFlow({
                 작성하신 텍스트에서 안전이 심각하게 우려되는 단어(자해/자살 등)가 감지되었습니다. 
               </p>
               <p className="text-xs text-gray-400 leading-relaxed">
-                당신의 생명과 안전을 보듬기 위해, 위기 전문 대응 페르소나인 <span className="text-white font-bold">어시스턴트 클로(Cloe)</span>로 즉각 안전 모드를 발동합니다.
+                당신의 생명과 안전을 보듬기 위해, 위기 전문 대응 페르소나인 <span className="text-white font-bold">구조봇</span>으로 즉각 안전 모드를 발동합니다.
               </p>
               <div className="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden mt-2">
                 <div className="h-full bg-red-500 rounded-full animate-pulse" style={{ width: "100%" }}></div>

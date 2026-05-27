@@ -19,5 +19,12 @@
     "content": "PHQ-9 22 point high risk client confirmed. Dynamic cognitive distortions (Black & White thinking, Personalization) observed in chatbot chat logs. Urgently scheduling offline 2nd session.",
     "id": "4c19bdbc-f7c5-44dd-9973-ea19220806de",
     "created_at": "2026-05-21T02:47:33.771735Z"
+  },
+  {
+    "user_id": "C005",
+    "counselor_id": "counselor-001",
+    "content": "데모용 최서연 내담자 개입 일지 작성",
+    "id": "65681a93-98c8-4507-9ec0-d31f81c16e7a",
+    "created_at": "2026-05-27T05:36:03.573123Z"
   }
 ]
