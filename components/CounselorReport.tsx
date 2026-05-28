@@ -71,11 +71,7 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
 
   const isRealUser = !!(
     clientId && 
-    !clientId.startsWith("C0") && 
-    clientId !== "user-001" && 
-    clientId !== "user-002" && 
-    clientId !== "user-003" && 
-    clientId !== "user-004"
+    !clientId.startsWith("C0")
   );
 
   async function fetchReportData() {
@@ -248,6 +244,20 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
     ? activeDistortion.empatheticPrompt
     : `"${client.name}님, 완벽하게 해내지 못했다는 생각 때문에 속상하시군요. 하지만 100점이 아니라고 해서 0점인 것은 아니에요. 오늘 ${client.name}님이 노력한 부분들은 분명히 가치가 있어요."`;
 
+  // 동적 계산 변수 (우울 지표 추이 및 게이지용)
+  const startScore = isRealUser && reportState?.surveyHistory && reportState.surveyHistory.length > 0
+    ? reportState.surveyHistory[0].phq9
+    : 16;
+  
+  const endScore = isRealUser && reportState?.surveyHistory && reportState.surveyHistory.length > 0
+    ? reportState.surveyHistory[reportState.surveyHistory.length - 1].phq9
+    : 6;
+
+  const startPercent = Math.round((startScore / 27) * 100);
+  const endPercent = Math.round((endScore / 27) * 100);
+  const diffPercent = startPercent - endPercent;
+  const sessionCount = isRealUser && reportState?.surveyHistory ? reportState.surveyHistory.length : 6;
+
   return (
     <div className="flex flex-col gap-6 text-left">
       {/* Sub Navigation */}
@@ -388,58 +398,61 @@ export default function CounselorReport({ clientId }: { clientId?: string | null
                       <div>
                         <div className="flex justify-between text-xs font-bold text-gray-500 mb-1.5">
                           <span>회기 전 우울/불안 정서</span>
-                          <span className="text-red-500 font-bold">68%</span>
+                          <span className="text-red-500 font-bold">{startPercent}%</span>
                         </div>
                         <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-[#C07070]" style={{ width: '68%' }}></div>
+                          <div className="h-full bg-[#C07070]" style={{ width: `${startPercent}%` }}></div>
                         </div>
                       </div>
                       <div className="flex justify-center items-center py-1">
                         <span className="text-xs bg-[#FAF8F5] border border-[#EAE5D9] px-2.5 py-0.5 rounded-full font-bold text-[#8C7862]">
-                          우울 수치 46%p 대폭 하강 📉
+                          우울 수치 {Math.abs(diffPercent)}%p {diffPercent >= 0 ? '하강 📉' : '상승 📈'}
                         </span>
                       </div>
                       <div>
                         <div className="flex justify-between text-xs font-bold text-gray-500 mb-1.5">
                           <span>회기 후 우울/불안 정서</span>
-                          <span className="text-green-600 font-bold">22%</span>
+                          <span className="text-green-600 font-bold">{endPercent}%</span>
                         </div>
                         <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-[#5B9E7A]" style={{ width: '22%' }}></div>
+                          <div className="h-full bg-[#5B9E7A]" style={{ width: `${endPercent}%` }}></div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Right: 1~6회기 우울 지표 감소 추세 Line Chart */}
+                {/* Right: 1~N회기 우울 지표 감소 추세 Line Chart */}
                 <div className="lg:col-span-7 bg-[#FAF8F5] p-6 rounded-2xl border border-[#EAE5D9] shadow-[0_4px_20px_rgba(139,123,93,0.03)] flex flex-col justify-between">
                   <div>
                     <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
-                      <TrendingUp size={18} className="text-[#1E2D4E]" /> 감정 변화 추세 (1~6회기 경과)
+                      <TrendingUp size={18} className="text-[#1E2D4E]" /> 감정 변화 추세 ({sessionCount}회기 누적)
                     </h3>
                     <p className="text-xs text-gray-400 mb-4">우울빼미 챗봇 연동 및 상담 세션 통합 우울 추세 지표</p>
                   </div>
                   <div className="h-64 bg-white p-4 rounded-xl border border-[#EAE5D9]/40">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={[
-                        { name: "1회기", 우울: 65 },
-                        { name: "2회기", 우울: 48 },
-                        { name: "3회기", 우울: 32 },
-                        { name: "4회기", 우울: 25 },
-                        { name: "5회기", 우울: 18 },
-                        { name: "6회기", 우울: 12 }
-                      ]}>
+                      <LineChart data={trendData}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F0F0" />
                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} domain={[0, 80]} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#999" }} domain={[0, 30]} />
                         <Tooltip contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }} />
                         <Line type="monotone" dataKey="우울" stroke="#5B9E7A" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="mt-4 p-3 bg-green-50/50 border border-green-100 rounded-xl text-xs text-green-800 leading-relaxed font-medium">
-                    ✨ <strong>상담 임상 소견:</strong> 인지왜곡 교정과 웰니스 일기 기록이 아주 성공적으로 자리 잡았습니다. 6회기에 걸쳐 PHQ-9 수준의 우울 지표가 <strong>65에서 12로 급격히 완화</strong>되었으며, 예방 중심의 유지 관리가 가능합니다.
+                  <div className={`mt-4 p-3 border rounded-xl text-xs leading-relaxed font-medium ${
+                    endScore >= 20 ? 'bg-red-50/50 border-red-100 text-red-800' :
+                    endScore >= 15 ? 'bg-orange-50/50 border-orange-100 text-orange-800' :
+                    endScore >= 10 ? 'bg-yellow-50/50 border-yellow-100 text-yellow-800' :
+                    'bg-green-50/50 border-green-100 text-green-800'
+                  }`}>
+                    ✨ <strong>상담 임상 소견:</strong> {client.name} 내담자는 총 {sessionCount}회기에 걸친 챗봇 상담 및 자가 모니터링을 진행했습니다. 초기 PHQ-9 {startScore}점에서 최근 {endScore}점으로 {startScore - endScore >= 0 ? `우울 지표가 ${startScore - endScore}점 완화되었습니다.` : `우울 지표 추이 모니터링이 추가로 요구됩니다.`} {
+                      endScore >= 20 ? '🚨 현재 자살 위험을 포함한 위기 상태이므로, 수립된 6단계 안전계획 이행 점검 및 긴급 연계 개입을 강력히 권고합니다.' :
+                      endScore >= 15 ? '⚠️ 우울 지표가 여전히 높은 수준이므로, 지우 페르소나를 통한 지속적 인지 치료적 개입 및 밀착 모니터링이 필요합니다.' :
+                      endScore >= 10 ? '정서적 불편감이 잔존해 있으나 점진적 안정을 찾아가는 중입니다. 챗봇 기반 감정 일기 작성 습관 형성을 독려해 주세요.' :
+                      '🎉 인지왜곡 교정과 마음 일기 기록이 아주 성공적으로 안착되었으며, 우울 지표 완화 후 예방 중심의 자가 유지 관리가 가능합니다.'
+                    }
                   </div>
                 </div>
               </div>

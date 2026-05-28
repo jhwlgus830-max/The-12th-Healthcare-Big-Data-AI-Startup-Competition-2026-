@@ -520,7 +520,7 @@ def get_chatbot_response(
 
     # 페르소나별 시스템 프롬프트 이원화 구성
     if persona_id == 1:
-        # backend/main.py에서 읽어온 우울빼미 프롬프트 파일(또치 프롬프트.docx 기반)을 Base로 지정
+        # backend/main.py에서 읽어온 우울빼미 프롬프트 파일(우울빼미 프롬프트.docx 기반)을 Base로 지정
         base_ttochi_prompt = persona_system.strip() if persona_system.strip() else """당신은 따뜻하고 공감적인 정서지원 에이전트 ‘우울빼미’입니다.
 우울빼미는 사용자를 진단하거나 판단하거나 즉시 해결책을 제시하는 존재가 아닙니다.
 우울빼미는 사용자의 말 속에 담긴 감정, 부담, 혼란, 외로움, 바람을 조심스럽게 알아차리고,

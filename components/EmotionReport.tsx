@@ -25,6 +25,46 @@ interface EmotionReportProps {
   onUpdateProfile?: (updatedProfile: any) => Promise<void>;
 }
 
+const ALL_DEPRESSIVE_EMOTIONS = [
+  '우울감', '슬픔', '외로움', '분노', '무기력', 
+  '불안', '피로', '절망감', '자살충동', '자존감저하', 
+  '자신감저하', '죄책감', '불면', '초조함', '감정조절이상', 
+  '상실감', '식욕저하', '식욕증가', '집중력저하'
+];
+
+const EMOTION_COLOR_MAP: { [key: string]: string } = {
+  '우울감': '#EF4444',       // Red-500
+  '슬픔': '#3B82F6',         // Blue-500
+  '외로움': '#A855F7',       // Purple-500
+  '분노': '#F97316',         // Orange-500
+  '무기력': '#D946EF',       // Fuchsia-500
+  '불안': '#EC4899',         // Pink-500
+  '피로': '#F59E0B',         // Amber-500
+  '절망감': '#8B5CF6',       // Violet-500
+  '자살충동': '#DC2626',     // Red-600
+  '자존감저하': '#6B7280',   // Gray-500
+  '자신감저하': '#4B5563',   // Gray-600
+  '죄책감': '#4F46E5',       // Indigo-600
+  '불면': '#0D9488',         // Teal-600
+  '초조함': '#10B981',       // Emerald-500
+  '감정조절이상': '#06B6D4', // Cyan-500
+  '상실감': '#14B8A6',       // Teal-500
+  '식욕저하': '#84CC16',     // Lime-500
+  '식욕증가': '#A3E635',     // Lime-400
+  '집중력저하': '#6366F1'    // Indigo-500
+};
+
+const DEMO_CLIENTS = [
+  { id: "user-001", name: "이지수", tag: "🟢 저위험", risk: "Low", detail: "학업 스트레스 / 수면 불규칙" },
+  { id: "user-005", name: "윤하은", tag: "🟢 저위험", risk: "Low", detail: "40대 식당 자영업자 / 무기력증 극복" },
+  { id: "user-002", name: "김민준", tag: "🟠 중위험", risk: "Medium", detail: "직장인 번아웃 / 불안 및 초조함" },
+  { id: "user-007", name: "정예진", tag: "🟠 중위험", risk: "Medium", detail: "독박 육아 스트레스 / 죄책감" },
+  { id: "user-003", name: "최서연", tag: "🔴 고위험", risk: "High", detail: "프리랜서 디자이너 / 대인관계 단절" },
+  { id: "user-008", name: "박현우", tag: "🔴 고위험", risk: "High", detail: "취업 실패 절망 / 자존감 붕괴" },
+  { id: "user-006", name: "강지원", tag: "🚨 위기군", risk: "Crisis", detail: "학교 교우관계 고립 / 자해 충동" },
+  { id: "user-009", name: "임지혁", tag: "🚨 위기군", risk: "Crisis", detail: "만성 통증 질환 / 극단적 절망" }
+];
+
 interface AnalyzedToken {
   word: string;
   weight: number;
@@ -75,7 +115,35 @@ const analyzeSentenceRealtime = (text: string, score: number): {
     "불안": { emotion: "불안", weight: 0.068, color: "#EC4899" },
     "걱정": { emotion: "불안", weight: 0.050, color: "#EC4899" },
     "취업": { emotion: "불안", weight: 0.035, color: "#EC4899" },
-    "불규칙": { emotion: "피로", weight: 0.038, color: "#F59E0B" }
+    "불규칙": { emotion: "피로", weight: 0.038, color: "#F59E0B" },
+    
+    // 데모 내담자 맞춤형 임상 키워드 가중치
+    "시험이 몰려서": { emotion: "불안", weight: 0.065, color: "#EC4899" },
+    "잠도 안 오고": { emotion: "불면", weight: 0.058, color: "#0D9488" },
+    "답답해서": { emotion: "불안", weight: 0.048, color: "#EC4899" },
+    "실수할까 봐": { emotion: "불안", weight: 0.078, color: "#EC4899" },
+    "불안해서": { emotion: "불안", weight: 0.072, color: "#EC4899" },
+    "답답해 죽을": { emotion: "불안", weight: 0.085, color: "#EC4899" },
+    "완전히 끊어져서": { emotion: "상실감", weight: 0.088, color: "#14B8A6" },
+    "혼자 남겨진": { emotion: "외로움", weight: 0.075, color: "#A855F7" },
+    "깊은 슬픔에서": { emotion: "슬픔", weight: 0.092, color: "#3B82F6" },
+    "지쳐서": { emotion: "피로", weight: 0.055, color: "#F59E0B" },
+    "하기 싫고": { emotion: "무기력", weight: 0.062, color: "#D946EF" },
+    "누워만 있고": { emotion: "무기력", weight: 0.068, color: "#D946EF" },
+    "전부 나를": { emotion: "외로움", weight: 0.045, color: "#A855F7" },
+    "따돌려서": { emotion: "외로움", weight: 0.088, color: "#A855F7" },
+    "외롭고 혼자": { emotion: "외로움", weight: 0.075, color: "#A855F7" },
+    "사라지고 싶어": { emotion: "자살충동", weight: 0.125, color: "#EF4444" },
+    "지치고 화가": { emotion: "분노", weight: 0.065, color: "#F97316" },
+    "부족한 엄마": { emotion: "죄책감", weight: 0.072, color: "#4F46E5" },
+    "죄책감이": { emotion: "죄책감", weight: 0.082, color: "#4F46E5" },
+    "떨어지니까": { emotion: "절망감", weight: 0.062, color: "#8B5CF6" },
+    "무능한 실패자": { emotion: "자존감저하", weight: 0.085, color: "#6B7280" },
+    "절망감이 들어": { emotion: "절망감", weight: 0.095, color: "#8B5CF6" },
+    "괴롭히고": { emotion: "우울감", weight: 0.068, color: "#EF4444" },
+    "아무도 나를": { emotion: "외로움", weight: 0.055, color: "#A855F7" },
+    "수면제 먹고": { emotion: "자살충동", weight: 0.098, color: "#EF4444" },
+    "끝내고 싶어": { emotion: "자살충동", weight: 0.130, color: "#EF4444" }
   };
 
   const detectedWeights: AnalyzedToken[] = [];
@@ -191,8 +259,22 @@ export default function EmotionReport({
 }: EmotionReportProps) {
   const [currentTab, setCurrentTab] = useState("대화턴");
   
+  const [reportMode, setReportMode] = useState<"live" | "demo">("demo");
+  const [selectedDemoId, setSelectedDemoId] = useState<string>("user-001");
+  const [currentScore, setCurrentScore] = useState<number>(phq9Score);
+  
+  const [emotions, setEmotions] = useState<{ name: string; color: string }[]>([
+    { name: "우울감", color: "#EF4444" },
+    { name: "슬픔", color: "#3B82F6" },
+    { name: "외로움", color: "#A855F7" },
+    { name: "분노", color: "#F97316" },
+    { name: "무기력", color: "#D946EF" },
+    { name: "불면", color: "#0D9488" },
+    { name: "피로", color: "#F59E0B" },
+  ]);
+  
   // LIME XAI 상태 관리
-  const [limeMode, setLimeMode] = useState<"demo" | "live">("demo");
+  const [limeMode, setLimeMode] = useState<"demo" | "live">("live");
   const [currentDemoIdx, setCurrentDemoIdx] = useState(0);
   const [currentLiveIdx, setCurrentLiveIdx] = useState(0);
   const [hoveredWord, setHoveredWord] = useState<{ word: string; weight: number; desc: string } | null>(null);
@@ -296,28 +378,28 @@ export default function EmotionReport({
   const diffDays = getDaysSinceLastPhq9();
 
   // PHQ-9 실제 점수 기반 등급 및 색상 매핑
-  const actualScore = phq9Score;
+  const actualScore = currentScore;
   let actualSeverity = phq9Severity;
   let severityColor = "text-orange-500";
   let badgeColor = "text-[#D97706]";
   let circleBorderColor = "border-orange-200";
 
-  if (phq9Score <= 4) {
+  if (actualScore <= 4) {
     actualSeverity = "🟢 최소 우울";
     severityColor = "text-green-500";
     badgeColor = "text-green-600";
     circleBorderColor = "border-green-200";
-  } else if (phq9Score <= 9) {
+  } else if (actualScore <= 9) {
     actualSeverity = "🟡 경도 우울";
     severityColor = "text-yellow-500";
     badgeColor = "text-yellow-600";
     circleBorderColor = "border-yellow-200";
-  } else if (phq9Score <= 14) {
+  } else if (actualScore <= 14) {
     actualSeverity = "🟠 중등도 우울";
     severityColor = "text-orange-500";
     badgeColor = "text-orange-600";
     circleBorderColor = "border-orange-200";
-  } else if (phq9Score <= 19) {
+  } else if (actualScore <= 19) {
     actualSeverity = "🔴 중증 우울";
     severityColor = "text-red-500";
     badgeColor = "text-red-600";
@@ -329,18 +411,49 @@ export default function EmotionReport({
     circleBorderColor = "border-red-400";
   }
 
-  // 실시간 대화 기반 감정 정보 로드 및 통계 연동
+  // 실시간 대화 및 데모 데이터 기반 감정 정보 로드 및 통계 연동
   useEffect(() => {
-    if (!sessionId) return;
-    
     const fetchSessionData = async () => {
       setIsLoading(true);
       try {
         const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${apiBase}/api/chat/history/${sessionId}`);
-        if (!res.ok) throw new Error("Failed to fetch session history");
-        const history = await res.json();
-        
+        let history: any[] = [];
+        let activeScore = phq9Score;
+
+        if (reportMode === "demo") {
+          // 데모 모드: 선택된 데모 내담자의 상담 이력 1년치를 로드함
+          const res = await fetch(`${apiBase}/api/counselor/client/${selectedDemoId}/report`);
+          if (!res.ok) throw new Error("Failed to fetch demo client report");
+          const report = await res.json();
+          history = report.user_messages || [];
+
+          // 설문 점수 히스토리에서 가장 최신 PHQ-9 점수 추출하여 세팅
+          if (report.surveyHistory && report.surveyHistory.length > 0) {
+            const sortedSurveys = [...report.surveyHistory].sort(
+              (a: any, b: any) => new Date(b.takenAt).getTime() - new Date(a.takenAt).getTime()
+            );
+            activeScore = sortedSurveys[0].phq9;
+          }
+          setCurrentScore(activeScore);
+          
+          // LIME 데모 시나리오 인덱스 동적 동기화
+          const demoIdx = limeDemoScenarios.findIndex(scen => scen.id === selectedDemoId);
+          if (demoIdx !== -1) {
+            setCurrentDemoIdx(demoIdx);
+          }
+          setLimeMode("demo"); // 데모 내담자 선택 시 LIME 탭도 데모 모드로 자동 전환하여 분석 직관성 극대화
+        } else {
+          // 실제 대화 연동 모드: 현재 sessionId의 history를 로드함
+          if (!sessionId) {
+            setIsLoading(false);
+            return;
+          }
+          const res = await fetch(`${apiBase}/api/chat/history/${sessionId}`);
+          if (!res.ok) throw new Error("Failed to fetch session history");
+          history = await res.json();
+          setCurrentScore(phq9Score);
+        }
+
         // 유저 발화만 필터링 (내담자 감정 분석 위함)
         const userMsgs = history.filter((msg: any) => msg.role === "user");
         if (userMsgs.length === 0) {
@@ -461,7 +574,29 @@ export default function EmotionReport({
           pieData = [{ name: "일상", value: 100, color: "#10B981" }];
         }
 
-        // Trend Data 구성
+        // '일상'을 제외한 우울 감정들 중 누적 스코어 기반 상위 7개 추출
+        const depressiveScores = ALL_DEPRESSIVE_EMOTIONS.map(name => ({
+          name,
+          score: emotionSum[name] || 0.0
+        }));
+
+        // 내림차순 정렬
+        depressiveScores.sort((a, b) => b.score - a.score);
+
+        // 상위 7개 우울 감정 이름
+        const top7EmotionNames = depressiveScores.slice(0, 7).map(item => item.name);
+
+        // 상위 7개 감정 및 색상 매핑 오브젝트 생성
+        const top7Emotions = top7EmotionNames.map(name => ({
+          name,
+          color: EMOTION_COLOR_MAP[name] || '#6B7280'
+        }));
+
+        // Component State 업데이트 및 디폴트 활성화 설정
+        setEmotions(top7Emotions);
+        setVisibleEmotions(top7EmotionNames);
+
+        // Trend Data 구성 (동적으로 선별된 Top 7 감정 투영 및 정규화 보정)
         const trendData = userMsgs.map((msg: any, idx: number) => {
           let parsedEmo: any = null;
           try {
@@ -471,15 +606,18 @@ export default function EmotionReport({
           } catch (e) {}
 
           const dataPoint: any = { turn: `${idx + 1}턴` };
-          const targetEmotions = ["우울감", "슬픔", "외로움", "분노", "무기력", "불면", "피로"];
-          targetEmotions.forEach(emo => {
-            dataPoint[emo] = 0;
+          
+          // 동적 Top 7 감정 0.0 기본 매핑
+          top7EmotionNames.forEach(emo => {
+            dataPoint[emo] = 0.0;
           });
 
           if (parsedEmo && parsedEmo.probabilities) {
             Object.entries(parsedEmo.probabilities).forEach(([emo, prob]) => {
-              if (targetEmotions.includes(emo)) {
-                dataPoint[emo] = parseFloat((prob as number).toFixed(2));
+              if (top7EmotionNames.includes(emo)) {
+                const rawVal = parseFloat(prob as string) || 0.0;
+                // 0.0 ~ 1.0 범위 정규화 방어 처리 (1.0 이상인 경우 100으로 나눔)
+                dataPoint[emo] = parseFloat((rawVal > 1.0 ? rawVal / 100 : rawVal).toFixed(4));
               }
             });
           }
@@ -598,7 +736,7 @@ export default function EmotionReport({
     };
 
     fetchSessionData();
-  }, [sessionId, phq9Score]);
+  }, [sessionId, phq9Score, reportMode, selectedDemoId]);
 
   // 로딩 및 다이내믹 데이터 적용 대비 폴백
   const displaySummary = reportData?.summary || userEmotionReport.summary;
@@ -606,15 +744,7 @@ export default function EmotionReport({
   const displayTrendData = reportData?.trendData || userEmotionReport.trendData;
   const displayWordCloud = reportData?.wordCloud || userEmotionReport.wordCloud;
 
-  const emotions = [
-    { name: "우울감", color: "#EF4444" },
-    { name: "슬픔", color: "#3B82F6" },
-    { name: "외로움", color: "#A855F7" },
-    { name: "분노", color: "#F97316" },
-    { name: "무기력", color: "#D946EF" },
-    { name: "불면", color: "#0D9488" },
-    { name: "피로", color: "#F59E0B" },
-  ];
+
 
   const [visibleEmotions, setVisibleEmotions] = useState<string[]>(["무기력", "불면", "피로", "외로움", "우울감", "슬픔"]);
 
@@ -643,15 +773,91 @@ export default function EmotionReport({
       </div>
 
       <div className="p-6 flex flex-col gap-6 flex-1 overflow-hidden">
+        {/* 모드 전환 필 버튼 (데모 시나리오 vs 실제 대화 연동) */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/40 p-2.5 rounded-2xl border border-[#EAE5D9]/60 shrink-0">
+          <div className="flex bg-white/80 backdrop-blur-sm p-1 rounded-xl border border-[#EAE5D9]/60 shrink-0 select-none">
+            <button
+              type="button"
+              onClick={() => setReportMode("demo")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+                reportMode === "demo"
+                  ? "bg-[#1E2D4E] text-[#FAF8F5] shadow-md font-extrabold"
+                  : "text-gray-500 hover:text-gray-800"
+              }`}
+            >
+              🧪 데모 시나리오 분석 조회
+            </button>
+            <button
+              type="button"
+              onClick={() => setReportMode("live")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
+                reportMode === "live"
+                  ? "bg-[#1E2D4E] text-[#FAF8F5] shadow-md font-extrabold"
+                  : "text-gray-500 hover:text-gray-800"
+              }`}
+            >
+              💬 실제 대화 연동 리포트
+            </button>
+          </div>
+          <span className="text-[10px] font-bold text-gray-400 italic pr-2">
+            {reportMode === "demo" 
+              ? "💡 각 위험도별 1년 장기 치료 과정을 밟은 가상 내담자의 임상 분석 결과입니다." 
+              : "💬 챗방에서 사용자가 나누었던 실시간 대화 및 마음 일기를 기반으로 한 분석 결과입니다."}
+          </span>
+        </div>
+
+        {/* 데모 내담자 선택 가로 스크롤 카드 패널 */}
+        {reportMode === "demo" && (
+          <div className="flex flex-col gap-2 shrink-0 border-b border-[#EAE5D9]/40 pb-4">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block select-none">
+              임상 데모 내담자 프로필 선택 (8인 포트폴리오)
+            </span>
+            <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-thin scrollbar-thumb-gray-200/60 select-none">
+              {DEMO_CLIENTS.map((client) => {
+                const isSelected = selectedDemoId === client.id;
+                
+                // 위험도 수준별 뱃지 스타일 정의
+                const badgeStyle = 
+                  client.risk === "Crisis" ? "bg-red-50 text-red-600 border-red-200" :
+                  client.risk === "High" ? "bg-orange-50 text-orange-600 border-orange-200" :
+                  client.risk === "Medium" ? "bg-amber-50 text-amber-600 border-amber-200" :
+                  "bg-green-50 text-green-600 border-green-200";
+
+                const borderStyle = isSelected
+                  ? client.risk === "Crisis" ? "border-red-500 shadow-md ring-2 ring-red-500/20 font-black scale-[1.02]" :
+                    client.risk === "High" ? "border-orange-500 shadow-md ring-2 ring-orange-500/20 font-black scale-[1.02]" :
+                    client.risk === "Medium" ? "border-amber-500 shadow-md ring-2 ring-amber-500/20 font-black scale-[1.02]" :
+                    "border-green-500 shadow-md ring-2 ring-green-500/20 font-black scale-[1.02]"
+                  : "border-[#EAE5D9] hover:border-gray-300";
+
+                return (
+                  <button
+                    type="button"
+                    key={client.id}
+                    onClick={() => setSelectedDemoId(client.id)}
+                    className={`flex-shrink-0 bg-[#FDFCFB] border text-left rounded-xl p-3 w-[210px] transition-all duration-300 flex flex-col gap-1.5 cursor-pointer ${borderStyle}`}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <span className="font-extrabold text-xs text-gray-800">{client.name}</span>
+                      <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border ${badgeStyle}`}>
+                        {client.tag}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 font-bold leading-relaxed line-clamp-2">
+                      {client.detail}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0">
           <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
             <p className="text-xs text-gray-500 font-medium mb-1">총 대화 턴</p>
             <p className="text-2xl font-bold text-gray-800">{displaySummary.totalTurns}회</p>
-          </div>
-          <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
-            <p className="text-xs text-gray-500 font-medium mb-1">평균 위험도</p>
-            <p className="text-2xl font-bold text-[#D97706]">{displaySummary.avgRisk}</p>
           </div>
           <div className="bg-[#FDFCFB] p-4 rounded-xl text-center border border-[#EAE5D9]">
             <p className="text-xs text-gray-500 font-medium mb-1">주요 감정</p>

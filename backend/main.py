@@ -1310,7 +1310,8 @@ async def get_counselor_client_report(user_id: str):
             },
             "cognitiveDistortions": distortion_stats,
             "journals": journals_list,
-            "counselorNotes": counselor_notes
+            "counselorNotes": counselor_notes,
+            "user_messages": all_user_messages
         }
     except Exception as e:
         print(f"[Counselor API Error] report query failed for user {user_id}: {e}")

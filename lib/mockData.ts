@@ -338,7 +338,7 @@ function createBlankDistortionStats(userId: string): CognitiveDistortionStats {
 }
 
 export const mockUsers: UserProfile[] = [
-  // 👤 내담자 1: 이지수 (user-001) - 저위험 / 페르소나: 또치
+  // 👤 내담자 1: 이지수 (user-001) - 저위험 / 페르소나: 우울빼미
   {
     id: "user-001",
     nickname: "이지수",
@@ -387,10 +387,10 @@ export const mockUsers: UserProfile[] = [
         userId: "user-001",
         startedAt: "2025-05-01T14:00:00",
         endedAt: "2025-05-01T14:20:00",
-        activePersona: 1, // 또치
+        activePersona: 1, // 우울빼미
         personalMemoryContext: { referencedPastSessions: [], retrievedMemories: [] },
         messages: [
-          { id: "msg-01-1-1", role: "assistant", content: "안녕! 나 또치야 🦔 오늘 어떤 하루였어? 편하게 말해줘!", timestamp: "2025-05-01T14:00:00" },
+          { id: "msg-01-1-1", role: "assistant", content: "안녕! 나 우울빼미야 🦔 오늘 어떤 하루였어? 편하게 말해줘!", timestamp: "2025-05-01T14:00:00" },
           { id: "msg-01-1-2", role: "user", content: "요즘 취업 준비가 힘들어요. 제가 너무 부족한 것 같아요.", timestamp: "2025-05-01T14:02:00", nlpAnalysis: { depressionScore: 38, detectedEmotions: ["무기력", "불안"], riskExpressionFlag: false, detectedCognitiveDistortions: ["당위진술"], xaiHighlights: ["부족한 것 같아요"] } },
           { id: "msg-01-1-3", role: "assistant", content: "취업을 준비하다 보면 조급해지기 쉽고 마음이 다치기도 해 😢 너무 스스로를 다그치지 않아도 돼. 지금도 잘 해내고 있어!", timestamp: "2025-05-01T14:03:00" }
         ],
@@ -401,14 +401,14 @@ export const mockUsers: UserProfile[] = [
         userId: "user-001",
         startedAt: "2025-05-08T15:00:00",
         endedAt: "2025-05-08T15:30:00",
-        activePersona: 1, // 또치
+        activePersona: 1, // 우울빼미
         personalMemoryContext: { referencedPastSessions: ["session-001-1"], retrievedMemories: [{ date: "2025-05-01", summary: "취업 문제로 자책감 보고", relevanceScore: 0.8 }] },
         messages: [
           { id: "msg-01-2-1", role: "assistant", content: "안녕 지수야! 저번에 취업 관련해서 마음고생 많았잖아. 요즘 일주일은 어땠어?", timestamp: "2025-05-08T15:00:00" },
           { id: "msg-01-2-2", role: "user", content: "어제 면접에서 또 떨어졌어요. 저는 항상 이렇게 실패하는 것 같아요.", timestamp: "2025-05-08T15:05:00", nlpAnalysis: { depressionScore: 52, detectedEmotions: ["우울", "외로움"], riskExpressionFlag: false, detectedCognitiveDistortions: ["과잉일반화"], xaiHighlights: ["항상 이렇게 실패"] } },
           { id: "msg-01-2-3", role: "assistant", content: "면접 탈락이라는 하나의 일이 '나의 항상'을 결정하진 않아 🦔 이번 기회가 맞지 않았을 뿐이야. 오늘은 맛있는 걸 먹으면서 한숨 돌릴까?", timestamp: "2025-05-08T15:07:00" }
         ],
-        sessionSummary: { dominantEmotions: ["우울", "외로움"], peakDepressionScore: 52, riskExpressionsCount: 0, cognitiveDistortionsDetected: ["과잉일반화"], riskLevelAtEnd: "mild", recommendedAction: "자가관리 콘텐츠 및 또치 위로 제공" }
+        sessionSummary: { dominantEmotions: ["우울", "외로움"], peakDepressionScore: 52, riskExpressionsCount: 0, cognitiveDistortionsDetected: ["과잉일반화"], riskLevelAtEnd: "mild", recommendedAction: "자가관리 콘텐츠 및 우울빼미 위로 제공" }
       }
     ],
     dailyEmotionLogs: Array.from({ length: 30 }, (_, i) => ({
@@ -831,7 +831,7 @@ export const mockUsers: UserProfile[] = [
     lastActiveAt: "2025-05-13T19:25:00"
   },
 
-  // 👤 내담자 5: 윤하은 (user-005) - 최소/저위험 / 페르소나: 또치
+  // 👤 내담자 5: 윤하은 (user-005) - 최소/저위험 / 페르소나: 우울빼미
   {
     id: "user-005",
     nickname: "윤하은",
@@ -880,10 +880,10 @@ export const mockUsers: UserProfile[] = [
         userId: "user-005",
         startedAt: "2025-05-09T20:00:00",
         endedAt: "2025-05-09T20:20:00",
-        activePersona: 1, // 또치
+        activePersona: 1, // 우울빼미
         personalMemoryContext: { referencedPastSessions: [], retrievedMemories: [] },
         messages: [
-          { id: "msg-05-1-1", role: "assistant", content: "안녕! 나 또치야 🦔 오늘 하루 어땠어? 기분 좋은 일이 있었을까?", timestamp: "2025-05-09T20:00:00" },
+          { id: "msg-05-1-1", role: "assistant", content: "안녕! 나 우울빼미야 🦔 오늘 하루 어땠어? 기분 좋은 일이 있었을까?", timestamp: "2025-05-09T20:00:00" },
           { id: "msg-05-1-2", role: "user", content: "요즘 인간관계가 조금 스트레스예요. 큰일은 아니지만 신경 쓰이네요.", timestamp: "2025-05-09T20:05:00", nlpAnalysis: { depressionScore: 20, detectedEmotions: ["불안", "외로움"], riskExpressionFlag: false, detectedCognitiveDistortions: ["비교왜곡"], xaiHighlights: ["스트레스"] } },
           { id: "msg-05-1-3", role: "assistant", content: "인간관계는 늘 잔잔한 스트레스를 주곤 하지 😢 너무 나만 잘못했다고 자책하지 말고, 하은님만의 소중한 시간을 가져봐!", timestamp: "2025-05-09T20:08:00" }
         ],
@@ -1008,7 +1008,7 @@ export const riskLevelOrder: Record<RiskLevel, number> = {
 // 1. PHQ-9/P4 결과 기반 페르소나 자동 결정 함수 (PRD 핵심 로직)
 export function determinePersona(userId: string): PersonaType {
   const user = mockUsers.find(u => u.id === userId);
-  if (!user) return 1; // 기본 또치
+  if (!user) return 1; // 기본 우울빼미
 
   const latestPHQ9 = user.phq9History.length > 0 ? user.phq9History[user.phq9History.length - 1] : null;
   const latestP4 = user.p4History.length > 0 ? user.p4History[user.p4History.length - 1] : null;
@@ -1024,9 +1024,9 @@ export function determinePersona(userId: string): PersonaType {
     return 2; // 지우
   }
 
-  // 3. 정상 ~ 경도 위험군 (P4 0점 및 PHQ-9 5~9점) -> 사용자 자율 선택 (초기 기본값 또치)
-  // 4. 최소 우울 (P4 0점 및 PHQ-9 0~4점) -> 또치 자동
-  return 1; // 기본 또치
+  // 3. 정상 ~ 경도 위험군 (P4 0점 및 PHQ-9 5~9점) -> 사용자 자율 선택 (초기 기본값 우울빼미)
+  // 4. 최소 우울 (P4 0점 및 PHQ-9 0~4점) -> 우울빼미 자동
+  return 1; // 기본 우울빼미
 }
 
 // 2. 채팅 메시지 NLP 분석 결과로 위험도 상승 감지 → 페르소나 전환 트리거 검사
@@ -1141,47 +1141,69 @@ export const recentActivities = [
 // clients 호환 목록 매핑
 export const clients = [
   { 
-    id: "user-003", 
-    name: "최서연", 
-    gender: "여", 
-    age: "20대", 
-    risk: "Crisis", 
-    phq9: 22, 
-    p4: 3, 
-    summary: "최근 극심한 자살사고 및 무기력감 급증. 챗봇과의 대화에서 자해 위험 단어가 직·간접적으로 다수 검출되어 집중 위기 관리가 시급합니다.", 
-    updated: "10분 전" 
-  },
-  { 
-    id: "user-004", 
-    name: "김민준", 
+    id: "user-009", 
+    name: "임지혁", 
     gender: "남", 
-    age: "20대", 
+    age: "50대", 
     risk: "Crisis", 
-    phq9: 17, 
-    p4: 2, 
-    summary: "우울감 심화로 인한 자살 생각 감지. P4 스크리너 2점으로 위기 대시보드 경보 및 전문 기관(1393) 긴급 연계 프로세스 대상입니다.", 
-    updated: "2시간 전" 
+    phq9: 21, 
+    p4: 1, 
+    summary: "만성 질환 및 가족 해체로 인한 절망적 자살 위기 단계. P4 양성 경보 발령 상태이며 수립된 5단계 안전계획의 주기적인 점검과 외부 기관 연계 지도가 긴급하게 이루어지고 있습니다.", 
+    updated: "5분 전" 
   },
   { 
     id: "user-006", 
     name: "강지원", 
     gender: "여", 
-    age: "30대", 
+    age: "10대 이하", 
+    risk: "Crisis", 
+    phq9: 19, 
+    p4: 1, 
+    summary: "학교 교우관계 속 극심한 소외감과 따돌림으로 인한 심각한 자해 위기 보고. P4 스크리너 양성 반응으로 3단계 인지행동 안전계획에 기반한 일상 접지 및 적극적 환기 개입이 실행 중입니다.", 
+    updated: "15분 전" 
+  },
+  { 
+    id: "user-003", 
+    name: "최서연", 
+    gender: "여", 
+    age: "20대", 
     risk: "High", 
-    phq9: 24, 
+    phq9: 14, 
     p4: 0, 
-    summary: "PHQ-9 점수 24점으로 임상적 극심한 우울을 호소하나 자살/자해 구체적 계획(P4 0점)은 감지되지 않았습니다. 인지 치료 및 인지 왜곡 교정 중심의 고위험 집중 케어가 권장됩니다.", 
+    summary: "프리랜서 디자이너. 심각한 대인관계 단절 및 깊은 슬픔을 토로하며 다수의 인지 왜곡(당위진술, 흑백논리) 감지. 집중적인 인지 왜곡 교정 세션 모니터링이 수행되고 있습니다.", 
     updated: "30분 전" 
   },
   { 
-    id: "user-002", 
+    id: "user-008", 
     name: "박현우", 
+    gender: "남", 
+    age: "20대", 
+    risk: "High", 
+    phq9: 12, 
+    p4: 0, 
+    summary: "연이은 취업 실패 낙인으로 인한 절망감과 극심한 자존감 붕괴 상태. 자아 비하 인지왜곡 패턴이 뚜렷하며, 행동 활성화 기법을 통해 일상 루틴 회복을 유도하고 있습니다.", 
+    updated: "1시간 전" 
+  },
+  { 
+    id: "user-002", 
+    name: "김민준", 
     gender: "남", 
     age: "30대", 
     risk: "Medium", 
-    phq9: 13, 
+    phq9: 6, 
     p4: 0, 
-    summary: "직장 내 스트레스 및 번아웃으로 우울감 상승세. 흑백논리 및 당위진술 인지 왜곡이 뚜렷하며 행동 활성화 기법 연계 중입니다.", 
+    summary: "직장 내 과도한 업무 번아웃과 일상적 초조감, 대인관계 스트레스 호소. 중등도 우울 지표에서 점진적으로 경감 중이며 마음 일기를 통해 긍정적 징후 포착 중입니다.", 
+    updated: "2시간 전" 
+  },
+  { 
+    id: "user-007", 
+    name: "정예진", 
+    gender: "여", 
+    age: "30대", 
+    risk: "Medium", 
+    phq9: 7, 
+    p4: 0, 
+    summary: "독박 육아 스트레스로 인한 죄책감과 피로 누적, 식욕 변화 관리 대상. 챗봇 상담을 연계하여 부정적 당위사고 틀을 객관화하며 정서적 불안 수치 안정화 도모 중입니다.", 
     updated: "4시간 전" 
   },
   { 
@@ -1190,20 +1212,20 @@ export const clients = [
     gender: "여", 
     age: "20대", 
     risk: "Low", 
-    phq9: 6, 
+    phq9: 3, 
     p4: 0, 
-    summary: "가벼운 취업 준비 스트레스와 일시적 무기력. 또치 페르소나와 일상 감정 일기를 성실히 작성 중이며 전반적인 정서 회복력 우수.", 
+    summary: "학업 스트레스로 인한 일시적 우울감과 수면 불규칙 호소 상태. 우울빼미 챗봇 및 일상 감정 일기를 성실히 활용하여 전반적인 정서 자가 관리 능력이 매우 훌륭합니다.", 
     updated: "1일 전" 
   },
   { 
     id: "user-005", 
     name: "윤하은", 
     gender: "여", 
-    age: "20대", 
+    age: "40대", 
     risk: "Low", 
-    phq9: 3, 
+    phq9: 4, 
     p4: 0, 
-    summary: "정서적으로 매우 안정된 편. 예방 차원의 데일리 멘탈 웰니스 및 또치 챗봇을 통한 자기보고식 기분 일기 기록을 활발히 실천 중.", 
+    summary: "40대 식당 자영업자. 식당 매출 감소 등의 외적 압박으로 인한 무기력증을 웰니스 일기와 챗봇 대화로 극복 중이며, 양호한 웰니스 정서 지표를 나타내고 있습니다.", 
     updated: "3일 전" 
   }
 ];
@@ -1377,134 +1399,156 @@ export interface LIMEExplanationData {
 
 export const limeDemoScenarios: LIMEExplanationData[] = [
   {
-    id: "lime-demo-low",
+    id: "user-001",
     level: "low",
-    levelLabel: "🟢 저위험",
-    sentence: "최근에 새로운 프로젝트를 맡게 되면서 일시적으로 스트레스가 심해졌어요. 잠도 잘 안 오고 밥맛도 없어서 몸이 좀 피곤하네요. 하지만 주말에 푹 쉬고 친구들이랑 맛있는 걸 먹으면 기분이 조금 풀릴 것 같기도 해요. 혼자 해결하려고 너무 끙끙대지 말고 극복해보려고요.",
+    levelLabel: "🟢 저위험 - 이지수",
+    sentence: "학기말 과제랑 시험이 몰려서 밤마다 잠도 안 오고 가슴이 너무 답답해서 집중이 하나도 안 돼.",
     predictedEmotion: "불안",
     probabilities: [
-      { name: "불안", value: 38, color: "#EC4899" },
-      { name: "피로", value: 24, color: "#F59E0B" },
-      { name: "일상", value: 15, color: "#10B981" }
+      { name: "불안", value: 35, color: "#EC4899" },
+      { name: "피로", value: 30, color: "#F59E0B" },
+      { name: "우울감", value: 15, color: "#EF4444" }
     ],
     weights: [
-      { word: "스트레스가", weight: 0.2451300941847163, index: 33 },
-      { word: "피곤하네요", weight: 0.1568293758392178, index: 65 },
-      { word: "안 오고", weight: 0.0823947291839178, index: 48 },
-      { word: "주말에", weight: -0.0928374829103982, index: 78 },
-      { word: "친구들이랑", weight: -0.1245892019487563, index: 88 },
-      { word: "풀릴", weight: -0.0652839281749203, index: 106 }
+      { word: "시험이 몰려서", weight: 0.065, index: 8 },
+      { word: "잠도 안 오고", weight: 0.058, index: 18 },
+      { word: "답답해서", weight: 0.048, index: 29 },
+      { word: "과제랑", weight: -0.012, index: 4 }
     ],
-    explanationText: "이 문장에서는 새로운 프로젝트로 인한 단기적인 압박감을 의미하는 '스트레스가' (+0.2451)와 생리적 불안 반응인 '피곤하네요' (+0.1568) 단어가 불안 감정을 예측하는 가장 유력한 유발 요인으로 작동했습니다. 반면, 지지체계와 정서 완화를 나타내는 '친구들이랑' (-0.1246)과 '주말에' (-0.0928) 단어는 예측 강도를 상쇄하는 강력한 완화 요인으로 해석되었습니다."
+    explanationText: "학업과 관련된 단기적 압박 요인인 '시험이 몰려서' (+0.0650)와 '잠도 안 오고' (+0.0580) 표현이 불안 및 수면 장애 반응을 촉발하는 주요 기여 요인으로 감지되었습니다."
   },
   {
-    id: "lime-demo-moderate",
-    level: "moderate",
-    levelLabel: "🟡 중위험",
-    sentence: "아침에 일어날 때마다 온몸이 무겁고 아무것도 하고 싶지 않아요. 최근에 회사 면접에서 연이어 떨어진 이후로 제 자신이 쓸모없는 사람처럼 느껴집니다. 하루 종일 침대에 누워서 천장만 보고 있으면 그냥 이대로 제 커리어가 영영 끝나는 것은 아닐까 두렵고 심장이 마구 뜁니다.",
+    id: "user-005",
+    level: "low",
+    levelLabel: "🟢 저위험 - 윤하은",
+    sentence: "최근에 식당 매출도 줄고 몸도 너무 지쳐서 아무것도 하기 싫고 하루 종일 누워만 있고 싶어.",
     predictedEmotion: "무기력",
     probabilities: [
-      { name: "무기력", value: 58, color: "#D946EF" },
-      { name: "자존감저하", value: 22, color: "#6B7280" },
-      { name: "슬픔", value: 12, color: "#3B82F6" }
+      { name: "무기력", value: 40, color: "#D946EF" },
+      { name: "피로", value: 30, color: "#F59E0B" },
+      { name: "외로움", value: 15, color: "#A855F7" }
     ],
     weights: [
-      { word: "쓸모없는", weight: 0.2981749102847163, index: 59 },
-      { word: "하고 싶지", weight: 0.2104829184716382, index: 21 },
-      { word: "떨어진", weight: 0.1458291847291847, index: 44 },
-      { word: "끝나는", weight: 0.0958172937194852, index: 111 },
-      { word: "침대에", weight: 0.0528471928471628, index: 80 },
-      { word: "일어날", weight: -0.0482910384729183, index: 4 }
+      { word: "지쳐서", weight: 0.055, index: 16 },
+      { word: "하기 싫고", weight: 0.062, index: 25 },
+      { word: "누워만 있고", weight: 0.068, index: 37 },
+      { word: "식당", weight: -0.005, index: 4 }
     ],
-    explanationText: "구직 실패로 인한 심각한 내적 자책 표현인 '쓸모없는' (+0.2982) 단어와 행동적 고립 상태를 뜻하는 '하고 싶지' (+0.2105) 단어가 무기력을 예측하는 주된 가중치 요인으로 꼽혔습니다. 특히 부정적 인지 왜곡이 무기력 상태를 유의미하게 심화시키는 것으로 분석되었습니다."
+    explanationText: "식당 매출 감소에 따른 생계 스트레스로 신체 피로도가 극대화된 '지쳐서' (+0.0550) 표현과, 전형적인 우울성 철회 반응인 '누워만 있고' (+0.0680) 단어가 결합하여 가벼운 무기력 상태를 유발하는 것으로 분석되었습니다."
   },
   {
-    id: "lime-demo-high",
-    level: "high",
-    levelLabel: "🟠 고위험",
-    sentence: "가슴이 턱 막힌 것처럼 답답하고 주체할 수 없이 눈물만 흘러내립니다. 제 정서나 기분을 스스로 통제할 수 없다는 비참함이 저를 지배하고 있어요. 주변 사람들에게 제 고통을 털어놓아 봤자 결국 저를 귀찮아하고 멀리할 것 같아서 아무 말도 못한 채 혼자 앓고 있습니다.",
-    predictedEmotion: "우울감",
+    id: "user-002",
+    level: "moderate",
+    levelLabel: "🟡 중위험 - 김민준",
+    sentence: "회사 프로젝트 실수할까 봐 매일 불안해서 미치겠고 가슴이 꽉 막힌 것처럼 답답해 죽을 것 같아.",
+    predictedEmotion: "불안",
     probabilities: [
-      { name: "우울감", value: 65, color: "#EF4444" },
-      { name: "절망감", value: 21, color: "#EF4444" },
-      { name: "슬픔", value: 10, color: "#3B82F6" }
+      { name: "불안", value: 45, color: "#EC4899" },
+      { name: "초조함", value: 25, color: "#10B981" },
+      { name: "우울감", value: 20, color: "#EF4444" }
     ],
     weights: [
-      { word: "눈물만", weight: 0.3458291847291837, index: 23 },
-      { word: "통제할", weight: 0.2458193857291847, index: 44 },
-      { word: "고통을", weight: 0.2158291847291847, index: 76 },
-      { word: "답답하고", weight: 0.1248291038472918, index: 10 },
-      { word: "멀리할", weight: 0.0892837194729103, index: 96 },
-      { word: "털어놓아", weight: -0.0782910384729182, index: 80 }
+      { word: "실수할까 봐", weight: 0.078, index: 9 },
+      { word: "불안해서", weight: 0.072, index: 20 },
+      { word: "답답해 죽을", weight: 0.085, index: 41 },
+      { word: "회사", weight: -0.008, index: 0 }
     ],
-    explanationText: "억제되지 않는 강한 우울 정서를 직접적으로 시사하는 '눈물만' (+0.3458)과 통제감 상실을 시사하는 '통제할' (+0.2458) 단어가 임상적 우울 상태를 지시하는 가장 결정적인 요인으로 식별되었습니다. 정서적 지지를 모색하려는 시도인 '털어놓아' (-0.0783) 단어는 미미하게나마 부정적 우울 예측을 경감하는 요인으로 반영되었습니다."
+    explanationText: "직장에서의 완벽주의적 불안 반응인 '실수할까 봐' (+0.0780)와 급성 과호흡 및 초조 지표를 나타내는 '답답해 죽을' (+0.0850) 단어가 결합하여 중등도의 직장인 불안 장애 양상을 유발하고 있습니다."
   },
   {
-    id: "lime-demo-crisis",
+    id: "user-007",
+    level: "moderate",
+    levelLabel: "🟡 중위험 - 정예진",
+    sentence: "아이를 키우는 게 너무 지치고 화가 나는데 내가 부족한 엄마인 것 같아서 매일 밤 죄책감이 밀려와.",
+    predictedEmotion: "죄책감",
+    probabilities: [
+      { name: "죄책감", value: 40, color: "#4F46E5" },
+      { name: "피로", value: 30, color: "#F59E0B" },
+      { name: "분노", value: 20, color: "#F97316" }
+    ],
+    weights: [
+      { word: "지치고 화가", weight: 0.065, index: 12 },
+      { word: "부족한 엄마", weight: 0.072, index: 24 },
+      { word: "죄책감이", weight: 0.082, index: 42 },
+      { word: "아이를", weight: -0.010, index: 0 }
+    ],
+    explanationText: "독박 육아로 누적된 피로인 '지치고 화가' (+0.0650) 표현과, 스스로를 자책하며 모성애 강박을 보이는 인지 왜곡 단어 '부족한 엄마' (+0.0720), '죄책감이' (+0.0820)가 중등도 육아 우울의 핵심 인자로 감지되었습니다."
+  },
+  {
+    id: "user-003",
+    level: "high",
+    levelLabel: "🟠 고위험 - 최서연",
+    sentence: "인간관계가 완전히 끊어져서 혼자 남겨진 기분이고 깊은 슬픔에서 빠져나올 수 없어.",
+    predictedEmotion: "슬픔",
+    probabilities: [
+      { name: "슬픔", value: 40, color: "#3B82F6" },
+      { name: "외로움", value: 35, color: "#A855F7" },
+      { name: "절망감", value: 15, color: "#8B5CF6" }
+    ],
+    weights: [
+      { word: "완전히 끊어져서", weight: 0.088, index: 6 },
+      { word: "혼자 남겨진", weight: 0.075, index: 15 },
+      { word: "깊은 슬픔에서", weight: 0.092, index: 25 },
+      { word: "기분이고", weight: -0.015, index: 21 }
+    ],
+    explanationText: "프리랜서 디자이너로서의 심각한 소외감과 사회적 단절을 지시하는 '완전히 끊어져서' (+0.0880)와, 1년 이상 누적된 만성적이고 심각한 인지 왜곡 표현인 '깊은 슬픔에서' (+0.0920) 단어가 결합하여 고위험 우울감 상태를 강력하게 유도하고 있습니다."
+  },
+  {
+    id: "user-008",
+    level: "high",
+    levelLabel: "🟠 고위험 - 박현우",
+    sentence: "계속해서 면접에서 떨어지니까 내가 무능한 실패자처럼 느껴져서 깊은 절망감이 들어.",
+    predictedEmotion: "절망감",
+    probabilities: [
+      { name: "절망감", value: 45, color: "#8B5CF6" },
+      { name: "자존감저하", value: 25, color: "#6B7280" },
+      { name: "무기력", value: 20, color: "#D946EF" }
+    ],
+    weights: [
+      { word: "계속해서", weight: 0.035, index: 0 },
+      { word: "떨어지니까", weight: 0.062, index: 10 },
+      { word: "무능한 실패자", weight: 0.085, index: 20 },
+      { word: "절망감이 들어", weight: 0.095, index: 32 }
+    ],
+    explanationText: "연이은 구직 실패 낙인 효과로 스스로를 비하하는 인지 왜곡인 '무능한 실패자' (+0.0850) 단어와, 통제할 수 없는 앞날에 대한 깊은 인지 무기력을 드러내는 '절망감이 들어' (+0.0950) 표현이 고위험 우울 유발의 지배적 지표로 진단되었습니다."
+  },
+  {
+    id: "user-006",
     level: "crisis",
-    levelLabel: "🔴 자살/자해 위험",
-    sentence: "나라는 존재 자체가 가족들의 삶과 행복에 커다란 짐이자 민폐인 것만 같아요. 매일 밤 어둠 속에서 혼자 끙끙대며 버티다 보니 몸과 마음이 갈기갈기 찢겨나간 느낌이에요. 서랍 깊숙이 모아둔 수면제를 바라보며 그냥 이 모든 괴로움을 한 번에 영원히 끝내고 싶다는 생각만 듭니다.",
+    levelLabel: "🔴 위기군 - 강지원",
+    sentence: "학교에서 친구들이 전부 나를 은근히 따돌려서 매일 외롭고 혼자 남겨진 것 같아서 사라지고 싶어.",
     predictedEmotion: "자살충동",
     probabilities: [
-      { name: "자살충동", value: 72, color: "#EF4444" },
-      { name: "절망감", value: 20, color: "#8B5CF6" },
-      { name: "피로", value: 5, color: "#F59E0B" }
+      { name: "자살충동", value: 50, color: "#DC2626" },
+      { name: "외로움", value: 30, color: "#A855F7" },
+      { name: "상실감", value: 15, color: "#14B8A6" }
     ],
     weights: [
-      { word: "끝내고", weight: 0.3958291847291847, index: 133 },
-      { word: "수면제를", weight: 0.3248193857291847, index: 111 },
-      { word: "짐이자", weight: 0.2658291847291847, index: 29 },
-      { word: "찢겨나간", weight: 0.1982910384729183, index: 78 },
-      { word: "어둠", weight: 0.0892837194729103, index: 40 },
-      { word: "가족들의", weight: -0.0528471928471628, index: 10 }
+      { word: "전부 나를", weight: 0.045, index: 10 },
+      { word: "따돌려서", weight: 0.088, index: 16 },
+      { word: "외롭고 혼자", weight: 0.075, index: 25 },
+      { word: "사라지고 싶어", weight: 0.125, index: 41 }
     ],
-    explanationText: "자살 완수의 강한 내적 의지를 뜻하는 '끝내고' (+0.3958)와 자살을 위한 구체적인 수단(Means) 접근성을 지시하는 '수면제를' (+0.3248) 단어가 위험 지수를 즉각적으로 폭증시키는 치명적 요인으로 감지되었습니다. 대인관계적인 중압감을 표현하는 대인관계 부채감 요인인 '짐이자' (+0.2658) 역시 자살 충동의 세번째로 강력한 가중치로 작용했습니다."
+    explanationText: "학교에서의 친구 관계 고립과 은밀한 집단 따돌림에 대한 상처인 '따돌려서' (+0.0880) 표현과, 자살 사고의 강도 높은 내적 투사인 '사라지고 싶어' (+0.1250)가 직접 결합하여 급격한 자해 충동 및 극단적 위험 수치를 발현시키고 있습니다."
   },
   {
-    id: "lime-demo-test-friends",
-    level: "moderate",
-    levelLabel: "🧪 테스트용 (친구들)",
-    sentence: "제 친구들 앞에서만 저를 유독 낮춰 말하는 연인 때문에 서운해요. 둘이 있을 때는 다정한데 사람들만 있으면 농담처럼 저를 깎아내립니다. 기분이 상한다고 말해도 예민하다는 반응이라 더 혼란스럽습니다. 상황을 조금 더 설명하면, 당장 큰 문제가 아니라고 스스로 달래 보지만, 비슷한 일이 반복되니 마음이 점점 지칩니다.",
-    predictedEmotion: "감정조절이상",
+    id: "user-009",
+    level: "crisis",
+    levelLabel: "🔴 위기군 - 임지혁",
+    sentence: "만성 통증이 계속 괴롭히고 가족들도 아무도 나를 찾지 않으니 수면제 먹고 그냥 조용히 끝내고 싶어.",
+    predictedEmotion: "자살충동",
     probabilities: [
-      { name: "감정조절이상", value: 72.3, color: "#D946EF" },
-      { name: "죄책감", value: 5.7, color: "#6B7280" },
-      { name: "슬픔", value: 6.4, color: "#3B82F6" }
+      { name: "자살충동", value: 55, color: "#DC2626" },
+      { name: "우울감", value: 20, color: "#EF4444" },
+      { name: "절망감", value: 20, color: "#8B5CF6" }
     ],
     weights: [
-      { word: "깎아내립니다", weight: 0.3701300147395763, index: 68 },
-      { word: "저를", weight: 0.22231856877392459, index: 11 },
-      { word: "예민하다는", weight: -0.10209661957568701, index: 89 },
-      { word: "낮춰", weight: 0.0768523464674038, index: 17 },
-      { word: "때문에", weight: -0.06287793056142862, index: 27 },
-      { word: "서운해요", weight: -0.058338015760060404, index: 31 },
-      { word: "상한다고", weight: 0.050548500155513765, index: 80 },
-      { word: "달래", weight: 0.03826421429044861, index: 144 }
+      { word: "괴롭히고", weight: 0.068, index: 10 },
+      { word: "아무도 나를", weight: 0.055, index: 21 },
+      { word: "수면제 먹고", weight: 0.098, index: 37 },
+      { word: "끝내고 싶어", weight: 0.130, index: 50 }
     ],
-    explanationText: "타인 앞에서 본인을 부정적으로 대하는 언어 자극인 '깎아내립니다' (+0.3701)와 '낮춰' (+0.0769) 표현이 관계에서의 깊은 감정조절이상 및 우울 정서를 예측하는 데 압도적인 유발 인자로 검출되었습니다. 한편, '예민하다는' (-0.1021), '서운해요' (-0.0583) 등의 정서 표명 및 해석 단어들은 직접적인 자아 파괴 요인은 아니기에 예측에 대한 완화 증거로 감지되었습니다."
-  },
-  {
-    id: "lime-demo-test-helplessness",
-    level: "moderate",
-    levelLabel: "🧪 테스트용 (무력감)",
-    sentence: "삶의 무력감이 정말 큰것같아요. 제가 사실 대학에 목숨을 걸고 살아왔는데 sky 입학은 했는데 저는 여기만 오면 다 될줄 알았어요. 근데 여기서도 결국 또 살아남기 위해 뭔가를 노력하고 해야한다는게 너무 힘들고 지쳤어요.",
-    predictedEmotion: "감정조절이상",
-    probabilities: [
-      { name: "감정조절이상", value: 67.0, color: "#D946EF" },
-      { name: "무기력", value: 19.2, color: "#EC4899" },
-      { name: "죄책감", value: 1.2, color: "#6B7280" }
-    ],
-    weights: [
-      { word: "무력감이", weight: 0.643738568428704, index: 3 },
-      { word: "제가", weight: 0.09188518856987239, index: 18 },
-      { word: "노력하고", weight: 0.06129351533764926, index: 99 },
-      { word: "살아왔는데", weight: 0.042773235853757426, index: 35 },
-      { word: "삶의", weight: -0.04570288204893922, index: 0 },
-      { word: "살아남기", weight: -0.08563628288291683, index: 87 },
-      { word: "지쳤어요", weight: -0.09392155188492048, index: 118 },
-      { word: "힘들고", weight: -0.11092715408571904, index: 114 }
-    ],
-    explanationText: "대학 입학 이후 겪게 된 기대와 다른 학업적 고착 상태 및 번아웃을 지칭하는 '무력감이' (+0.6437) 단어가 전체 정서의 조절이상 및 무력감 상태를 예측하는 압도적인 유발 인자로 검출되었습니다. 한편, 일반적인 육체 피로 표현인 '힘들고' (-0.1109)나 '지쳤어요' (-0.0939) 단어들은 특정 임상 상태를 유도하기보다는 상대적인 완화 요인으로 분류되었습니다."
+    explanationText: "만성 통증이라는 신체 악화 요인인 '괴롭히고' (+0.0680)와 극단적 고독사 및 유대 단절인 '아무도 나를' (+0.0550), 그리고 자살을 위한 구체적인 수단을 지시하는 '수면제 먹고' (+0.0980) 및 극단적 종료의 강한 욕구인 '끝내고 싶어' (+0.1300) 표현이 즉각적인 경찰/119 대응이 요구되는 최상위 위기 상태를 형성하고 있습니다."
   }
 ];
 

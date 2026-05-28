@@ -2041,6 +2041,7 @@ export default function Home() {
             }}
             profile={profile}
             onUpdateProfile={handleUpdateProfile}
+            sessionId={currentSessionId}
           />
 
           {/* PHQ-9 재검사 권장 알림 팝업 */}

@@ -1,0 +1,22 @@
+[
+  {
+    "user_id": "user-006",
+    "current_step": 3,
+    "step1_warning_signs": "친구들의 카톡 답장이 늦거나, 복도에서 혼자 고립감을 느낄 때 가슴이 찢어지게 아프고 손목을 긋고 싶어짐.",
+    "step2_coping_strategies": "헤드폰을 쓰고 볼륨을 키워 차분한 클래식 음악을 듣거나, 자해 가이드라인에 맞춰 차가운 얼음컵을 꽉 쥠.",
+    "step3_social_distraction": "학교 도서관 구석에 가서 조용히 책 냄새를 맡으며 사람 소리 속에 존재하기, 혹은 동네 고양이 카페 방문하기.",
+    "step4_social_support": "",
+    "step5_professional_agencies": "",
+    "step6_safe_environment": ""
+  },
+  {
+    "user_id": "user-009",
+    "current_step": 5,
+    "step1_warning_signs": "허리 통증이 극심해져서 누워도 잠이 안 오고, 통장에 잔고가 비어가며 자식들이 전화를 안 받을 때 수면제 약통을 쳐다봄.",
+    "step2_coping_strategies": "창문을 활짝 열고 심호흡을 10회 실시하며 따뜻한 보리차를 천천히 음미함.",
+    "step3_social_distraction": "복지관 근처 공원을 한 바퀴 천천히 돌며 동네 주민들이 오가는 풍경을 가만히 관찰함.",
+    "step4_social_support": "아파트 경비 아저씨와 날씨에 대해 짧게 인사를 나누며 인간의 연결성 확보하기.",
+    "step5_professional_agencies": "중앙자살예방센터 핫라인(109) 및 연계된 긴급 의료 상담사에게 즉시 단축 번호 1번 전송.",
+    "step6_safe_environment": ""
+  }
+]

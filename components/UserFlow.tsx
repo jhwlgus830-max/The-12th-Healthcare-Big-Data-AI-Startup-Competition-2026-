@@ -24,7 +24,8 @@ export default function UserFlow({
   p4Answers = null, 
   onNavigateToMap,
   profile,
-  onUpdateProfile 
+  onUpdateProfile,
+  sessionId: propSessionId
 }: { 
   initialPersona?: 1 | 2 | 3 | 4 | 5, 
   onEndChat?: (sessionId: string | null) => void, 
@@ -34,14 +35,15 @@ export default function UserFlow({
   p4Answers?: string[] | null, 
   onNavigateToMap?: () => void,
   profile?: UserProfile,
-  onUpdateProfile?: (updated: UserProfile) => Promise<void>
+  onUpdateProfile?: (updated: UserProfile) => Promise<void>,
+  sessionId?: string | null
 }) {
   const [currentPersona, setCurrentPersona] = useState<1 | 2 | 3 | 4 | 5>(initialPersona);
   const [input, setInput] = useState("");
   const [score, setScore] = useState(45);
   const [level, setLevel] = useState("🟠 중증");
   const [showWarningPopup, setShowWarningPopup] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(propSessionId || null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Local Profile Sync for Offline Mode
@@ -144,6 +146,49 @@ export default function UserFlow({
   const [messages, setMessages] = useState<Array<{ role: string; content: string; icon?: string }>>(
     userPersonaMessages[initialPersona as 1 | 2 | 3 | 4 | 5]
   );
+
+  // 과거 대화 세션 이력 복원 (SPA 화면 복귀 대응)
+  useEffect(() => {
+    if (!sessionId) return;
+
+    const restoreHistory = async () => {
+      setIsLoading(true);
+      try {
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${apiBase}/api/chat/history/${sessionId}`);
+        if (!res.ok) throw new Error("Failed to fetch session history");
+        const history = await res.json();
+        
+        if (history && history.length > 0) {
+          // 백엔드: { role: "user" | "bot" | "assistant", content: string, icon?: string }
+          // 프론트엔드: { role: string; content: string; icon?: string }
+          const mapped = history.map((item: any) => {
+            const role = item.role === "user" ? "user" : "bot";
+            let defaultIcon = "👤";
+            if (role === "bot") {
+              defaultIcon = currentPersona === 1 ? "🦉" 
+                          : currentPersona === 2 ? "👩" 
+                          : currentPersona === 3 ? "🚨" 
+                          : currentPersona === 4 ? "🧑‍⚕️" 
+                          : "🏃";
+            }
+            return {
+              role,
+              content: item.content,
+              icon: item.icon || defaultIcon
+            };
+          });
+          setMessages(mapped);
+        }
+      } catch (err) {
+        console.error("[UserFlow] History restore error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    restoreHistory();
+  }, [sessionId, currentPersona]);
 
   const handlePersonaChange = (p: 1 | 2 | 3 | 4 | 5) => {
     setCurrentPersona(p);
